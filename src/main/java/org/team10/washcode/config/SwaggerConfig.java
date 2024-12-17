@@ -18,6 +18,7 @@ public class SwaggerConfig {
                 .description("API 명세서");
     }
 
+
     // JWT 토큰 사용을 위한 Swagger 자체 모듈
     @Bean
     public OpenAPI customOpenAPI() {
