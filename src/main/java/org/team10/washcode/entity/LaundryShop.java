@@ -24,8 +24,8 @@ public class LaundryShop {
     private String operating_days;
     private String business_hours;
 
-    private int latitude;
-    private int longitude;
+    private double latitude;
+    private double longitude;
 
     private Timestamp created_at;
 }
