@@ -22,12 +22,112 @@
         <input type="text" placeholder="세탁소를 검색하세요" class="w-full p-2 border rounded-lg">
     </div>
     <div class="relative">
-        <img src="https://via.placeholder.com/400x300" alt="Map" class="w-full">
-        <div class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zM12 11c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zM12 11v10m0-10c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zM12 11c0-1.104-.896-2-2-2s-2 .896-2 2 .896 2 2 2 2-.896 2-2z" />
-            </svg>
-        </div>
+        <div id="map" style="width:400px;height:300px;"></div>
+        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
+        <script>
+            var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+            var container = document.getElementById('map');
+            var options = {
+                center: new kakao.maps.LatLng(33.450701, 126.570667),
+                level: 3
+            };
+
+            var map = new kakao.maps.Map(container, options);
+
+            if (navigator.geolocation) {
+
+                // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+                navigator.geolocation.getCurrentPosition(function(position) {
+
+                    var lat = position.coords.latitude, // 위도
+                        lon = position.coords.longitude; // 경도
+
+                    var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                        message = '<div style="padding:5px;">여기에 계신가요?!</div>'; // 인포윈도우에 표시될 내용입니다
+
+                    // 마커와 인포윈도우를 표시합니다
+                    //displayMarker(locPosition, message);
+
+                    var ps = new kakao.maps.services.Places();
+                    var keyword = "세탁소";
+                    var options = {
+                        location: locPosition,
+                        radius: 10000,
+                        //sort: kakao.maps.services.SortBy.DISTANCE,
+                    };
+
+                    ps.keywordSearch(keyword, placesSearchCB, options);
+                    //searchPlaces();
+
+                });
+
+            } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+
+                var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
+                    message = 'geolocation을 사용할수 없어요..'
+
+                displayMarker(locPosition, message);
+                //searchPlaces();
+            }
+
+            // 지도에 마커와 인포윈도우를 표시하는 함수입니다
+            function displayMarker(locPosition, message) {
+
+                // 마커를 생성합니다
+                var marker = new kakao.maps.Marker({
+                    map: map,
+                    position: locPosition
+                });
+
+                // 마커에 클릭이벤트를 등록합니다
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+                    infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+                    infowindow.open(map, marker);
+                })
+
+                // 지도 중심좌표를 접속위치로 변경합니다
+                map.setCenter(locPosition);
+            }
+
+
+
+            // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+            function placesSearchCB (data, status, pagination) {
+                if (status === kakao.maps.services.Status.OK) {
+
+                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+                    // LatLngBounds 객체에 좌표를 추가합니다
+                    var bounds = new kakao.maps.LatLngBounds();
+
+                    for (var i=0; i<data.length; i++) {
+                        displayMarker(data[i]);
+                        bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                    }
+
+                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                    map.setBounds(bounds);
+                }
+            }
+
+            // 지도에 마커를 표시하는 함수입니다
+            function displayMarker(place) {
+
+                // 마커를 생성하고 지도에 표시합니다
+                var marker = new kakao.maps.Marker({
+                    map: map,
+                    position: new kakao.maps.LatLng(place.y, place.x)
+                });
+
+                // 마커에 클릭이벤트를 등록합니다
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+                    infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+                    infowindow.open(map, marker);
+                });
+            }
+        </script>
     </div>
     <div class="flex justify-around bg-white p-4 border-t fixed bottom-0 w-full max-w-md">
         <button class="flex flex-col items-center text-blue-500">
