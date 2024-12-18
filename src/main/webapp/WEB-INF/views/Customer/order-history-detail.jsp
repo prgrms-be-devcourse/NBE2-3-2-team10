@@ -1,9 +1,12 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리뷰쓰기</title>
+    <title>이용내역</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -14,17 +17,37 @@
 </head>
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
-    <div class="p-4 border-b flex items-center">
-        <button class="mr-2 text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </button>
-        <h1 class="text-xl font-bold">리뷰쓰기</h1>
+    <div class="p-4 border-b">
+        <h1 class="text-xl font-bold">이용내역</h1>
     </div>
     <div class="p-4">
-        <textarea class="w-full p-2 border rounded-lg mb-4" rows="4" placeholder="리뷰를 작성하세요..."></textarea>
-        <button class="w-full bg-blue-500 text-white py-2 rounded-lg">리뷰작성</button>
+        <div class="bg-white p-4 rounded-lg shadow mb-4">
+            <div class="flex justify-between items-center">
+                <h2 class="font-bold">세모 세탁소</h2>
+                <span class="text-blue-500">예약이 완료되었어요.</span>
+            </div>
+            <p>와이셔츠 1개</p>
+            <p>청바지 2개</p>
+            <p>코트 1개</p>
+            <p class="text-gray-500">주문일자 : 2024년 12월 12일</p>
+
+            <div class="border-t border-gray-200 mt-2 pt-2">
+                <h2 class="font-bold">결제금액</h2>
+                <p>주문 금액 : 28000원</p>
+                <p>결제 방법 : 카카오페이</p>
+            </div>
+
+            <div class="border-t border-gray-200 mt-2 pt-2">
+                <h2 class="font-bold">배달 주소</h2>
+                <p>서울특별시 어쩌구 저쩌구 123, 동그라미 아파트 (123동 123호)</p>
+                <p>전화번호 : 010 - 1234 - 1234</p>
+            </div>
+
+            <div class="flex justify-between mt-4">
+                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>
+                <button class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">취소</button>
+            </div>
+        </div>
     </div>
 </div>
 <div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
