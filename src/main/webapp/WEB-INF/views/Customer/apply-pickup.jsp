@@ -14,6 +14,15 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
+    <script type="text/javascript">
+        fetch('/api/orders/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+    </script>
 </head>
 <body class="bg-gray-100">
 <!-- Header -->
@@ -33,12 +42,15 @@
     </div>
 </div>
 
+
 <!-- Main Content -->
+<form method="POST" action="/api/orders/create">
+    <input type="hidden" name="userId" value="${user.id}">
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-4">
     <div class="p-4">
         <div class="bg-gray-100 p-4 rounded-lg mb-4">
-            <h2 class="text-sm font-bold">수거/배달 주소 (진세현)</h2>
-            <p class="text-gray-700">경기 수원시 영통구 ○○대로 ○○○번길 ○○ ○○○호</p>
+            <h2 class="text-sm font-bold">수거/배달 주소 (${user.name})</h2>
+            <p class="text-gray-700">${user.address}</p>
             <p class="text-gray-700">공동현관 비밀번호: 없음</p>
         </div>
         <div class="flex items-center mb-4">
@@ -54,11 +66,11 @@
         </div>
         <div class="mb-4">
             <label for="quantity" class="block text-sm font-bold mb-2">맡기는 의류의 개수</label>
-            <input type="number" id="quantity" class="w-full border rounded-lg p-2" value="1">
+            <input type="number" name="quantity" id="quantity" class="w-full border rounded-lg p-2" value="1" required>
         </div>
         <div class="mb-4">
             <label for="request" class="block text-sm font-bold mb-2">요청 사항</label>
-            <textarea id="request" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요"></textarea>
+            <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요"></textarea>
         </div>
         <div class="bg-gray-100 p-4 rounded-lg mb-4">
             <div class="flex items-center">
@@ -66,10 +78,10 @@
                 <label for="terms" class="text-gray-700">세탁 서비스 고지사항에 동의합니다</label>
             </div>
         </div>
-        <button class="w-full bg-blue-500 text-white py-2 rounded-lg">수거신청</button>
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg">수거신청</button>
     </div>
 </div>
-
+</form>
 <!-- Footer -->
 <div class="fixed bottom-0 left-0 right-0 flex justify-around bg-white p-4 border-t">
     <button class="flex flex-col items-center text-blue-500">
