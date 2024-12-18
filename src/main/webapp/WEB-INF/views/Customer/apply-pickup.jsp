@@ -53,9 +53,10 @@
             <p class="text-gray-700">${user.address}</p>
             <p class="text-gray-700">공동현관 비밀번호: 없음</p>
         </div>
+        <input type="hidden" name="laundryShopId" value="${laundryShop.id}">
         <div class="flex items-center mb-4">
             <img src="https://source.unsplash.com/random/50x50?person" alt="Profile" class="w-12 h-12 rounded-full mr-4">
-            <p class="text-gray-700">워시앤 조이</p>
+            <p class="text-gray-700">${laundryShop.shop_name}</p>
         </div>
         <div class="bg-gray-100 p-4 rounded-lg mb-4">
             <p class="text-sm font-bold">세탁물 수거는 매일 오후 6시 이후 일괄 수거 됩니다</p>
