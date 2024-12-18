@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -20,7 +21,12 @@
     <form>
         <div class="mb-4">
             <label class="block text-gray-700">아이디</label>
-            <input type="email" placeholder="이메일을 입력해주세요." class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input
+                    type="email"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="${not empty kakaoUserData.email ? kakaoUserData.email : '이메일을 입력해주세요.'}"
+                    value="${not empty kakaoUserData.email ? kakaoUserData.email : ''}"
+                    ${not empty kakaoUserData ? 'disabled' : ''}>
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">비밀번호</label>
@@ -32,7 +38,12 @@
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">이름</label>
-            <input type="text" placeholder="이름을 입력해주세요" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input
+                    type="text"
+                    placeholder="${not empty kakaoUserData.nickname ? kakaoUserData.nickname : '성함을 입력해주세요.'}"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value="${not empty kakaoUserData.nickname ? kakaoUserData.nickname : ''}"
+                    ${not empty kakaoUserData ? 'disabled' : ''}>
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">주소</label>

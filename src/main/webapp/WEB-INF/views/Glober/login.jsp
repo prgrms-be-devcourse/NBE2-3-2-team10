@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -37,12 +39,9 @@
             <span class="px-2 text-gray-500 whitespace-nowrap">간편로그인</span>
             <hr class="w-full border-gray-300">
         </div>
-        <button type="button" class="w-full bg-yellow-400 text-black py-2 rounded flex items-center justify-center hover:bg-yellow-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M9 16h6m-7 4h8a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            카카오로 시작하기
-        </button>
+        <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoApiKey}&redirect_uri=${redirectUri}">
+            <img src = "./upload/kakao_login.png"/>
+        </a>
     </form>
 </div>
 </body>
