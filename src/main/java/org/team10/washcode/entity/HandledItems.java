@@ -17,6 +17,7 @@ public class HandledItems {
     private LaundryShop laundryshop;
 
     private String item_name;
+    @Enumerated(EnumType.STRING)
     private LaundryCategory category;
     private int price;
 }
