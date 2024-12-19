@@ -1,7 +1,6 @@
 package org.team10.washcode.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
@@ -27,6 +26,7 @@ public class UserService {
             user.setAddress(registerReqDTO.getAddress());
             user.setPhone(registerReqDTO.getPhone());
             user.setRole(registerReqDTO.getRole());
+            user.setKakao_id(registerReqDTO.getKakao_id());
 
             userRepository.save(user);
 

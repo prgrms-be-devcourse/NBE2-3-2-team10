@@ -12,9 +12,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@DynamicInsert
 public class User {
-    // Customer -> User로 변경
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -38,8 +36,8 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'USER'")
     @Column(nullable = false)
+    @ColumnDefault("'USER'")
     private UserRole role;
 
     @CreationTimestamp
