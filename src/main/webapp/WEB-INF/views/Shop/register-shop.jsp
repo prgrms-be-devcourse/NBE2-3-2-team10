@@ -58,7 +58,7 @@
     <form class="mt-4" name="rfrm">
         <div class="mb-4">
             <label class="block text-gray-700">대표자명</label>
-            <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="대표자명" id="user" name="user">
+            <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="대표자명" id="user_name" name="user_name">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">전화번호</label>
@@ -127,7 +127,7 @@
     document.getElementById('rbtn').onclick = function(event) {
         event.preventDefault();
 
-        const user = document.getElementById("user").value;
+        const user_name = document.getElementById("user_name").value;
         const phone = document.getElementById("phone").value;
         const address = document.getElementById("address").value;
         const shop_name = document.getElementById("shop_name").value;
@@ -137,7 +137,7 @@
         let latitude = 0;
         let longitude = 0;
 
-        if(user.trim() === ""){
+        if(user_name.trim() === ""){
             alert("이름을 입력하세요.");
             return false;
         }
@@ -175,22 +175,20 @@
         // 주소-좌표 변환 객체를 생성합니다
         var geocoder = new kakao.maps.services.Geocoder();
 
-        geocoder.addressSearch(address, function(result, status) {
-
+        geocoder.addressSearch(address, async function(result, status) {
             // 정상적으로 검색이 완료됐으면
             if (status === kakao.maps.services.Status.OK) {
-
                 longitude = result[0].x;
                 latitude = result[0].y;
 
                 try {
-                    const response = fetch("/api/laundry", {
+                    const response = await fetch("/api/laundry", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            user: user,
+                            user_name: user_name,
                             phone: phone,
                             address: address,
                             shop_name: shop_name,
@@ -199,18 +197,21 @@
                             business_hours: business_hours,
                             latitude: latitude,
                             longitude: longitude
-                        }) // JSON 데이터를 문자열로 변환
+                        })
                     });
 
                     if (response.ok) {
                         alert("등록이 완료되었습니다!");
                     } else {
+                        const errorData = await response.json();
                         alert(`오류 발생: ${errorData.message || '서버 에러'}`);
                     }
                 } catch (error) {
                     console.error('Error:', error);
                     alert('네트워크 오류가 발생했습니다.');
                 }
+            } else {
+                alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
             }
         });
     };
