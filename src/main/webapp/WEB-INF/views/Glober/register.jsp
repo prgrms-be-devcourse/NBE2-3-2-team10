@@ -100,7 +100,7 @@
                 email: document.getElementById('email').value,
                 password: kakao_password ? kakao_password : document.getElementById('password').value,
                 name: document.getElementById('name').value,
-                userRole: document.getElementById('userRole').value,
+                role: document.getElementById('userRole').value,
                 address: document.getElementById('address').value,
                 phone: document.getElementById('phone').value,
                 kakao_id: kakao_id ? kakao_id : null  // 카카오 ID는 있는 경우만 포함

@@ -121,6 +121,7 @@ public class KakaoService {
         return kakaoUserDataDTO;
     }
 
+    // 비밀번호 랜덤 생성 메소드
     public static String getRandomPassword() {
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
