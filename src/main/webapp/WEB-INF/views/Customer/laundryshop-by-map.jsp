@@ -22,9 +22,21 @@
         <input type="text" placeholder="세탁소를 검색하세요" class="w-full p-2 border rounded-lg">
     </div>
     <div class="relative">
-        <div id="map" style="width:400px;height:300px;"></div>
+        <div id="map" style="width:400px;height:500px;"></div>
         <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
         <script>
+            fetch('http://localhost:8080/api/laundry/map')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    data.forEach(shop => {
+                        var position = new kakao.maps.LatLng(shop.latitude, shop.longitude);
+                        var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
+                        displayMarker(position, message);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+
             var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
             var container = document.getElementById('map');
@@ -85,8 +97,6 @@
                     infowindow.setContent('<div style="padding:5px;font-size:12px;">' + message + '</div>');
                     infowindow.open(map, marker);
                 })
-
-
             }
         </script>
     </div>
