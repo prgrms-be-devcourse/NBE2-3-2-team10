@@ -1,5 +1,7 @@
 package org.team10.washcode.service;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -10,6 +12,9 @@ import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
 import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
 import org.team10.washcode.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -59,7 +64,7 @@ public class UserService {
             }
 
             ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", "1234") // 추후 토큰값 추가
+                    .from("ACCESSTOKEN", "1") // 추후 토큰값 추가
                     .domain("localhost")
                     .path("/")
                     .httpOnly(true)
@@ -84,10 +89,17 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<?> getUser(Long id){
-        UserProfileResDTO userProfileResDTO = new UserProfileResDTO();
-
-        userRepository.findById(id);
-        return ResponseEntity.ok().body(userProfileResDTO);
+    public ResponseEntity<?> getUser(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        int id;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("ACCESSTOKEN")) {
+                id = Integer.parseInt(cookie.getValue());
+                UserProfileResDTO userProfileResDTO = userRepository.findUserProfileById(id);
+                return ResponseEntity.ok().body(userProfileResDTO);
+            }
+        }
+        return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
     }
+
 }
