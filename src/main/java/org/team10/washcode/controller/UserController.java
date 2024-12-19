@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
 import org.team10.washcode.service.UserService;
 
@@ -22,8 +23,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    @Operation(summary = "회원가입", description = "회원가입 API입니다.")
+    @Operation(summary = "회원가입", description = "회원가입 API 입니다.")
     public ResponseEntity<?> signup(@RequestBody @Valid RegisterReqDTO registerReqDTO){
         return userService.signup(registerReqDTO);
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "로그인", description = "로그인 API 입니다.")
+    public ResponseEntity<?> signup(@RequestBody LoginReqDTO loginReqDTO){
+        return userService.login(loginReqDTO);
     }
 }
