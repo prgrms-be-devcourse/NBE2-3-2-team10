@@ -14,15 +14,51 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
-    <script type="text/javascript">
-        fetch('/api/orders/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+    <script>
+        document.getElementById('btn_order').addEventListener('click', async function (e) {
+            e.preventDefault(); // 기본 폼 제출 방지
+
+            const laundryShopId = document.querySelector('input[name="laundryShopId"]').value;
+            const name = "홍길동"; // 예시 이름 (서버에서 자동 매핑되거나 사용자 이름을 가져올 수 있음)
+            const address = "서울시 성북구"; // 주소 예시 (실제 데이터로 교체 필요)
+            const content = document.querySelector('textarea[name="content"]').value;
+            const quantity = document.querySelector('input[name="quantity"]').value;
+
+            const data = {
+                laundryshop_id: parseInt(laundryShopId),
+                name: name,
+                address: address,
+                content: content,
+                pickupItem: [
+                    {
+                        item_id: itemId,  // 여기서 item_id를 전달
+                        quantity: parseInt(quantity),
+                        total_price: "1000"
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch('/api/orders/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    alert('수거 신청이 완료되었습니다.');
+                } else {
+                    alert('수거 신청에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('수거 신청 중 오류가 발생했습니다.');
+            }
         });
     </script>
+
 </head>
 <body class="bg-gray-100">
 <!-- Header -->
@@ -61,14 +97,16 @@
         <div class="bg-gray-100 p-4 rounded-lg mb-4">
             <p class="text-sm font-bold">세탁물 수거는 매일 오후 6시 이후 일괄 수거 됩니다</p>
             <div class="flex items-center mt-2">
-                <input type="checkbox" id="confirm" class="mr-2">
+                <input type="checkbox" id="confirm" class="mr-2" checked>
                 <label for="confirm" class="text-gray-700">네, 확인했습니다</label>
             </div>
         </div>
+        <%-- 의류 개수 입력 --%>
         <div class="mb-4">
             <label for="quantity" class="block text-sm font-bold mb-2">맡기는 의류의 개수</label>
             <input type="number" name="quantity" id="quantity" class="w-full border rounded-lg p-2" value="1" required>
         </div>
+        <%--요청사항--%>
         <div class="mb-4">
             <label for="request" class="block text-sm font-bold mb-2">요청 사항</label>
             <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요"></textarea>
@@ -79,7 +117,7 @@
                 <label for="terms" class="text-gray-700">세탁 서비스 고지사항에 동의합니다</label>
             </div>
         </div>
-        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg">수거신청</button>
+        <button type="submit" id="btn_order" class="w-full bg-blue-500 text-white py-2 rounded-lg">수거신청</button>
     </div>
 </div>
 </form>

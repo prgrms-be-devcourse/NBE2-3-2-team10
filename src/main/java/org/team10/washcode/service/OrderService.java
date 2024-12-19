@@ -27,31 +27,13 @@ public class OrderService {
     @Autowired
     private LaundryShopRepository laundryShopRepository;
 
-    public void createOrder(OrderReqDTO orderReqDTO) {
-        // 정보조회(이름,주소)
-        User user = new User();
-        user.setName(orderReqDTO.getName());
-        user.setAddress(orderReqDTO.getAddress());
+    public void saveOrder(Pickup pickup, PickupItem pickupItem) {
+        // Pickup 저장
+        Pickup savedPickup = pickupRepository.save(pickup);
 
-        // 2. Pickup 엔티티 생성
-        Pickup pickup = new Pickup();
-        //pickup.setLaundryshop(laundryShop);  // 세탁소
-        pickup.setContent(orderReqDTO.getContent()); // 요청 내용
-        pickup.setStatus(PickupStatus.REQUESTED); // 상태 설정 (예: 픽업신청)
-
-        Pickup savedPickup = pickupRepository.save(pickup); // Pickup 저장
-
-        // 3. PickupItem 엔티티 생성 (수량만 받기)
-        for (OrderItemReqDTO itemReqDTO : orderReqDTO.getOrderItem()) {
-            PickupItem pickupItem = new PickupItem();
-            pickupItem.setPickup(savedPickup);  // 해당 Pickup에 속하는 항목
-            // 세탁 항목 정보는 실제 아이템 ID로 조회하거나 추가할 수 있습니다.
-            // 여기서는 세탁 항목 정보를 생략하고 수량만 설정합니다.
-            pickupItem.setQuantity(itemReqDTO.getQuantity());
-            pickupItem.setTotalprice(itemReqDTO.getQuantity() * 1000); // 예시로 1000원씩 설정
-
-            pickupItemRepository.save(pickupItem); // PickupItem 저장
-        }
-
+        // PickupItem 저장 (Pickup과 연결된 상태로 저장)
+        pickupItem.setPickup(savedPickup); // 생성된 Pickup을 PickupItem에 연결
+        pickupItemRepository.save(pickupItem); // PickupItem 저장
     }
+
 }
