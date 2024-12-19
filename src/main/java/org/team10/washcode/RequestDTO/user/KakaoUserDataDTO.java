@@ -9,11 +9,13 @@ public class KakaoUserDataDTO {
     private Long id;
     private String email;
     private String nickname;
+    private String password;
 
-    public KakaoUserDataDTO(String nickname, String email, Long id) {
+    public KakaoUserDataDTO(String nickname, String email, Long id, String pw) {
         this.nickname = nickname;
         this.email = email;
         this.id = id;
+        this.password = pw;
     }
 
     @Override

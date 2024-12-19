@@ -23,6 +23,7 @@ public class Pickup {
     @JoinColumn(name = "laundryshop_id")
     private LaundryShop laundryshop;     //세탁
 
+    @Enumerated(EnumType.STRING)
     private PickupStatus status;          //상태
     private String content;         //요청내용
     private Timestamp created_at;   //요청생성  

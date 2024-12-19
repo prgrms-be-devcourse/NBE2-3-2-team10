@@ -16,6 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 
+import java.security.SecureRandom;
+
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
@@ -25,6 +27,9 @@ public class KakaoService {
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
+    private static final int PASSWORD_LENGTH = 12;
 
     public String getAccessToken(String code) {
 
@@ -110,9 +115,22 @@ public class KakaoService {
         String email = jsonNode.path("kakao_account").path("email").asText();
 
         // DTO에 투입
-        KakaoUserDataDTO kakaoUserDataDTO = new KakaoUserDataDTO(nickname, email ,id);
+        // 카카오 유저는 비밀번호가 없어서 랜덤한 비밀번호 값으로 들어감.
+        KakaoUserDataDTO kakaoUserDataDTO = new KakaoUserDataDTO(nickname, email ,id, getRandomPassword());
 
         return kakaoUserDataDTO;
+    }
+
+    public static String getRandomPassword() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int index = random.nextInt(CHARACTERS.length());
+            password.append(CHARACTERS.charAt(index));
+        }
+
+        return password.toString();
     }
 
     public KakaoUserDataDTO kakaoLogin(String code) {
