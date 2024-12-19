@@ -1,9 +1,6 @@
 package org.team10.washcode.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.team10.washcode.Enum.UserRole;
 
@@ -22,6 +19,7 @@ public class User {
     private String address;
     private String phone;
     private String email;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
     private Timestamp created_at;
     

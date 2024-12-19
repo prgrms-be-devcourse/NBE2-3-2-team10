@@ -43,6 +43,16 @@ dependencies {
     // JSP
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
     implementation 'javax.servlet:jstl:1.2'
+
+    //jsp 의존성 포함
+    implementation 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.3'
+
+    //톰캣 동작문제. 의존성 추가
+    implementation 'org.apache.tomcat.embed:tomcat-embed-el'
+
+
+
+
 }
 
 tasks.named('test') {

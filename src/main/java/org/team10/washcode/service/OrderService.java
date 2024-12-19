@@ -9,10 +9,7 @@ import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.entity.Pickup;
 import org.team10.washcode.entity.PickupItem;
 import org.team10.washcode.entity.User;
-import org.team10.washcode.repository.LaundryShopRepository;
-import org.team10.washcode.repository.PickupItemRepository;
-import org.team10.washcode.repository.PickupRepository;
-import org.team10.washcode.repository.UserRepository;
+import org.team10.washcode.repository.*;
 
 import java.security.Timestamp;
 
@@ -26,6 +23,8 @@ public class OrderService {
     private UserRepository userRepository;  // User 조회용
     @Autowired
     private LaundryShopRepository laundryShopRepository;
+    @Autowired
+    private HandledItemsRepository handledItemsRepository;
 
     public void saveOrder(Pickup pickup, PickupItem pickupItem) {
         // Pickup 저장
