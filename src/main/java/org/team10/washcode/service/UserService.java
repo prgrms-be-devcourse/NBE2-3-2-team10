@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
+import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
 import org.team10.washcode.repository.UserRepository;
 
@@ -81,5 +82,12 @@ public class UserService {
             System.out.println("[Error] "+e.getMessage());
             return ResponseEntity.status(500).body("DB 에러");
         }
+    }
+
+    public ResponseEntity<?> getUser(Long id){
+        UserProfileResDTO userProfileResDTO = new UserProfileResDTO();
+
+        userRepository.findById(id);
+        return ResponseEntity.ok().body(userProfileResDTO);
     }
 }
