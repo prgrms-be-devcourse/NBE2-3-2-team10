@@ -27,6 +27,7 @@ public class UserService {
             user.setAddress(registerReqDTO.getAddress());
             user.setPhone(registerReqDTO.getPhone());
             user.setRole(registerReqDTO.getRole());
+            user.setKakao_id(registerReqDTO.getKakao_id());
 
             userRepository.save(user);
 

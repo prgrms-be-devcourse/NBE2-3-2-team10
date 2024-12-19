@@ -32,7 +32,7 @@
         </div>
         <button type="submit" class="w-full bg-gray-300 text-gray-700 py-2 rounded mb-4 hover:bg-gray-400">로그인</button>
         <div class="text-center text-gray-500 mb-4">
-            <a href="#" class="hover:underline">회원가입</a>
+            <a href="register" class="hover:underline">회원가입</a>
         </div>
         <div class="flex items-center justify-between mb-4">
             <hr class="w-full border-gray-300">

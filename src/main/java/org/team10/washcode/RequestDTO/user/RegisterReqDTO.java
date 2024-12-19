@@ -25,12 +25,15 @@ public class RegisterReqDTO {
     private String name;
 
     @NotBlank(message = "주소는 필수 입력 항목입니다.")
-    @Schema(description = "사용자 이름", example = "서울시 성북구")
+    @Schema(description = "주소", example = "서울시 성북구")
     private String address;
 
     @NotBlank(message = "휴대폰 번호는 필수 입력 항목입니다.")
     @Schema(description = "사용자 이름", example = "010-1234-5678")
     private String phone;
+
+    @Schema(description = "카카오ID", example = "1L")
+    private Long kakao_id;
 
     private UserRole role;
 }
