@@ -1,20 +1,16 @@
 package org.team10.washcode.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
 import org.team10.washcode.Enum.UserRole;
 
 import java.sql.Timestamp;
 
 @Entity
 @Data
-@DynamicInsert
 public class User {
-    // Customer -> User로 변경
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -38,8 +34,8 @@ public class User {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'USER'")
     @Column(nullable = false)
+    @ColumnDefault("'USER'")
     private UserRole role;
 
     @CreationTimestamp

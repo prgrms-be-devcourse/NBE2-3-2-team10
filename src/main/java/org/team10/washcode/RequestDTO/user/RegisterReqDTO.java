@@ -3,10 +3,7 @@ package org.team10.washcode.RequestDTO.user;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import org.hibernate.annotations.ColumnDefault;
 import org.team10.washcode.Enum.UserRole;
 
 @Getter
@@ -36,4 +33,7 @@ public class RegisterReqDTO {
     private Long kakao_id;
 
     private UserRole role;
+
+    @Schema(description = "카카오 ID")
+    private Long kakao_id;
 }
