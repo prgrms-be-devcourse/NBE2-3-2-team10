@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.service.PickupService;
 
@@ -26,5 +27,14 @@ public class PickupController {
     public ResponseEntity<List<PickupDetailResDTO>> getPickupList(@PathVariable Long id) {
         List<PickupDetailResDTO> pickupList = pickupService.getPickupList(id);
         return ResponseEntity.ok(pickupList);
+    }
+
+    @PostMapping("/updateStatus")
+    public ResponseEntity<Void> updateStatus(@RequestParam("pickupId") Long pickupId,
+                               @RequestParam("status") String statusStr) {
+        PickupStatus newStatus = PickupStatus.valueOf(statusStr);
+        pickupService.updatePickupStatus(pickupId, newStatus);
+
+        return ResponseEntity.ok().build();
     }
 }

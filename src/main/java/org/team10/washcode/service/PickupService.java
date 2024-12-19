@@ -3,6 +3,7 @@ package org.team10.washcode.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
@@ -15,23 +16,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PickupService {
-
     private final PickupRepository pickupRepository;
-    private final UserRepository userRepository;
-    private final LaundryShopRepository laundryShopRepository;
     private final PaymentRepository paymentRepository;
     private final PickupItemRepository pickupItemRepository;
 
     @Transactional
     public PickupDetailResDTO getPickupDetail(Long pickupId) {
-        Pickup pickup = pickupRepository.findById(pickupId)
+        Pickup pickup = pickupRepository.findPickupWithFetchJoin(pickupId)
                 .orElseThrow(() -> new RuntimeException("해당 ID로 pickup 을 찾을 수 없습니다: " + pickupId));
-
-        User user = userRepository.findById((long) pickup.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("해당 ID로 유저를 찾을 수 없습니다: " + pickup.getUser().getId()));
-
-        LaundryShop shop = laundryShopRepository.findById((long) pickup.getLaundryshop().getId())
-                .orElseThrow(() -> new RuntimeException("해당 ID로 세탁소를 찾을 수 없습니다: " + pickup.getLaundryshop().getId()));
 
         Payment payment = paymentRepository.findByPickupId(pickupId);
 
@@ -46,10 +38,10 @@ public class PickupService {
 
         return new PickupDetailResDTO(
                 pickup.getId(),
-                shop.getShop_name(),
+                pickup.getLaundryshop().getShop_name(),
                 pickup.getCreated_at(),
-                user.getAddress(),
-                user.getPhone(),
+                pickup.getUser().getAddress(),
+                pickup.getUser().getPhone(),
                 orderItems,
                 payment.getAmount(),
                 payment.getMethod()
@@ -57,19 +49,11 @@ public class PickupService {
     }
 
     @Transactional
-    public List<PickupDetailResDTO> getPickupList(Long userId) { // status 중 REQUESTED(픽업 요청) 부분만 list 로 보내주고 확인 버튼을 통해 status 변환 후 업데이트 시키기.
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 ID로 사용자를 찾을 수 없습니다: " + userId));
+    public List<PickupDetailResDTO> getPickupList(Long userId) {
+        List<Pickup> pickups = pickupRepository.findAllByUserIdWithFetchJoinAndStatus(userId, PickupStatus.REQUESTED);
 
-        List<Pickup> pickups = pickupRepository.findAllById(Collections.singleton(userId));
-
-        List<PickupDetailResDTO> pickupDetailList = pickups.stream().map(pickup -> {
-
-            LaundryShop shop = laundryShopRepository.findById((long) pickup.getLaundryshop().getId())
-                    .orElseThrow(() -> new RuntimeException("해당 ID로 세탁소를 찾을 수 없습니다: " + pickup.getLaundryshop().getId()));
-
+        return pickups.stream().map(pickup -> {
             Payment payment = paymentRepository.findByPickupId((long) pickup.getId());
-
             List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
 
             List<PickupDetailResDTO.OrderItemDTO> orderItems = pickupItems.stream()
@@ -82,17 +66,26 @@ public class PickupService {
 
             return new PickupDetailResDTO(
                     pickup.getId(),
-                    shop.getShop_name(),
+                    pickup.getLaundryshop().getShop_name(),
                     pickup.getCreated_at(),
-                    user.getAddress(),
-                    user.getPhone(),
+                    pickup.getUser().getAddress(),
+                    pickup.getUser().getPhone(),
                     orderItems,
                     payment.getAmount(),
                     payment.getMethod()
             );
         }).collect(Collectors.toList());
-
-        return pickupDetailList;
     }
+
+    @Transactional
+    public void updatePickupStatus(Long pickupId, PickupStatus newStatus) {
+        Pickup pickup = pickupRepository.findById(pickupId)
+                .orElseThrow(() -> new RuntimeException("해당 ID로 pickup을 찾을 수 없습니다: " + pickupId));
+
+        pickup.setStatus(newStatus);
+        pickupRepository.save(pickup); // 변경 사항 반영
+    }
+
+
 
 }
