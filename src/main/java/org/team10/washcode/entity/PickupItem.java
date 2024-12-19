@@ -20,5 +20,5 @@ public class PickupItem {
     private HandledItems handledItems;  // 카테고리ID(FK, ItemCategory)
 
     private int quantity;     // 수량
-    private int Totalprice;   // 총가격
+    private int totalprice;   // 총가격
 }
