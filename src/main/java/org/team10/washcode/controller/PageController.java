@@ -34,10 +34,16 @@ public class PageController {
         return "Glober/register";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping("/")
     public String login(Model model) {
         model.addAttribute("kakaoApiKey", kakaoApiKey);
         model.addAttribute("redirectUri", redirectUri);
         return "Glober/login";
+    }
+
+    @RequestMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("kakaoUserData", null);
+        return "Glober/register";
     }
 }
