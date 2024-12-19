@@ -29,9 +29,6 @@ public class RegisterReqDTO {
     @Schema(description = "사용자 이름", example = "010-1234-5678")
     private String phone;
 
-    @Schema(description = "카카오ID", example = "1L")
-    private Long kakao_id;
-
     private UserRole role;
 
     @Schema(description = "카카오 ID")
