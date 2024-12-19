@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "로그인 API 입니다.")
-    public ResponseEntity<?> signup(@RequestBody LoginReqDTO loginReqDTO){
+    public ResponseEntity<?> login(@RequestBody LoginReqDTO loginReqDTO){
         return userService.login(loginReqDTO);
     }
 }
