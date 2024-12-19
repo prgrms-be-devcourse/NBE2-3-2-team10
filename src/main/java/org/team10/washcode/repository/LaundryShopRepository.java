@@ -7,4 +7,5 @@ import org.team10.washcode.entity.LaundryShop;
 
 @Repository
 public interface LaundryShopRepository extends JpaRepository<LaundryShop, Long> {
+
 }
