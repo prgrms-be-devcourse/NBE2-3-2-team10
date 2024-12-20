@@ -1,5 +1,10 @@
+<%@ page import="org.team10.washcode.entity.HandledItems" %>
+<%@ page import="org.team10.washcode.RequestDTO.order.OrderItemReqDTO" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
+    // handledItems는 서버에서 모델을 통해 전달된 리스트입니다.
+    List<OrderItemReqDTO> handledItems = (List<OrderItemReqDTO>) request.getAttribute("handledItems");
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -49,6 +54,7 @@
 
                 if (response.ok) {
                     alert('수거 신청이 완료되었습니다.');
+                    window.location.href = '/api/orders/history';
                 } else {
                     alert('수거 신청에 실패했습니다.');
                 }
@@ -58,7 +64,6 @@
             }
         });
     </script>
-
 </head>
 <body class="bg-gray-100">
 <!-- Header -->
@@ -77,7 +82,6 @@
         </button>
     </div>
 </div>
-
 
 <!-- Main Content -->
 <form method="POST" action="/api/orders/create">
@@ -101,39 +105,46 @@
                     <label for="confirm" class="text-gray-700">네, 확인했습니다</label>
                 </div>
             </div>
+
             <!-- 카테고리 -->
             <div class="mb-4">
                 <label for="item_id">카테고리</label>
                 <select name="item_id" id="item_id" class="form-select" aria-label="Select item" required>
-                    <option value="1" selected >신발</option>
+                    <option value="1" selected>신발</option>
                     <option value="2">패딩</option>
                     <option value="3">프리미엄 패브릭</option>
                     <option value="4">캐리어소독</option>
                     <option value="5">면 세탁물</option>
                     <option value="6">보관 서비스</option>
                     <option value="7">침구</option>
+
                 </select>
             </div>
-            <%-- 의류 개수 입력 --%>
+
+            <!-- 의류 개수 입력 -->
             <div class="mb-4">
                 <label for="quantity" class="block text-sm font-bold mb-2">맡기는 의류의 개수</label>
                 <input type="number" name="quantity" id="quantity" class="w-full border rounded-lg p-2" value="1" required>
             </div>
-            <%--요청사항--%>
+
+            <!-- 요청 사항 -->
             <div class="mb-4">
                 <label for="request" class="block text-sm font-bold mb-2">요청 사항</label>
                 <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요"></textarea>
             </div>
+
             <div class="bg-gray-100 p-4 rounded-lg mb-4">
                 <div class="flex items-center">
                     <input type="checkbox" id="terms" class="mr-2">
                     <label for="terms" class="text-gray-700">세탁 서비스 고지사항에 동의합니다</label>
                 </div>
             </div>
+
             <button type="submit" id="btn_order" class="w-full bg-blue-500 text-white py-2 rounded-lg">수거신청</button>
         </div>
     </div>
 </form>
+
 <!-- Footer -->
 <div class="fixed bottom-0 left-0 right-0 flex justify-around bg-white p-4 border-t">
     <button class="flex flex-col items-center text-blue-500">
@@ -155,5 +166,6 @@
         <span>마이</span>
     </button>
 </div>
+
 </body>
 </html>

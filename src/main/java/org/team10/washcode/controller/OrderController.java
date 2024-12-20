@@ -85,7 +85,8 @@ public class OrderController {
     }
 
     @RequestMapping("/history")
-    public String orderHistory() {
+    public String orderHistory(@RequestParam("userId") int userId, Model model) {
+
         return "Customer/order-history";
     }
 
