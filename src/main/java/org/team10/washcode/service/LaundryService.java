@@ -16,7 +16,8 @@ public class LaundryService {
         return laundryShopRepository.findAll();
     }
 
-//    public List<LaundryShop> findLaundryShopsByLaundryName(String shop_name) {
-//        return laundryShopRepository.findByShop_nameContaining(shop_name);
-//    }
+    public List<LaundryShop> getLaundryShops(String shop_name) {
+        return laundryShopRepository.findByShop_NameContaining(shop_name);
+    }
+
 }

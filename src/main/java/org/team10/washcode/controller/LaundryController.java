@@ -19,13 +19,11 @@ public class LaundryController {
     private LaundryService laundryService;
 
     @GetMapping("map")
-    public List<LaundryShop> map() {
-
-        return laundryService.getLaundryShops();
+    public List<LaundryShop> map(@RequestParam(value = "shop_name", required = false) String shop_name) {
+        if(shop_name != null && !shop_name.isEmpty()) {
+            return laundryService.getLaundryShops(shop_name);
+        } else
+            return laundryService.getLaundryShops();
     }
 
-//    @GetMapping("search")
-//    public List<LaundryShop> searchLaundryByShopName(@RequestParam String shop_name) {
-//        return laundryService.findLaundryShopsByLaundryName(shop_name);
-//    }
 }

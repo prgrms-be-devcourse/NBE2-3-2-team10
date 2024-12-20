@@ -19,21 +19,43 @@
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
     <script>
         window.onload = function () {
-            fetch('http://localhost:8080/api/laundry/map')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    let result = '';
-                    data.forEach(shop => {
-                        var position = new kakao.maps.LatLng(shop.latitude, shop.longitude);
-                        var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
-                        displayMarker(position, message);
+            // 초기 데이터 로드: 모든 세탁소를 로드
+            loadLaundryShops();
 
-                        result += `<li class="border-b pb-2">\${shop.shop_name}</li>`;
-                    });
-                    document.getElementById('laundryList').innerHTML = result;
-                })
-                .catch(error => console.error('Error fetching data:', error));
+            let markers = [];
+
+            // 검색 입력 필드에서 변화가 있을 때마다 호출
+            document.getElementById('searchLaundry').addEventListener('input', function (event) {
+                const searchTerm = event.target.value;  // 검색어 가져오기
+                loadLaundryShops(searchTerm);  // 검색어를 API에 전달
+            });
+
+            // 세탁소 데이터를 가져와서 지도에 마커 표시
+            function loadLaundryShops(searchTerm = '') {
+                fetch(`/api/laundry/map?shop_name=\${searchTerm}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);  // 디버깅용: 데이터 확인
+
+                        clearMarkers();
+
+                        let result = '';
+                        data.forEach(shop => {
+                            var position = new kakao.maps.LatLng(shop.latitude, shop.longitude);
+                            var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
+                            displayMarker(position, message);
+
+                            result += `<li class="border-b pb-2">\${shop.shop_name}</li>`;
+                        });
+                        document.getElementById('laundryList').innerHTML = result;
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+
+            function clearMarkers() {
+                markers.forEach(marker => marker.setMap(null)); // 지도에서 모든 마커 삭제
+                markers = []; // 배열 초기화
+            }
 
             var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
 
@@ -83,6 +105,8 @@
                     infowindow.setContent('<div style="padding:5px;font-size:12px;">' + message + '</div>');
                     infowindow.open(map, marker);
                 })
+
+                markers.push(marker);
             }
 
             function mylocation(location) {
