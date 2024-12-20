@@ -25,6 +25,7 @@
         <div id="map" style="width:400px;height:500px;"></div>
         <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
         <script>
+
             fetch('http://localhost:8080/api/laundry/map')
                 .then(response => response.json())
                 .then(data => {
@@ -56,20 +57,8 @@
                         lon = position.coords.longitude; // 경도
 
                     var locPosition = new kakao.maps.LatLng(lat, lon);
+                    mylocation(locPosition);
                     map.setCenter(locPosition);
-
-
-                    var laundry_lat = 37.270351,
-                        laundry_lon = 127.040352;
-
-                    var laundryPosition = new kakao.maps.LatLng(laundry_lat, laundry_lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-                        message = '<div style="padding:5px;">월드크리닝매탄힐스테이트</div>'; // 인포윈도우에 표시될 내용입니다
-
-                    // 마커와 인포윈도우를 표시합니다
-                    displayMarker(laundryPosition, message);
-
-                    // 지도 중심좌표를 접속위치로 변경합니다
-
 
                 });
 
@@ -97,6 +86,24 @@
                     infowindow.setContent('<div style="padding:5px;font-size:12px;">' + message + '</div>');
                     infowindow.open(map, marker);
                 })
+            }
+
+            function mylocation(location) {
+                var imageSrc = './images/nowlocation.png', // 마커이미지의 주소입니다
+                    imageSize = new kakao.maps.Size(30, 30), // 마커이미지의 크기입니다
+                    imageOption = {offset: new kakao.maps.Point(15, 15)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+                // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+                var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+                    //markerPosition = location; // 마커가 표시될 위치입니다
+
+                // 마커를 생성합니다
+                var marker = new kakao.maps.Marker({
+                    position: location,
+                    image: markerImage // 마커이미지 설정
+                });
+
+                marker.setMap(map);
             }
         </script>
     </div>
