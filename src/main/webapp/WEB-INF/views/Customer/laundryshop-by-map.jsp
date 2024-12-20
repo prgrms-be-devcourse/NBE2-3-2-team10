@@ -126,7 +126,7 @@
         <!-- Bottom Sheet -->
         <div id="bottomSheet"
              class="absolute left-0 w-full bg-white rounded-t-2xl transition-all duration-300 ease-in-out bottom-sheet-collapsed"
-             style="bottom:60px; height: 40%; overflow-y-auto; box-shadow: none;">
+             style="bottom:60px; height: 40%; box-shadow: none;">
             <div class="flex justify-center p-2 cursor-pointer" id="toggleHandle">
                 <div class="w-12 h-1 bg-gray-400 rounded"></div>
             </div>
