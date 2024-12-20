@@ -19,93 +19,10 @@
 
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden">
     <div class="p-4">
-        <input type="text" placeholder="세탁소를 검색하세요" class="w-full p-2 border rounded-lg">
+        <input type="text" placeholder="세탁소를 검색하세요" class="w-full p-2 border rounded-lg" id="searchLaundry">
     </div>
-    <div class="relative">
-        <div id="map" style="width:400px;height:500px;"></div>
-        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
-        <script>
-
-            fetch('http://localhost:8080/api/laundry/map')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    data.forEach(shop => {
-                        var position = new kakao.maps.LatLng(shop.latitude, shop.longitude);
-                        var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
-                        displayMarker(position, message);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-
-            var infowindow = new kakao.maps.InfoWindow({zIndex:1});
-
-            var container = document.getElementById('map');
-            var options = {
-                center: new kakao.maps.LatLng(33.450701, 126.570667),
-                level: 5
-            };
-
-            var map = new kakao.maps.Map(container, options);
-
-            if (navigator.geolocation) {
-
-                // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-                navigator.geolocation.getCurrentPosition(function(position) {
-
-                    var lat = position.coords.latitude, // 위도
-                        lon = position.coords.longitude; // 경도
-
-                    var locPosition = new kakao.maps.LatLng(lat, lon);
-                    mylocation(locPosition);
-                    map.setCenter(locPosition);
-
-                });
-
-            } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-
-                var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
-                    message = 'geolocation을 사용할수 없어요..'
-
-                displayMarker(locPosition, message);
-                //searchPlaces();
-            }
-
-            // 지도에 마커와 인포윈도우를 표시하는 함수입니다
-            function displayMarker(locPosition, message) {
-
-                // 마커를 생성합니다
-                var marker = new kakao.maps.Marker({
-                    map: map,
-                    position: locPosition
-                });
-
-                // 마커에 클릭이벤트를 등록합니다
-                kakao.maps.event.addListener(marker, 'click', function() {
-                    // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-                    infowindow.setContent('<div style="padding:5px;font-size:12px;">' + message + '</div>');
-                    infowindow.open(map, marker);
-                })
-            }
-
-            function mylocation(location) {
-                var imageSrc = './images/nowlocation.png', // 마커이미지의 주소입니다
-                    imageSize = new kakao.maps.Size(30, 30), // 마커이미지의 크기입니다
-                    imageOption = {offset: new kakao.maps.Point(15, 15)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-
-                // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-                var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-                    //markerPosition = location; // 마커가 표시될 위치입니다
-
-                // 마커를 생성합니다
-                var marker = new kakao.maps.Marker({
-                    position: location,
-                    image: markerImage // 마커이미지 설정
-                });
-
-                marker.setMap(map);
-            }
-        </script>
+    <div class="flex justify-center items-center">
+        <div id="map" style="width:400px;height:300px;"></div>
     </div>
     <div class="flex justify-around bg-white p-4 border-t fixed bottom-0 w-full max-w-md">
         <button class="flex flex-col items-center text-blue-500">
@@ -129,5 +46,89 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
+<script>
+    fetch('http://localhost:8080/api/laundry/map')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            data.forEach(shop => {
+                var position = new kakao.maps.LatLng(shop.latitude, shop.longitude);
+                var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
+                displayMarker(position, message);
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+    var container = document.getElementById('map');
+    var options = {
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 5
+    };
+
+    var map = new kakao.maps.Map(container, options);
+
+    if (navigator.geolocation) {
+
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            var lat = position.coords.latitude, // 위도
+                lon = position.coords.longitude; // 경도
+
+            var locPosition = new kakao.maps.LatLng(lat, lon);
+            mylocation(locPosition);
+            map.setCenter(locPosition);
+
+        });
+
+    } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+
+        var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
+            message = 'geolocation을 사용할수 없어요..'
+
+        displayMarker(locPosition, message);
+        //searchPlaces();
+    }
+
+    // 지도에 마커와 인포윈도우를 표시하는 함수입니다
+    function displayMarker(locPosition, message) {
+
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            map: map,
+            position: locPosition
+        });
+
+        // 마커에 클릭이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'click', function() {
+            // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+            infowindow.setContent('<div style="padding:5px;font-size:12px;">' + message + '</div>');
+            infowindow.open(map, marker);
+        })
+    }
+
+    function mylocation(location) {
+        var imageSrc = './images/nowlocation.png', // 마커이미지의 주소입니다
+            imageSize = new kakao.maps.Size(30, 30), // 마커이미지의 크기입니다
+            imageOption = {offset: new kakao.maps.Point(15, 15)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+        // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+        //markerPosition = location; // 마커가 표시될 위치입니다
+
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: location,
+            image: markerImage // 마커이미지 설정
+        });
+
+        marker.setMap(map);
+    }
+
+
+</script>
 </body>
 </html>
