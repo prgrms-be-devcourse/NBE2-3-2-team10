@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select count(*) from User u where u.email = :email")
@@ -14,5 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select count(*) from User u where u.email = :email and u.password = :password")
     int findByPasswordEquals(@Param("email") String email, @Param("password") String password);
+
+    @Query("SELECT U.id FROM User U WHERE U.kakao_id = :kakao_id")
+    Optional<Integer> findIdByKakaoId(@Param("kakao_id") Long kakao_id);
 
 }

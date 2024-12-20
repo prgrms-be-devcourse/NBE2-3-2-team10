@@ -18,13 +18,13 @@
 <body class="bg-white">
 
 <!-- Header -->
-<header class="bg-white shadow p-4 flex justify-between items-center">
+<header class="bg-white shadow p-4 flex justify-between items-center max-w-[600px] overflow-x-auto mx-auto">
     <div class="text-lg font-bold">서울시 성북동...</div>
     <div class="text-xl">❤️</div>
 </header>
 
 <!-- Main Content -->
-<main class="p-4 space-y-4">
+<main class="p-4 space-y-4 max-w-[600px] overflow-x-auto mx-auto">
     <!-- Buttons -->
     <div class="flex space-x-4">
         <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow">내 주변 세탁소 찾기</button>
@@ -70,7 +70,7 @@
     <!-- Promo Section -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 bg-white text-black font-bold">Promo</div>
-        <img src="https://source.unsplash.com/featured/?laundry" alt="Promo" class="w-full">
+        <img src="./upload/mainImg.svg" alt="Promo" class="w-full">
         <div class="p-4 text-lg font-bold">세탁소 이용</div>
     </div>
 
@@ -84,7 +84,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around">
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around max-w-[600px] overflow-x-auto mx-auto ">
     <button class="flex flex-col items-center text-blue-500">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18m-9 9h9" />

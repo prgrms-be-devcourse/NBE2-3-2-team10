@@ -1,6 +1,7 @@
 package org.team10.washcode.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,12 @@ import org.team10.washcode.repository.UserRepository;
 
 @Service
 public class UserService {
-    // 토큰 만료 시간(초)
-    private final int ACCESS_TOKEN_EXPIRATION_TIME = 1800;  // 30분
-    private final int REFRESH_TOKEN_EXPIRATION_TIME = 432000;  // 5일
+
+    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
+    private int ACCESS_TOKEN_EXPIRATION_TIME;
+
+    @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
+    private int REFRESH_TOKEN_EXPIRATION_TIME;
 
 
     @Autowired

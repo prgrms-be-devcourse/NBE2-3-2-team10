@@ -108,13 +108,15 @@
 
             console.log(formData);  // 디버깅용
 
-            axios.post('/api/user/register', formData)
-                .then(function(response) {
+            axios.post(url + '/api/user/register', formData)
+                // body에 있는 값 출력
+
+                .then(res => {
                     alert('회원가입이 완료되었습니다.');
                     window.location.href = '/';
                 })
-                .catch(function(error) {
-                    alert('회원가입에 실패했습니다.');
+                .catch(error => {
+                    alert(error.response.data);
                 });
         }
     </script>
