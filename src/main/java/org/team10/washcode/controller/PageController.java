@@ -42,4 +42,13 @@ public class PageController {
 
     @RequestMapping("/main")
     public String main() { return "Customer/main"; }
+
+    @RequestMapping("/mypage")
+    public String mypage() { return "Customer/my-page"; }
+
+    @RequestMapping("/orderHistory")
+    public String orderHistory() { return "Customer/order-history"; }
+
+    @RequestMapping("/myInfo")
+    public String myInfo() { return "Customer/my-info"; }
 }

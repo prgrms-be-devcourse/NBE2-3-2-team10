@@ -1,5 +1,6 @@
 package org.team10.washcode.service;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -62,8 +63,10 @@ public class UserService {
                 return ResponseEntity.status(400).body("잘못된 비밀번호 입니다.");
             }
 
+            Integer userId = userRepository.findIdByEmail(loginReqDTO.getEmail()).get();
+
             ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", "1234") // 추후 토큰값 추가
+                    .from("ACCESSTOKEN", userId.toString()) // 추후 토큰값 추가
                     .domain("localhost")
                     .path("/")
                     .httpOnly(true)
@@ -93,5 +96,21 @@ public class UserService {
 
         userRepository.findById(id);
         return ResponseEntity.ok().body(userProfileResDTO);
+    }
+
+    public ResponseEntity<?> getUserRole(Cookie cookie){
+        try {
+            return ResponseEntity.ok().body(userRepository.findRoleAndNameById(Integer.parseInt(cookie.getValue())));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("잘못된 토큰 값");
+        }
+    }
+
+    public ResponseEntity<?> getUserAddress(Cookie cookie){
+        try {
+            return ResponseEntity.ok().body(userRepository.findAddressById(Integer.parseInt(cookie.getValue())));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("잘못된 토큰 값");
+        }
     }
 }

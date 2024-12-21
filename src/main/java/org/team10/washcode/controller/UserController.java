@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
@@ -39,5 +37,17 @@ public class UserController {
     public ResponseEntity<?> getUser(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
         Long id = Long.parseLong(cookie.getValue());
         return userService.getUser(id);
+    }
+
+    @GetMapping("/role")
+    @Operation(summary = "회원등급 조회", description = "회원의 등급만 조회하는 API 입니다")
+    public ResponseEntity<?> getUserRole(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
+        return userService.getUserRole(cookie);
+    }
+
+    @GetMapping("/address")
+    @Operation(summary = "회원주소 조회", description = "회원의 주소만 조회하는 API 입니다")
+    public ResponseEntity<?> getUserAddress(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
+        return userService.getUserAddress(cookie);
     }
 }
