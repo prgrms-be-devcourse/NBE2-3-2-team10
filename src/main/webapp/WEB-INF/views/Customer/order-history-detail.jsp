@@ -42,6 +42,10 @@
                 <p>서울특별시 어쩌구 저쩌구 123, 동그라미 아파트 (123동 123호)</p>
                 <p>전화번호 : 010 - 1234 - 1234</p>
             </div>
+            <div class="border-t border-gray-200 mt-2 pt-2">
+                <h2 class="font-bold">요청사항</h2>
+                <p>깨끗하게 해주세요</p>
+            </div>
 
             <div class="flex justify-between mt-4">
                 <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>

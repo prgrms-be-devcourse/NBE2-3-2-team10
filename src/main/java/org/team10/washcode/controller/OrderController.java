@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.LaundryShopRepository;
@@ -98,9 +99,11 @@ public class OrderController {
     }
 
 
-    @RequestMapping("/history/detail")
-    public String orderHistory_datail() {
-
-        return "Customer/order-history-detail";
+    @GetMapping("/history/{userId}/{pickupId}")
+    public ResponseEntity<OrderResDTO> getOrderDetails(
+            @PathVariable int userId,
+            @PathVariable int pickupId) {
+        OrderResDTO orderDetails = orderService.getOrderDetail(userId, pickupId);
+        return ResponseEntity.ok(orderDetails);
     }
 }

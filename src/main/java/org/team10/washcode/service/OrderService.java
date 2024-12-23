@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
@@ -39,11 +40,7 @@ public class OrderService {
         pickupItemRepository.save(pickupItem); // PickupItem 저장
     }
 
-    // OrderService
-//    public List<OrderlistResDTO> getOrdersByUserId(int userId) {
-//        return pickupRepository.getOrdersByUserId(userId);  // 바로 DTO 리스트 반환
-//    }
-
+    // 조회하기
    public List<OrderlistResDTO> getOrdersByUserId(int userId) {
         List<Object[]> result = pickupRepository.findOrderListByUserId(userId);
 
@@ -54,6 +51,39 @@ public class OrderService {
                 (Timestamp) row[3]  //created_at
         )).toList();
    }
+
+    // 조회하기(상세)
+    public OrderResDTO getOrderDetail(int userId, int pickupId) {
+        List<Object[]> result = pickupRepository.findOrderDetails(userId, pickupId);
+        OrderResDTO orderResDTO = new OrderResDTO();
+
+        // 주문 아이템 리스트가 null일 경우 빈 리스트로 초기화
+        orderResDTO.setOrder_items(new ArrayList<>());
+
+        for (Object[] obj : result) {
+            orderResDTO.setAddress((String) obj[0]);
+            orderResDTO.setPhone((String) obj[1]);
+            orderResDTO.setShop_name((String) obj[2]);
+            orderResDTO.setContent((String) obj[5]);
+            //orderResDTO.setStatus(PickupStatus.valueOf((String) obj[4]));  // 상태는 Enum으로 변환
+            orderResDTO.setStatus((PickupStatus) obj[4]);
+            orderResDTO.setCreated_at((Timestamp) obj[6]);
+            orderResDTO.setUpdate_at((Timestamp) obj[7]);
+            orderResDTO.setMethod((String) obj[14]);
+            orderResDTO.setAmount((Integer)obj[13]);
+//pi_id[3], pi_it=id[8],quantity[9],category[12]
+            // OrderItem 추가
+            OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
+                    (String) obj[11], // item_name
+                    (Integer) obj[9], // quantity
+                    (Integer) obj[10] // totalPrice
+            );
+            orderResDTO.getOrder_items().add(orderItem);
+        }
+
+        return orderResDTO;
+    }
+
 
 
 
