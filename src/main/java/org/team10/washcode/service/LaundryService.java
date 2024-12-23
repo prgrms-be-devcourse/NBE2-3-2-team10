@@ -46,5 +46,12 @@ public class LaundryService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // 거리 반환 (km)
     }
+
+
+    //세탁소 상세정보 조회
+    //세탁소 id로 세탁소 정보 찾기
+    public LaundryShop getLaundryShopById(int id) {
+        return laundryShopRepository.findById(id);
+    }
 }
 

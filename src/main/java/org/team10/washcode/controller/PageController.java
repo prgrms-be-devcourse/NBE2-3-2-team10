@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.service.KakaoService;
 
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
+import org.team10.washcode.service.LaundryService;
 import org.team10.washcode.service.PickupService;
+import org.team10.washcode.service.UserService;
+
 import java.util.List;
 
 
@@ -25,6 +29,7 @@ public class PageController {
 
     private final KakaoService kakaoService;
     private final PickupService pickupService;
+    private final LaundryService laundryService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -107,7 +112,8 @@ public class PageController {
     }
 
     @RequestMapping("laundryshop-detail/{laundry_id}")
-    public String laundryshopDetail() {
+    public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
+
         return "Customer/laundryshop-detail";
     }
 }
