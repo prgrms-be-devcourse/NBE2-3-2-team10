@@ -13,4 +13,6 @@ public class ShopAddReqDTO {
 
     private double latitude;
     private double longitude;
+
+    private String user_name;
 }
