@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -21,7 +22,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.657-1.343-3-3-3s-3 1.343-3 3 1.343 3 3 3 3-1.343 3-3zm0 0c0 1.657 1.343 3 3 3s3-1.343 3-3-1.343-3-3-3-3 1.343-3 3zm0 0V7m0 8v2m0 0h-2m2 0h2" />
         </svg>
     </div>
-    <form>
+    <div>
         <div class="mb-4">
             <label class="block text-gray-700 mb-2" for="email">아이디</label>
             <input type="email" id="email" placeholder="이메일을 입력해주세요." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">
@@ -30,7 +31,7 @@
             <label class="block text-gray-700 mb-2" for="password">비밀번호</label>
             <input type="password" id="password" placeholder="비밀번호를 입력해주세요." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
-        <button type="submit" class="w-full bg-gray-300 text-gray-700 py-2 rounded mb-4 hover:bg-gray-400">로그인</button>
+        <button type="submit" onclick="login()" class="w-full bg-gray-300 text-gray-700 py-2 rounded mb-4 hover:bg-gray-400">로그인</button>
         <div class="text-center text-gray-500 mb-4">
             <a href="register" class="hover:underline">회원가입</a>
         </div>
@@ -42,7 +43,27 @@
         <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoApiKey}&redirect_uri=${redirectUri}">
             <img src = "./upload/kakao_login.png"/>
         </a>
-    </form>
+    </div>
+
+    <script>
+        const url = "http://localhost:8080";
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.post(url + '/api/user/login', {
+                email: email,
+                password: password
+            })
+            .then(res => {
+               alert('환영합니다!');
+                location.href = '/main';
+            })
+            .catch (error => {
+                alert(error.response.data);
+            })
+        }
+    </script>
 </div>
 </body>
 </html>

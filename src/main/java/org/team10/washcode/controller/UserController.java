@@ -6,8 +6,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
@@ -42,6 +40,7 @@ public class UserController {
         return userService.getUser(request);
     }
 
+
     @PutMapping
     @Operation(summary = "회원정보 수정", description = "회원정보를 수정하는 API 입니다.")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateReqDTO userUpdateReqDTO, HttpServletRequest request){
@@ -55,4 +54,15 @@ public class UserController {
         return userService.deleteUser(request);
     }
 
+    @GetMapping("/role")
+    @Operation(summary = "회원등급 조회", description = "회원의 등급만 조회하는 API 입니다")
+    public ResponseEntity<?> getUserRole(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
+        return userService.getUserRole(cookie);
+    }
+
+    @GetMapping("/address")
+    @Operation(summary = "회원주소 조회", description = "회원의 주소만 조회하는 API 입니다")
+    public ResponseEntity<?> getUserAddress(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
+        return userService.getUserAddress(cookie);
+    }
 }

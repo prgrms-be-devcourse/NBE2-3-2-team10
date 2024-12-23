@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,12 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    // 토큰 만료 시간(초)
-    private final int ACCESS_TOKEN_EXPIRATION_TIME = 1800;  // 30분
-    private final int REFRESH_TOKEN_EXPIRATION_TIME = 432000;  // 5일
+
+    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
+    private int ACCESS_TOKEN_EXPIRATION_TIME;
+
+    @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
+    private int REFRESH_TOKEN_EXPIRATION_TIME;
 
 
     @Autowired
@@ -65,8 +69,10 @@ public class UserService {
                 return ResponseEntity.status(400).body("잘못된 비밀번호 입니다.");
             }
 
+            Integer userId = userRepository.findIdByEmail(loginReqDTO.getEmail()).get();
+
             ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", "1") // 추후 토큰값 추가
+                    .from("ACCESSTOKEN", userId.toString()) // 추후 토큰값 추가
                     .domain("localhost")
                     .path("/")
                     .httpOnly(true)
@@ -147,5 +153,21 @@ public class UserService {
             }
         }
         return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
+    }
+
+    public ResponseEntity<?> getUserRole(Cookie cookie){
+        try {
+            return ResponseEntity.ok().body(userRepository.findRoleAndNameById(Integer.parseInt(cookie.getValue())));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("잘못된 토큰 값");
+        }
+    }
+
+    public ResponseEntity<?> getUserAddress(Cookie cookie){
+        try {
+            return ResponseEntity.ok().body(userRepository.findAddressById(Integer.parseInt(cookie.getValue())));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("잘못된 토큰 값");
+        }
     }
 }
