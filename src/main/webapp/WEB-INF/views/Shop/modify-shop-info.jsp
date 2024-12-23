@@ -127,93 +127,94 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    document.getElementById('rbtn').onclick = function(event) {
-        event.preventDefault();
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
+    <script>
+        document.getElementById('rbtn').onclick = function(event) {
+            event.preventDefault();
 
-        const user_name = document.getElementById("user_name").value;
-        const phone = document.getElementById("phone").value;
-        const address = document.getElementById("address").value;
-        const shop_name = document.getElementById("shop_name").value;
-        const business_number = document.getElementById("business_number").value;
-        const non_operating_days = document.getElementById("non_operating_days").value;
-        let latitude = 0;
-        let longitude = 0;
+            const user_name = document.getElementById("user_name").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const shop_name = document.getElementById("shop_name").value;
+            const business_number = document.getElementById("business_number").value;
+            const non_operating_days = document.getElementById("non_operating_days").value;
+            let latitude = 0;
+            let longitude = 0;
 
-        if(user_name.trim() === ""){
-            alert("이름을 입력하세요.");
-            return false;
-        }
-
-        if(phone.trim() === ""){
-            alert("전화번호를 입력하세요.");
-            return false
-        }
-
-        if(address.trim() === ""){
-            alert("주소를 입력하세요.");
-            return false
-        }
-
-        if(shop_name.trim() === ""){
-            alert("세탁소명을 입력하세요.");
-            return false
-        }
-
-        if(business_number.trim() === ""){
-            alert("사업자 번호를 입력하세요.");
-            return false
-        }
-
-        if(non_operating_days.trim() === ""){
-            alert("휴무일을 입력하세요.");
-            return false
-        }
-
-
-        // 주소-좌표 변환 객체를 생성합니다
-        var geocoder = new kakao.maps.services.Geocoder();
-
-        geocoder.addressSearch(address, async function(result, status) {
-            // 정상적으로 검색이 완료됐으면
-            if (status === kakao.maps.services.Status.OK) {
-                longitude = result[0].x;
-                latitude = result[0].y;
-
-                try {
-                    const response = await fetch("/api/laundry", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            user_name: user_name,
-                            phone: phone,
-                            address: address,
-                            shop_name: shop_name,
-                            business_number: business_number,
-                            non_operating_days: non_operating_days,
-                            latitude: latitude,
-                            longitude: longitude
-                        })
-                    });
-
-                    if (response.ok) {
-                        alert("등록이 완료되었습니다!");
-                    } else {
-                        const errorData = await response.json();
-                        alert(`오류 발생: ${errorData.message || '서버 에러'}`);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('네트워크 오류가 발생했습니다.');
-                }
-            } else {
-                alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
+            if(user_name.trim() === ""){
+                alert("이름을 입력하세요.");
+                return false;
             }
-        });
-    };
-</script>
+
+            if(phone.trim() === ""){
+                alert("전화번호를 입력하세요.");
+                return false
+            }
+
+            if(address.trim() === ""){
+                alert("주소를 입력하세요.");
+                return false
+            }
+
+            if(shop_name.trim() === ""){
+                alert("세탁소명을 입력하세요.");
+                return false
+            }
+
+            if(business_number.trim() === ""){
+                alert("사업자 번호를 입력하세요.");
+                return false
+            }
+
+            if(non_operating_days.trim() === ""){
+                alert("휴무일을 입력하세요.");
+                return false
+            }
+
+
+            // 주소-좌표 변환 객체를 생성합니다
+            var geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.addressSearch(address, async function(result, status) {
+                // 정상적으로 검색이 완료됐으면
+                if (status === kakao.maps.services.Status.OK) {
+                    longitude = result[0].x;
+                    latitude = result[0].y;
+
+                    try {
+                        const response = await fetch("/api/laundry", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                user_name: user_name,
+                                phone: phone,
+                                address: address,
+                                shop_name: shop_name,
+                                business_number: business_number,
+                                non_operating_days: non_operating_days,
+                                latitude: latitude,
+                                longitude: longitude
+                            })
+                        });
+
+                        if (response.ok) {
+                            alert("등록이 완료되었습니다!");
+                        } else {
+                            const errorData = await response.json();
+                            alert(`오류 발생: ${errorData.message || '서버 에러'}`);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('네트워크 오류가 발생했습니다.');
+                    }
+                } else {
+                    alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
+                }
+            });
+        };
+    </script>
 
 </body>
 </html>
