@@ -6,9 +6,9 @@ import org.team10.washcode.exception.ResponseResult;
 import org.team10.washcode.exception.ResponseState;
 
 
-@RestController
-public class TestController {
 
+public class TestController {
+/*
     // 서버 연결 상태 확인 코드
     @GetMapping("/health")
     public ResponseEntity<?> test() {
@@ -25,4 +25,6 @@ public class TestController {
     // ResponseEntity.badRequest -> 400
     // ResponseEntity.notFound -> 404
     // ResponseEntity.status(보내고 싶은 에러 코드).body(에러) -> 에러코드
+ */
 }
+
