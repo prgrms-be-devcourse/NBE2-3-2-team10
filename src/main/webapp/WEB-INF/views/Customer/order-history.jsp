@@ -35,6 +35,11 @@
                     <span class="text-blue-500"><%= order.getStatus() %></span>
                 </div>
                 <p class="text-gray-500">주문 생성일 : <%= order.getCreatedAt() %></p>
+                <%-- 주문 상세보기 버튼 추가 --%>
+                <a href="/api/orders/history/<%= request.getAttribute("userId") %>/<%= order.getPickup_id() %>"
+                   class="text-blue-500 mt-2 inline-block">
+                    상세보기
+                </a>
             </div>
             <%
                     }
