@@ -5,12 +5,6 @@
 <%
     // handledItems는 서버에서 모델을 통해 전달된 리스트입니다.
     List<OrderItemReqDTO> handledItems = (List<OrderItemReqDTO>) request.getAttribute("handledItems");
-    // 각 항목을 처리하려면 예를 들어 반복문을 사용해야 합니다.
-//    for (OrderItemReqDTO orderItem : handledItems) {
-//        for (OrderItemReqDTO.HandledItemsTO item : orderItem.getHandledItems()) {
-//            out.println("카테고리: " + item.getCategory() + ", 가격: " + item.getPrice());
-//        }
-//    }
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -25,7 +19,51 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
+    <script>
+        document.getElementById('btn_order').addEventListener('click', async function (e) {
+            e.preventDefault(); // 기본 폼 제출 방지
 
+            const laundryShopId = document.querySelector('input[name="laundryShopId"]').value;
+            const name = "홍길동"; // 예시 이름 (서버에서 자동 매핑되거나 사용자 이름을 가져올 수 있음)
+            const address = "서울시 성북구"; // 주소 예시 (실제 데이터로 교체 필요)
+            const content = document.querySelector('textarea[name="content"]').value;
+            const quantity = document.querySelector('input[name="quantity"]').value;
+
+            const data = {
+                laundryshop_id: parseInt(laundryShopId),
+                name: name,
+                address: address,
+                content: content,
+                pickupItem: [
+                    {
+                        item_id: itemId,  // 여기서 item_id를 전달
+                        quantity: parseInt(quantity),
+                        total_price: "1000"
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch('/api/orders/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    alert('수거 신청이 완료되었습니다.');
+                    window.location.href = '/api/orders/history';
+                } else {
+                    alert('수거 신청에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('수거 신청 중 오류가 발생했습니다.');
+            }
+        });
+    </script>
 </head>
 <body class="bg-gray-100">
 <!-- Header -->
@@ -79,6 +117,7 @@
                     <option value="5">면 세탁물</option>
                     <option value="6">보관 서비스</option>
                     <option value="7">침구</option>
+
                 </select>
             </div>
 
