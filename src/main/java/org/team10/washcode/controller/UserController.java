@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
@@ -36,8 +37,8 @@ public class UserController {
     // 토큰 추가 후 토큰에 있는 user_id를 매개변수로 변경
     @GetMapping
     @Operation(summary = "회원정보 조회", description = "회원정보를 조회하는 API 입니다.")
-    public ResponseEntity<?> getUser(HttpServletRequest request){
-        return userService.getUser(request);
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal int id){
+        return userService.getUser(id);
     }
 
 
