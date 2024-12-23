@@ -6,15 +6,25 @@ import lombok.Setter;
 import org.team10.washcode.Enum.PickupStatus;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class PickupResDTO {
-    private int pickup_id;
-    private String shop_name;
+    private int pickupId;
     private PickupStatus status;
-    private Timestamp created_at;
-    private Timestamp update_at;
-    private String content;
+    private Timestamp createdAt;
+    private String address;
+
+    private List<OrderItemDTO> orderItems;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class OrderItemDTO {
+        private String itemName;
+        private int quantity;
+        private int totalPrice;
+    }
 }

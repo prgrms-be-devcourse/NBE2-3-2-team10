@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>세탁 요청</title>
+    <title>수거 요청</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -42,10 +42,10 @@
 <%
     if (pickupList == null || pickupList.isEmpty()) {
 %>
-<!-- 세탁 요청 없음 -->
+<!-- 수거 요청 없음 -->
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-4 mb-20 p-6 text-center">
-    <h1 class="text-2xl font-bold mb-4">세탁 요청</h1>
-    <p class="text-gray-700 text-center mb-4 font-semibold">현재 세탁 요청이 없습니다.</p>
+    <h1 class="text-2xl font-bold mb-4">수거 요청</h1>
+    <p class="text-gray-700 text-center mb-4 font-semibold">현재 수거 요청이 없습니다.</p>
 </div>
 <%
 } else {
@@ -54,7 +54,7 @@
 <!-- 메인 컨테이너 -->
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-4 mb-20 p-6">
     <!-- 제목 -->
-    <h1 class="text-2xl font-bold mb-4 text-center">세탁 요청</h1>
+    <h1 class="text-2xl font-bold mb-4 text-center">수거 요청</h1>
     <p class="text-blue-500 text-center mb-4 font-semibold">세탁물 수거 요청이 들어왔어요.</p>
 
     <!-- 요청 상세 정보 -->
@@ -86,7 +86,7 @@
         <!-- 수거 확인 버튼 -->
         <button type="button"
                 class="w-1/2 bg-teal-500 text-white font-bold py-2 rounded-lg hover:bg-teal-600 shadow-md"
-                onclick="updatePickupStatus(<%= pickup.getPickupId() %>, 'PICKED_UP')">
+                onclick="updatePickupStatus(<%= pickup.getPickupId() %>, 'PAYMENT_PENDING')">
             수거 확인
         </button>
 
