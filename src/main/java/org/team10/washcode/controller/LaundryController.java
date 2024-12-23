@@ -37,7 +37,7 @@ public class LaundryController {
         return laundryService.getLaundryShopById(laundry_id);
     }
 
-    @PostMapping("/laundry")
+    @PostMapping("/info")
     public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to) {
         // 여기서 데이터 저장, 유효성 검사 등 로직 처리
         System.out.println("받은 데이터: " + to);

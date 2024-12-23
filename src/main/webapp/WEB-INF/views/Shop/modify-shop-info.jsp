@@ -182,7 +182,7 @@
                     latitude = result[0].y;
 
                     try {
-                        const response = await fetch("/api/laundry", {
+                        const response = await fetch("/api/laundry/info", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
