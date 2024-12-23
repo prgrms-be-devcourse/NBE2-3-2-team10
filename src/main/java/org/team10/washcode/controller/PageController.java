@@ -24,7 +24,7 @@ public class PageController {
         return "Customer/main";
     }
 
-    @RequestMapping("laundryshop-detail")
+    @RequestMapping("laundryshop-detail/{laundry_id}")
     public String laundryshopDetail() {
         return "Customer/laundryshop-detail";
     }

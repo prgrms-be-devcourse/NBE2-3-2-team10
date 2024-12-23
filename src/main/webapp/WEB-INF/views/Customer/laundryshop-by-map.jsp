@@ -86,6 +86,13 @@
                                        </li>`;
                         });
                         document.getElementById('laundryList').innerHTML = result;
+
+                        document.querySelectorAll('.shop-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                const shopId = this.getAttribute('data-id');
+                                window.location.href = `/laundryshop-detail/\${shopId}`;
+                            });
+                        });
                     })
                     .catch(error => console.error('Error fetching data:', error));
             }
@@ -188,16 +195,6 @@
         </button>
     </div>
 </div>
-<script type="text/javascript">
-    // HTML 삽입 후 이벤트 바인딩
-    document.getElementById('list-container').innerHTML = result;
 
-    document.querySelectorAll('.shop-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const shopId = this.getAttribute('data-id');
-            window.location.href = `/shop-detail/${shopId}`;
-        });
-    });
-</script>
 </body>
 </html>
