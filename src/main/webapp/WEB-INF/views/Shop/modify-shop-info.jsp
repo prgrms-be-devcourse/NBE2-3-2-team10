@@ -53,13 +53,13 @@
             <label class="block text-gray-700">업체명</label>
             <input type="text" placeholder="업체명을 입력하세요"
                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="shop_name">
+                    id="shop_name" name="shop_name">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">전화번호</label>
             <input type="tel" placeholder="전화번호를 입력하세요"
                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="phone">
+                    id="phone" name="phone">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">대표자명</label>
@@ -79,12 +79,12 @@
             <label class="block text-gray-700">사업자번호</label>
             <input type="text" placeholder="사업자번호를 입력하세요"
                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="business_number">
+                    id="business_number" name="business_number">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">영업일</label>
             <textarea placeholder="영업일을 입력하세요"
-                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="non_operating_days"></textarea>
+                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="non_operating_days" name="non_operating_days"></textarea>
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">가격표</label>
@@ -93,8 +93,8 @@
         </div>
 
         <!-- 정보 저장 버튼 -->
-        <button type="submit"
-                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">
+        <button
+                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="rbtn">
             정보 저장
         </button>
     </form>

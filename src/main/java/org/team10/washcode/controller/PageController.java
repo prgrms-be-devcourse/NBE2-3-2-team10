@@ -103,17 +103,12 @@ public class PageController {
         return "Customer/laundryshop-by-map";
     }
 
-    @RequestMapping("modify-shop-info")
-    public String ModifyShopInfo() {
-        return "Shop/modify-shop-info";
-    }
-
-    @RequestMapping("main")
+    @RequestMapping("/main")
     public String main() {
         return "Customer/main";
     }
 
-    @RequestMapping("laundryshop-detail/{laundry_id}")
+    @RequestMapping("/laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
         LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
 
