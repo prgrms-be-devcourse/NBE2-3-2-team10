@@ -32,8 +32,8 @@
     </div>
     <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow">
-            <h2 class="text-xl font-bold">세탁소 명</h2>
-            <p class="text-gray-500">주소</p>
+            <h2 class="text-xl font-bold">${laundry.shop_name}</h2>
+            <p class="text-gray-500">${laundry.address}</p>
             <p class="text-gray-500">전화 <span role="img" aria-label="phone">📞</span></p>
             <p class="text-gray-500">영업: 일요일, 공휴일 <span class="text-red-500">휴무</span></p>
             <div class="flex space-x-4 mt-4">
