@@ -86,9 +86,9 @@
 </footer>
 
   <script>
-    const url = "http://localhost:8080"
+    const url = "http://localhost:8080/api/user"
     window.onload = () => {
-      axios.get(url + '/api/user/role')
+      axios.get(url + '/role')
               .then(function(response) {
                 document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
                 document.getElementById('name').innerHTML = response.data.name + " 님";
@@ -96,6 +96,16 @@
                 console.error(error);
               });
     };
+
+    function logout() {
+      axios.post(url + '/logout')
+              .then(() => {
+                alert("로그아웃 되었습니다.");
+                location.href = '/';
+              }).catch((error) => {
+                console.error(error);
+              });
+    }
   </script>
 </div>
 </body>

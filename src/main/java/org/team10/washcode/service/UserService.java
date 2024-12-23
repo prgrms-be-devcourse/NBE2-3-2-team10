@@ -170,4 +170,32 @@ public class UserService {
             return ResponseEntity.status(400).body("잘못된 토큰 값");
         }
     }
+
+    public ResponseEntity<?> logout() {
+        try {
+            ResponseCookie access_cookie = ResponseCookie
+                    .from("ACCESSTOKEN", "") // 추후 토큰값 추가
+                    .domain("localhost")
+                    .path("/")
+                    .httpOnly(true)
+                    .maxAge(0)
+                    .build();
+
+            ResponseCookie refresh_cookie = ResponseCookie
+                    .from("REFRESHTOKEN", "") // 추후 토큰값 추가
+                    .domain("localhost")
+                    .path("/")
+                    .httpOnly(true)
+                    .maxAge(0)
+                    .build();
+
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.SET_COOKIE, access_cookie.toString(), refresh_cookie.toString())
+                    .body("Logout SUCCESS");
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+            return ResponseEntity.status(500).body("Logout ERROR");
+        }
+    }
 }

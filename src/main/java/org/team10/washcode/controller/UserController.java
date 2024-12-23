@@ -44,7 +44,6 @@ public class UserController {
     @PutMapping
     @Operation(summary = "회원정보 수정", description = "회원정보를 수정하는 API 입니다.")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateReqDTO userUpdateReqDTO, HttpServletRequest request){
-
         return userService.updateUser(userUpdateReqDTO, request);
     }
 
@@ -65,4 +64,16 @@ public class UserController {
     public ResponseEntity<?> getUserAddress(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
         return userService.getUserAddress(cookie);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃 API 입니다.")
+    public ResponseEntity<?> logout(){
+        return userService.logout();
+    }
+
+//    @PostMapping("/check-login")
+//    @Operation(summary = "로그인 체크", description = "로그인 체크 API 입니다.")
+//    public ResponseEntity<?> checkLogin(){
+//        return userService.checkLogin();
+//    }
 }
