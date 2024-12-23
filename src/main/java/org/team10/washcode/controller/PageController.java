@@ -18,4 +18,14 @@ public class PageController {
     public String registerShop() {
         return "Shop/register-shop";
     }
+
+    @RequestMapping("main")
+    public String main() {
+        return "Customer/main";
+    }
+
+    @RequestMapping("laundryshop-detail")
+    public String laundryshopDetail() {
+        return "Customer/laundryshop-detail";
+    }
 }

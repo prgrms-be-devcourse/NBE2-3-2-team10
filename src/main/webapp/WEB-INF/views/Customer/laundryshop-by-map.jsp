@@ -81,7 +81,9 @@
                             var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
                             displayMarker(position, message);
 
-                            result += `<li class="border-b pb-2">\${shop.shop_name}</li>`;
+                            result += `<li class="border-b pb-2 shop-item" data-id="\${shop.id}">
+                                       \${shop.shop_name}
+                                       </li>`;
                         });
                         document.getElementById('laundryList').innerHTML = result;
                     })
@@ -166,7 +168,7 @@
         </div>
     </div>
     <div class="flex justify-around bg-white p-4 border-t fixed bottom-0 w-full max-w-md">
-        <button class="flex flex-col items-center text-blue-500">
+        <button class="flex flex-col items-center text-blue-500" onclick="window.location.href='main'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-10 0a1 1 0 001-1V10m0 0l7-7 7 7" />
             </svg>
@@ -186,6 +188,16 @@
         </button>
     </div>
 </div>
+<script type="text/javascript">
+    // HTML 삽입 후 이벤트 바인딩
+    document.getElementById('list-container').innerHTML = result;
 
+    document.querySelectorAll('.shop-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const shopId = this.getAttribute('data-id');
+            window.location.href = `/shop-detail/${shopId}`;
+        });
+    });
+</script>
 </body>
 </html>
