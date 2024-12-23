@@ -3,7 +3,6 @@ package org.team10.washcode.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,15 +43,15 @@ public class UserController {
 
     @PutMapping
     @Operation(summary = "회원정보 수정", description = "회원정보를 수정하는 API 입니다.")
-    public ResponseEntity<?> updateUser(@RequestBody UserUpdateReqDTO userUpdateReqDTO, HttpServletRequest request){
+    public ResponseEntity<?> updateUser(@AuthenticationPrincipal int id, @RequestBody UserUpdateReqDTO userUpdateReqDTO){
 
-        return userService.updateUser(userUpdateReqDTO, request);
+        return userService.updateUser(id, userUpdateReqDTO);
     }
 
     @DeleteMapping
     @Operation(summary = "회원 탈퇴", description = "회원정보를 삭제하는 API 입니다.")
-    public ResponseEntity<?> deleteUser(HttpServletRequest request){
-        return userService.deleteUser(request);
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal int id){
+        return userService.deleteUser(id);
     }
 
     @GetMapping("/role")

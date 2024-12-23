@@ -72,12 +72,13 @@ public class UserService {
                 return ResponseEntity.status(400).body("잘못된 비밀번호 입니다.");
             }
 
-            //Integer userId = userRepository.findIdByEmail(loginReqDTO.getEmail()).get();
             User user = userRepository.findByEmail(loginReqDTO.getEmail()).orElseThrow(() -> new RuntimeException("해당 계정을 찾을 수 없습니다."));
+
             String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
+            String refreshToken = jwtProvider.generateRefreshToken(user.getId(),user.getRole());
 
             ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", accessToken) // 추후 토큰값 추가
+                    .from("ACCESSTOKEN", accessToken)
                     .domain("localhost")
                     .path("/")
                     .httpOnly(true)
@@ -85,7 +86,7 @@ public class UserService {
                     .build();
 
             ResponseCookie refresh_cookie = ResponseCookie
-                    .from("REFRESHTOKEN", "5678") // 추후 토큰값 추가
+                    .from("REFRESHTOKEN", refreshToken)
                     .domain("localhost")
                     .path("/")
                     .httpOnly(true)
@@ -103,7 +104,6 @@ public class UserService {
     }
 
     public ResponseEntity<?> getUser(int id) {
-        System.out.println(id);
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
 
         return ResponseEntity
@@ -116,15 +116,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateUser(UserUpdateReqDTO userUpdateReqDTO, HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        Long id = 0L;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("ACCESSTOKEN")) {
-                id = Long.parseLong(cookie.getValue());
-            }
-        }
-
+    public ResponseEntity<?> updateUser(int id, UserUpdateReqDTO userUpdateReqDTO){
         try {
             User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
             user.setAddress(userUpdateReqDTO.getAddress());
@@ -141,16 +133,14 @@ public class UserService {
     }
 
 
-    public ResponseEntity<?> deleteUser(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("ACCESSTOKEN")) {
-                Long id = Long.parseLong(cookie.getValue());
-                userRepository.deleteById(id);
-                return ResponseEntity.ok().body("회원 탈퇴가 완료 되었습니다.");
-            }
+    public ResponseEntity<?> deleteUser(int id){
+        try {
+            userRepository.deleteById(Long.valueOf(id));
+            return ResponseEntity.ok().body("회원 탈퇴가 완료 되었습니다.");
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+            return ResponseEntity.status(500).body("DB 에러");
         }
-        return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
     }
 
     public ResponseEntity<?> getUserRole(Cookie cookie){

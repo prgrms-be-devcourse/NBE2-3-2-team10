@@ -13,6 +13,11 @@ public class CustomUserDetails implements UserDetails{
     private int id;
     private UserRole role;
 
+    public CustomUserDetails(int id, UserRole role) {
+        this.id = id;
+        this.role = role;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + String.valueOf(role)));
