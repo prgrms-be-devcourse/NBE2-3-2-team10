@@ -48,4 +48,26 @@ public class LaundryController {
         return ResponseEntity.ok().body("등록 완료");
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<?> getLaundryInfo(HttpServletRequest request) {
+        try {
+            // 로그인된 사용자의 ID 가져오기
+            int userId = (int) request.getAttribute("userId");
+
+            // 사용자의 세탁소 정보 가져오기
+            LaundryShop userLaundryInfo = laundryService.getLaundryInfoByUserId(userId);
+
+            // 세탁소 정보가 없을 경우
+            if (userLaundryInfo == null) {
+                return ResponseEntity.status(404).body("No laundry info found");
+            }
+
+            // 세탁소 정보 반환
+            return ResponseEntity.ok(userLaundryInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("서버 오류 발생");
+        }
+    }
+
 }

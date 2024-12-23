@@ -58,7 +58,7 @@ public class LaundryService {
     //세탁소 상세정보 조회
     //세탁소 id로 세탁소 정보 찾기
     public LaundryDetailResDTO getLaundryShopById(int id) {
-        LaundryShop laundryShop = laundryShopRepository.findById(id);
+        LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
         to.setShop_name(laundryShop.getShop_name());
@@ -70,9 +70,9 @@ public class LaundryService {
     }
 
     public LaundryShop registerLaundryShop(ShopAddReqDTO to) {
-        //User user = userRepository.findByName(to.getUser_name());
+        User user = userRepository.findByName(to.getUser_name());
         LaundryShop shop = new LaundryShop();
-        //shop.setUser(user);
+        shop.setUser(user);
         shop.setShop_name(to.getShop_name());
         shop.setBusiness_number(to.getBusiness_number());
         shop.setAddress(to.getAddress());
@@ -84,6 +84,10 @@ public class LaundryService {
 
 
         return laundryShopRepository.save(shop);
+    }
+
+    public LaundryShop getLaundryInfoByUserId(int userId) {
+        return laundryShopRepository.findByUserId(userId);
     }
 
 }

@@ -17,5 +17,7 @@ public interface LaundryShopRepository extends JpaRepository<LaundryShop, Long> 
     List<LaundryShop> findByShop_NameContaining(@Param("shop_name") String shop_name);
 
     @Query("SELECT L FROM LaundryShop L WHERE L.id = :id")
-    LaundryShop findById(@Param("id") int id);
+    LaundryShop findByShopId(@Param("id") int id);
+
+    LaundryShop findByUserId(int userId);
 }
