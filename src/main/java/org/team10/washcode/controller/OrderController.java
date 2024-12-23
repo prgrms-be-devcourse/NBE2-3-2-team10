@@ -100,10 +100,14 @@ public class OrderController {
 
 
     @GetMapping("/history/{userId}/{pickupId}")
-    public ResponseEntity<OrderResDTO> getOrderDetails(
+    //public ResponseEntity<OrderResDTO> getOrderDetails(
+    public String getOrderDetails(
             @PathVariable int userId,
-            @PathVariable int pickupId) {
+            @PathVariable int pickupId,
+            Model model) {
         OrderResDTO orderDetails = orderService.getOrderDetail(userId, pickupId);
-        return ResponseEntity.ok(orderDetails);
+        model.addAttribute("order",orderDetails);
+        //return ResponseEntity.ok(orderDetails);
+        return "Customer/order-history-detail";
     }
 }
