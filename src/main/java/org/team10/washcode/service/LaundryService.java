@@ -70,9 +70,9 @@ public class LaundryService {
     }
 
     public LaundryShop registerLaundryShop(ShopAddReqDTO to) {
-        User user = userRepository.findByName(to.getUser_name());
+        //User user = userRepository.findByName(to.getUser_name());
         LaundryShop shop = new LaundryShop();
-        shop.setUser(user);
+        //shop.setUser(user);
         shop.setShop_name(to.getShop_name());
         shop.setBusiness_number(to.getBusiness_number());
         shop.setAddress(to.getAddress());
