@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
+import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.service.KakaoService;
 
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
@@ -113,7 +115,13 @@ public class PageController {
 
     @RequestMapping("laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
+        LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
 
+        if(to == null) {
+            return "error";
+        }
+
+        model.addAttribute("laundry", to);
         return "Customer/laundryshop-detail";
     }
 }

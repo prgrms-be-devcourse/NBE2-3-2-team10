@@ -3,6 +3,7 @@ package org.team10.washcode.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.service.LaundryService;
 
@@ -28,6 +29,10 @@ public class LaundryController {
         }
     }
 
-
+    //세탁소 상세정보 조회
+    @GetMapping("{laundry_id}")
+    public LaundryDetailResDTO get(@PathVariable("laundry_id") int laundry_id) {
+        return laundryService.getLaundryShopById(laundry_id);
+    }
 
 }

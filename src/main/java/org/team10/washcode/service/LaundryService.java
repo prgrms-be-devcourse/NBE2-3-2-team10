@@ -2,6 +2,7 @@ package org.team10.washcode.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.repository.LaundryShopRepository;
 
@@ -50,8 +51,16 @@ public class LaundryService {
 
     //세탁소 상세정보 조회
     //세탁소 id로 세탁소 정보 찾기
-    public LaundryShop getLaundryShopById(int id) {
-        return laundryShopRepository.findById(id);
+    public LaundryDetailResDTO getLaundryShopById(int id) {
+        LaundryShop laundryShop = laundryShopRepository.findById(id);
+        LaundryDetailResDTO to = new LaundryDetailResDTO();
+
+        to.setShop_name(laundryShop.getShop_name());
+        to.setPhone(laundryShop.getPhone());
+        to.setAddress(laundryShop.getAddress());
+        to.setNon_operating_days(laundryShop.getNon_operating_days());
+
+        return to;
     }
 }
 
