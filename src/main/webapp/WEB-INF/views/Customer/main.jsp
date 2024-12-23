@@ -27,7 +27,7 @@
 <main class="p-4 space-y-4">
     <!-- Buttons -->
     <div class="flex space-x-4">
-        <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow">내 주변 세탁소 찾기</button>
+        <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow" onclick="window.location.href='/laundryshop-by-map'">내 주변 세탁소 찾기</button>
         <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow">이용방법</button>
     </div>
 
