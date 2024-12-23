@@ -23,8 +23,8 @@ public class LaundryShop {
     private String address;
     private String non_operating_days;
 
-    private int latitude;
-    private int longitude;
+    private Double latitude;
+    private Double longitude;
 
     private Timestamp created_at;
 }
