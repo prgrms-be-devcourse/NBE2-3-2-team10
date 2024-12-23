@@ -103,9 +103,9 @@ public class PageController {
         return "Customer/laundryshop-by-map";
     }
 
-    @RequestMapping("register-shop")
-    public String registerShop() {
-        return "Shop/register-shop";
+    @RequestMapping("modify-shop-info")
+    public String ModifyShopInfo() {
+        return "Shop/modify-shop-info";
     }
 
     @RequestMapping("main")
@@ -124,4 +124,5 @@ public class PageController {
         model.addAttribute("laundry", to);
         return "Customer/laundryshop-detail";
     }
+
 }

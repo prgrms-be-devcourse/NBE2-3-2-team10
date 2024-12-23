@@ -2,7 +2,9 @@ package org.team10.washcode.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.service.LaundryService;
@@ -33,6 +35,17 @@ public class LaundryController {
     @GetMapping("{laundry_id}")
     public LaundryDetailResDTO get(@PathVariable("laundry_id") int laundry_id) {
         return laundryService.getLaundryShopById(laundry_id);
+    }
+
+    @PostMapping("/laundry")
+    public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to) {
+        // 여기서 데이터 저장, 유효성 검사 등 로직 처리
+        System.out.println("받은 데이터: " + to);
+
+        laundryService.registerLaundryShop(to);
+
+        // 성공 응답 반환
+        return ResponseEntity.ok().body("등록 완료");
     }
 
 }

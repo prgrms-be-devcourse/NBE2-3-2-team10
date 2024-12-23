@@ -2,10 +2,14 @@ package org.team10.washcode.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.LaundryShop;
+import org.team10.washcode.entity.User;
 import org.team10.washcode.repository.LaundryShopRepository;
+import org.team10.washcode.repository.UserRepository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +17,8 @@ import java.util.stream.Collectors;
 public class LaundryService {
     @Autowired
     private LaundryShopRepository laundryShopRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<LaundryShop> getLaundryShops(double userLat, double userLng) {
         List<LaundryShop> shops = laundryShopRepository.findAll();
@@ -62,5 +68,23 @@ public class LaundryService {
 
         return to;
     }
+
+    public LaundryShop registerLaundryShop(ShopAddReqDTO to) {
+        User user = userRepository.findByName(to.getUser_name());
+        LaundryShop shop = new LaundryShop();
+        shop.setUser(user);
+        shop.setShop_name(to.getShop_name());
+        shop.setBusiness_number(to.getBusiness_number());
+        shop.setAddress(to.getAddress());
+        shop.setPhone(to.getPhone());
+        shop.setNon_operating_days(to.getNon_operating_days());
+        shop.setLatitude(to.getLatitude());
+        shop.setLongitude(to.getLongitude());
+        shop.setCreated_at(new Timestamp(System.currentTimeMillis()));
+
+
+        return laundryShopRepository.save(shop);
+    }
+
 }
 
