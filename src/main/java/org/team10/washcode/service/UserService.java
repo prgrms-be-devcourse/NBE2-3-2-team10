@@ -143,17 +143,17 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<?> getUserRole(Cookie cookie){
+    public ResponseEntity<?> getUserRole(int id){
         try {
-            return ResponseEntity.ok().body(userRepository.findRoleAndNameById(Integer.parseInt(cookie.getValue())));
+            return ResponseEntity.ok().body(userRepository.findRoleAndNameById(id));
         } catch (Exception e) {
             return ResponseEntity.status(400).body("잘못된 토큰 값");
         }
     }
 
-    public ResponseEntity<?> getUserAddress(Cookie cookie){
+    public ResponseEntity<?> getUserAddress(int id){
         try {
-            return ResponseEntity.ok().body(userRepository.findAddressById(Integer.parseInt(cookie.getValue())));
+            return ResponseEntity.ok().body(userRepository.findAddressById(id));
         } catch (Exception e) {
             return ResponseEntity.status(400).body("잘못된 토큰 값");
         }
@@ -161,15 +161,7 @@ public class UserService {
 
     public ResponseEntity<?> logout() {
         try {
-            // Access Token 유효시간을 0으로 설정
-            ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", "") // 추후 토큰값 추가
-                    .domain("localhost")
-                    .path("/")
-                    .httpOnly(true)
-                    .maxAge(0)
-                    .build();
-
+            // Access Token 은 Front 에서 삭제 필요
             // Refresh Token 유효시간을 0으로 설정
             ResponseCookie refresh_cookie = ResponseCookie
                     .from("REFRESHTOKEN", "") // 추후 토큰값 추가
@@ -181,7 +173,7 @@ public class UserService {
 
             return ResponseEntity
                     .ok()
-                    .header(HttpHeaders.SET_COOKIE, access_cookie.toString(), refresh_cookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, refresh_cookie.toString())
                     .body("Logout SUCCESS");
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
@@ -189,33 +181,32 @@ public class UserService {
         }
     }
 
+    // 토큰 유효성 검사 및 토큰 재발급
     public ResponseEntity<?> checkLogin(HttpServletRequest request) {
-
-        // Access Token이 쿠키에 있는지 확인
-        // 없으면 로그인 안되어 있다고 401후, 에러 반환
+        // 토큰 가져오기
+        String accessToken = jwtProvider.resolveAccessToken(request);
         Cookie[] cookies = request.getCookies();
-        String accessToken = null;
         String refreshToken = null;
-        ResponseCookie accessCookie = null;
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("ACCESSTOKEN")) {
-                accessToken = cookie.getValue();
-            } else if (cookie.getName().equals("REFRESHTOKEN")) {
+            if (cookie.getName().equals("REFRESHTOKEN")) {
                 refreshToken = cookie.getValue();
             }
         }
-
         try {
-            // Refresh Token이 일치하지 않으면 에러 반환
-            if ( !refreshToken.equals("5678") ) {
-                throw new IllegalArgumentException("Refresh Token is not valid");
+            // AccessToken 유효성 확인
+            if(accessToken!=null&&jwtProvider.validateToken(accessToken)){
+                return ResponseEntity.ok().body("accessToken 정상");
+            // RefreshToken 유효성 확인 후 AccessToken 재발급
+            }else if (!jwtProvider.validateToken(accessToken)&&refreshToken!=null&&jwtProvider.validateToken(refreshToken)){
+                String newAccessToken = jwtProvider.generateAccessToken(jwtProvider.getId(refreshToken),jwtProvider.getRole(refreshToken));
+                Map<String,String> responseAccessToken = new HashMap<>();
+                responseAccessToken.put("accessToken",newAccessToken);
+                return ResponseEntity.ok().body(responseAccessToken);
+            // 모든 토큰 유효성 검사 실패
+            }else {
+                return ResponseEntity.status(400).body("모든 토큰이 유효하지 않습니다.");
             }
-            accessCookie = getAccessToken(Integer.parseInt(accessToken));
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                    .body("Logged in");
         } catch (IllegalArgumentException e) {
             System.out.println("[Error] " + e.getMessage());
             return ResponseEntity.status(400).body("Bad Request: " + e.getMessage());
