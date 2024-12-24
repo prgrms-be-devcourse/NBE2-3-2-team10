@@ -23,7 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //@Query("select new org.team10.washcode.ResponseDTO.user.UserProfileResDTO(u.name, u.address, u.phone) from User u where u.id = :id")
     //UserProfileResDTO findUserProfileById(@Param("id") int id);
 
-
     Optional<User> findById(@Param("id") int id);
 
     @Query("SELECT U.id FROM User U WHERE U.kakao_id = :kakao_id")
@@ -39,4 +38,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT U.address FROM User U WHERE U.id = :id")
     Optional<String> findAddressById(int id);
 
+    Optional<User> findByEmail(String email);
 }
