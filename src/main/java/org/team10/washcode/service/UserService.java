@@ -17,7 +17,9 @@ import org.team10.washcode.entity.User;
 import org.team10.washcode.jwt.JwtProvider;
 import org.team10.washcode.repository.UserRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -77,15 +79,10 @@ public class UserService {
             String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
             String refreshToken = jwtProvider.generateRefreshToken(user.getId(),user.getRole());
 
-            ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", accessToken)
-                    .domain("localhost")
-                    .path("/")
-                    .httpOnly(true)
-                    .maxAge(ACCESS_TOKEN_EXPIRATION_TIME)
-                    .build();
+            Map<String,String> responseAccessToken = new HashMap<>();
+            responseAccessToken.put("accessToken",accessToken);
 
-            ResponseCookie refresh_cookie = ResponseCookie
+            ResponseCookie refreshCookie = ResponseCookie
                     .from("REFRESHTOKEN", refreshToken)
                     .domain("localhost")
                     .path("/")
@@ -95,8 +92,8 @@ public class UserService {
 
             return ResponseEntity
                     .ok()
-                    .header(HttpHeaders.SET_COOKIE, access_cookie.toString(), refresh_cookie.toString())
-                    .body("로그인에 성공했습니다.");
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .body(responseAccessToken);
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
             return ResponseEntity.status(500).body("DB 에러");
