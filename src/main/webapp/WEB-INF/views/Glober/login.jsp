@@ -47,6 +47,7 @@
 
     <script>
         const url = "http://localhost:8080";
+
         function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -63,6 +64,22 @@
             .catch (error => {
                 alert(error.response.data);
             })
+        }
+
+        function checkAccessToken(token) {
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+                location.href = "/main";
+            })
+        }
+
+        window.onload = () => {
+            const token = sessionStorage.getItem("accessToken");
+            checkAccessToken(token);
         }
     </script>
 </div>

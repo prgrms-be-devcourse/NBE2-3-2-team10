@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
+import org.team10.washcode.entity.User;
+import org.team10.washcode.jwt.JwtProvider;
 import org.team10.washcode.repository.UserRepository;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -38,9 +43,20 @@ public class KakaoService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
     private static final int PASSWORD_LENGTH = 12;
+
+    public ResponseCookie getRefreshToken(String refreshToken) {
+        return ResponseCookie
+                .from("REFRESHTOKEN", refreshToken) // 추후 토큰값 추가
+                .domain("localhost")
+                .path("/")
+                .httpOnly(true)
+                .maxAge(REFRESH_TOKEN_EXPIRATION_TIME)
+                .build();
+    }
 
     public String getAccessToken(String code) {
 
@@ -147,26 +163,27 @@ public class KakaoService {
     }
 
     // 카카오를 통해 JTW 토큰을 발행하는 코드
-    public void login(Integer userId, HttpServletResponse response){
+    public void login(User user, HttpServletResponse response){
         try {
-            // 액세스 토큰 쿠키 생성
-            Cookie accessCookie = new Cookie("ACCESSTOKEN", userId.toString()); // 추후 토큰값 추가
-            accessCookie.setDomain("localhost");
-            accessCookie.setPath("/");
-            accessCookie.setHttpOnly(true);
-            accessCookie.setMaxAge(ACCESS_TOKEN_EXPIRATION_TIME); // 만료 시간 설정
+            String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
+            String refreshToken = jwtProvider.generateRefreshToken(user.getId(),user.getRole());
 
-            // 리프레시 토큰 쿠키 생성
-            Cookie refreshCookie = new Cookie("REFRESHTOKEN", "K5678"); // 추후 토큰값 추가
-            refreshCookie.setDomain("localhost");
-            refreshCookie.setPath("/");
-            refreshCookie.setHttpOnly(true);
-            refreshCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME); // 만료 시간 설정
+            Map<String,String> responseAccessToken = new HashMap<>();
+            responseAccessToken.put("accessToken",accessToken);
 
-            // 쿠키를 응답에 추가
-            response.addCookie(accessCookie);
-            response.addCookie(refreshCookie);
+            // 리프레쉬 토큰을 쿠키로 만듬
+            ResponseCookie refreshCookie = getRefreshToken(refreshToken);
 
+            // 응답 헤더에 쿠키 추가
+            response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
+            // 응답 바디에 Access Token 포함
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("Authorization", "Bearer " + accessToken);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            new ObjectMapper().writeValue(response.getWriter(), responseBody);
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
         }
@@ -183,14 +200,14 @@ public class KakaoService {
 
         // 3. 카카오로 가입되어 있지 확인
         // 3-1 가입되어 있지 않다면 회원가입 페이지로 이동
-        Optional<Integer> userId = userRepository.findIdByKakaoId(result.getId());
-        if (userId.isEmpty()) {
+        Optional<User> user = userRepository.findIdByKakaoId(result.getId());
+        if (user.isEmpty()) {
             model.addAttribute("kakaoUserData", result);
             return "Glober/register";
         }
 
         // 3-2 가입이 되어 있으면 쿠키를 통해 토큰 발행 후, 로그인 진행
-        login(userId.get(), response);
+        login(user.get(), response);
         return "Customer/main";
     }
 }

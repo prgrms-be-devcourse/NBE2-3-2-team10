@@ -31,6 +31,22 @@
                     <label class="block text-sm font-bold">Email</label>
                     <input type="email" id="email" class="w-full border p-2 rounded" disabled>
                 </div>
+
+                <!-- 비밀번호 입력란 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-bold">비밀번호</label>
+                    <input
+                            type="password"
+                            id="password"
+                            placeholder="8~30자리 영어, 숫자, 특수문자 조합"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input
+                            type="password"
+                            id="password2"
+                            placeholder="비밀번호를 똑같이 입력해주세요"
+                            class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
                 <div>
                     <label class="block text-sm font-bold">이름</label>
                     <input type="text" id="name" class="w-full border p-2 rounded" disabled>
@@ -38,7 +54,7 @@
                 <div>
                     <label class="block text-sm font-bold">전화번호</label>
                     <div class="flex">
-                        <input type="text" value="" class="flex-grow border p-2 rounded-l">
+                        <input type="text" value="" id = "phone" class="flex-grow border p-2 rounded-l">
                         <button class="bg-blue-500 text-white px-4 rounded-r">인증 받기</button>
                     </div>
                     <div class="flex mt-3">
@@ -59,12 +75,11 @@
         </section>
     </main>
 
-    <!-- 회원가입 버튼 -->
     <div class="flex justify-center">
         <button
                 type="button"
                 id="submitBtn"
-                onclick="reqRegister()"
+                onclick="updateUserInfo()"
                 class="w-[50%] py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">
             변경
         </button>
@@ -97,16 +112,13 @@
         const url = "http://localhost:8080"
         const token = sessionStorage.getItem("accessToken");
 
-        var name = "";
         var phone = "";
         var address = "";
-        var email = "";
 
         window.onload = () => {
             checkAccessToken();
             getUserInfo();
         }
-
 
         function checkAccessToken() {
             axios.post(url + '/api/user/check-login', {
@@ -136,7 +148,7 @@
 
                 document.getElementById('email').value = email;
                 document.getElementById('name').value = name;
-                document.getElementById('address').textContent = response.data.address
+                document.getElementById('address').textContent = address
             }).catch(function(error) {
                 console.error(error);
             });
@@ -172,6 +184,50 @@
                 }
             }).open();
         }
+
+        // 유저 정보를 변경하는 Axios 요청을 보내는 함수
+        function updateUserInfo() {
+            const regex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]{8,30}$/;
+
+            if (!document.getElementById('password').value) {
+                alert('비밀번호를 입력해주세요.');
+                return;
+            }
+
+            if (!regex.test(document.getElementById('password').value)) {
+                alert("비밀번호는 8~30자 사이의 영어, 숫자, 특수문자 조합이어야 합니다.");
+                return true;
+            }
+
+            if (document.getElementById('password').value !== document.getElementById('password2').value) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            const passwordField = document.getElementById('password').value;
+            const addressField = document.getElementById('address').value;
+            const phoneField = document.getElementById('phone').value;
+
+            const formData = {
+                password: passwordField,
+                address: addressField ? addressField : address,
+                phone: phoneField ? phoneField : phone
+            };
+
+            alert(formData.address + " " + formData.password + " " + formData.phone)
+
+            axios.put(url + '/api/user', formData, {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then((res) => {
+                alert("정보가 변경되었습니다.");
+                location.href = '/myInfoModify';
+            }).catch(() => {
+                console.error(error);
+            });
+        }
+
     </script>
 </div>
 </body>

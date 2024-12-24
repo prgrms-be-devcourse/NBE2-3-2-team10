@@ -84,10 +84,7 @@
                     Authorization: 'Bearer ' + token
                 }
             }).then(res => {
-                if (res.data === false) {
-                    alert("로그인이 필요합니다.");
-                    location.href = '/';
-                }
+                sessionStorage.setItem("accessToken", res.data.accessToken);
             }).catch(error => {
                 alert(error.response.data);
             });

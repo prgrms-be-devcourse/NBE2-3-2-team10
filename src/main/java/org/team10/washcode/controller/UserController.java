@@ -44,7 +44,6 @@ public class UserController {
     @PutMapping
     @Operation(summary = "회원정보 수정", description = "회원정보를 수정하는 API 입니다.")
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal int id, @RequestBody UserUpdateReqDTO userUpdateReqDTO){
-
         return userService.updateUser(id, userUpdateReqDTO);
     }
 
