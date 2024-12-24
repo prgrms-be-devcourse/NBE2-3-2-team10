@@ -3,19 +3,45 @@ package org.team10.washcode.repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
+
+import java.util.Map;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
-import org.team10.washcode.ResponseDTO.order.OrderResDTO;
+import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.entity.Pickup;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface PickupRepository extends JpaRepository<Pickup, Long> {
-    //이용내역 조회
+
+    @Query("SELECT DISTINCT p FROM Pickup p " +
+            "JOIN FETCH p.user u " +
+            "JOIN FETCH p.laundryshop l " +
+            "WHERE p.id = :pickupId")
+    Optional<Pickup> findPickupWithFetchJoin(@Param("pickupId") long pickupId);
+
+    @Query("SELECT DISTINCT p FROM Pickup p " +
+            "JOIN FETCH p.user u " +
+            "JOIN FETCH p.laundryshop l " +
+            "WHERE p.user.id = :userId " +
+            "AND p.status = :status")
+    List<Pickup> findAllByUserIdWithFetchJoinAndStatus(@Param("userId") long userId,
+                                                       @Param("status") PickupStatus status);
+
+    @Query("SELECT DISTINCT p FROM Pickup p " +
+            "JOIN FETCH p.user u " +
+            "WHERE p.user.id = :userId " +
+            "AND p.status IN :statuses")
+    List<Pickup> findAllByUserIdAndStatuses(@Param("userId") long userId,
+                                            @Param("statuses") List<PickupStatus> statuses);
+
+   //이용내역 조회
     @Query("SELECT ls.shop_name, p.id, p.status, p.created_at " +
             "FROM LaundryShop ls " +
             "JOIN Pickup p ON ls.id = p.laundryshop.id " +
@@ -56,6 +82,5 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Modifying
     @Query("UPDATE Pickup p SET p.status = 'CANCELLED' WHERE p.id = :pickupId AND p.user.id = :userId")
     int cancleOrder(int pickupId, int userId);
-
 
 }

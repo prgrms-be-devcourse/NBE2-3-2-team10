@@ -24,7 +24,7 @@ public class Pickup {
     @JoinColumn(name = "laundryshop_id")
     private LaundryShop laundryshop;     //세탁
 
-    @Enumerated(EnumType.STRING)//Enum 값을 문자열로 저장
+    @Enumerated(EnumType.STRING)
     private PickupStatus status;          //상태
 
     private String content;         //요청내용
