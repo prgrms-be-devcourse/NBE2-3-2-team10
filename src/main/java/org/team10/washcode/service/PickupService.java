@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.parsers.ReturnTypeParser;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.Enum.PickupStatus;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.entity.*;
@@ -28,8 +29,6 @@ public class PickupService {
         Pickup pickup = pickupRepository.findPickupWithFetchJoin(pickupId)
                 .orElseThrow(() -> new RuntimeException("해당 ID로 pickup 을 찾을 수 없습니다: " + pickupId));
 
-        Payment payment = paymentRepository.findByPickupId(pickupId);
-
         List<PickupItem> pickupItems = pickupItemRepository.findByPickupId(pickupId);
         List<PickupResDTO.OrderItemDTO> orderItems = pickupItems.stream()
                 .map(item -> new PickupResDTO.OrderItemDTO(
@@ -44,6 +43,7 @@ public class PickupService {
                 pickup.getStatus(),
                 pickup.getCreated_at(),
                 pickup.getUser().getAddress(),
+                pickup.getContent(),
                 orderItems
         );
     }
@@ -70,6 +70,7 @@ public class PickupService {
                     pickup.getCreated_at(),
                     pickup.getUser().getAddress(),
                     pickup.getUser().getPhone(),
+                    pickup.getContent(),
                     orderItems,
                     payment.getAmount(),
                     payment.getMethod()
@@ -119,6 +120,34 @@ public class PickupService {
                     pickup.getStatus(),
                     pickup.getCreated_at(),
                     pickup.getUser().getAddress(),
+                    pickup.getContent(),
+                    orderItems
+            );
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<PickupDeliveryResDTO> getPickupDeliveryList(Long userId) {
+        List<Pickup> pickups = pickupRepository.findAllByUserIdWithFetchJoinAndStatus(userId, PickupStatus.OUT_FOR_DELIVERY);
+
+        return pickups.stream().map(pickup -> {
+            List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
+
+            List<PickupDeliveryResDTO.OrderItemDTO> orderItems = pickupItems.stream()
+                    .map(item -> new PickupDeliveryResDTO.OrderItemDTO(
+                            item.getHandledItems().getItem_name(),
+                            item.getQuantity(),
+                            item.getTotalprice()
+                    ))
+                    .collect(Collectors.toList());
+
+            return new PickupDeliveryResDTO(
+                    pickup.getId(),
+                    pickup.getLaundryshop().getShop_name(),
+                    pickup.getCreated_at(),
+                    pickup.getUser().getAddress(),
+                    pickup.getUser().getPhone(),
+                    pickup.getContent(),
                     orderItems
             );
         }).collect(Collectors.toList());

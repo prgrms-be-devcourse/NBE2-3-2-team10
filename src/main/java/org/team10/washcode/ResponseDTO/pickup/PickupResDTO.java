@@ -16,6 +16,7 @@ public class PickupResDTO {
     private PickupStatus status;
     private Timestamp createdAt;
     private String address;
+    private String content;
 
     private List<OrderItemDTO> orderItems;
 

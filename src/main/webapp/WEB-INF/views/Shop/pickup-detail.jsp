@@ -79,6 +79,9 @@
             <p class="font-bold text-sm mb-2">
                 주소 : <span class="font-normal"><%= pickupDetail.getAddress() %></span>
             </p>
+            <p class="font-bold text-sm mb-2">
+                요청 사항 : <span class="font-normal"><%= pickupDetail.getContent().toString() %></span>
+            </p>
             <!-- 동적 상품 리스트 -->
             <p class="text-sm mb-2 leading-6">
                 <%

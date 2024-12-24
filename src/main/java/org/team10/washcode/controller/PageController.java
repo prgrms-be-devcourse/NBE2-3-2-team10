@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.service.PickupService;
@@ -40,6 +41,13 @@ public class PageController {
         PickupResDTO pickupDetail = pickupService.getPickupDetail(pickupId);
         model.addAttribute("pickupDetail", pickupDetail);
         return "Shop/pickup-detail";
+    }
+
+    @RequestMapping("/pickup-delivery")
+    public String pickupDelivery(Model model) {
+        List<PickupDeliveryResDTO> pickupList = pickupService.getPickupDeliveryList(1L);
+        model.addAttribute("pickupList", pickupList);
+        return "Shop/pickup-delivery";
     }
 
     @RequestMapping("/sales-summary")
