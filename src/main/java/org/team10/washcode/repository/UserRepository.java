@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.team10.washcode.ResponseDTO.user.UserMyPageResDTO;
+import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
 import java.util.List;
 import javax.swing.text.html.Option;
@@ -38,9 +39,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<String> findAddressById(int id);
 
     Optional<User> findByEmail(String email);
-
-    @Query("select new org.team10.washcode.ResponseDTO.user.UserProfileResDTO(u.name, u.address, u.phone) from User u where u.id = :id")
-    UserProfileResDTO findUserProfileById(@Param("id") int id);
 
     User findByName(String name);
 }
