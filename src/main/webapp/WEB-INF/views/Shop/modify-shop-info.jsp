@@ -86,10 +86,73 @@
             <textarea placeholder="영업일을 입력하세요"
                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="non_operating_days" name="non_operating_days"></textarea>
         </div>
+        <!-- Product Information -->
         <div class="mb-4">
-            <label class="block text-gray-700">가격표</label>
-            <textarea placeholder="가격표를 입력하세요"
-                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <label class="block text-gray-700 font-semibold mb-2">
+                상품 정보
+            <div class="flex justify-end space-x-2">
+                <button class="px-2 py-1 bg-green-500 text-white rounded addRowBtn whitespace-nowrap" onclick="addRow()" type="button">
+                    가격표 추가
+                </button>
+                <!-- Delete Button -->
+                <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">
+                    전체 삭제
+                </button>
+            </div>
+            </label>
+
+            <div class="relative">
+                <!-- 필요 시 여기에 상품 정보에 대한 textarea 또는 입력 창을 추가할 수 있습니다 -->
+            </div>
+        </div>
+
+        <!-- Product Table -->
+        <div class="mb-4">
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">이름</th>
+                    <th class="border p-2 whitespace-nowrap">카테고리</th>
+                    <th class="border p-2">가격</th>
+                    <th class="border p-2">작업</th>
+                </tr>
+                </thead>
+                <tbody id="productTableBody">
+                <tr>
+                    <td class="border p-2">
+                        <input
+                                type="text"
+                                placeholder="상품 이름"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2">
+                        <select class="w-full px-2 py-1 border rounded">
+                            <option>신발</option>
+                            <option>패딩</option>
+                            <option>프리미엄 패브릭</option>
+                            <option>캐리어 소독</option>
+                            <option>면 세탁물</option>
+                            <option>침구</option>
+                            <option>보관서비스</option>
+                        </select>
+                    </td>
+                    <td class="border p-2">
+                        <input
+                                type="number"
+                                placeholder="숫자만 입력"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2 text-center">
+                        <!-- Delete Button -->
+                        <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">
+                            -
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- 정보 저장 버튼 -->
@@ -214,6 +277,47 @@
                 }
             });
         };
+
+        function addRow() {
+            const table = document.querySelector('table tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                    <td class="border p-2">
+                        <input
+                                type="text"
+                                placeholder="상품 이름"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2">
+                        <select class="w-full px-2 py-1 border rounded">
+                            <option>신발</option>
+                            <option>패딩</option>
+                            <option>프리미엄 패브릭</option>
+                            <option>캐리어 소독</option>
+                            <option>면 세탁물</option>
+                            <option>침구</option>
+                            <option>보관서비스</option>
+                        </select>
+                    </td>
+                    <td class="border p-2">
+                        <input
+                                type="number"
+                                placeholder="숫자만 입력"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2 text-center">
+                        <!-- Delete Button -->
+                        <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">
+                            -
+                        </button>
+                    </td>
+            `;
+            table.appendChild(newRow);
+
+        }
+
     </script>
 
 </body>
