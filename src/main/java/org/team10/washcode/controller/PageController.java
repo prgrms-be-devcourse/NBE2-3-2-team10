@@ -95,4 +95,7 @@ public class PageController {
     @RequestMapping("/myInfo")
     public String myInfo() { return "Customer/my-info"; }
 
+    @RequestMapping("/myInfoModify")
+    public String myInfoModify() { return "Customer/my-info-modify-page"; }
+
 }

@@ -95,17 +95,6 @@
               });
     }
 
-    function getUserAddress() {
-      axios.get(url + '/api/user/address')
-              .then(res => {
-                const string = res.data.split(' ');
-                document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + "...";
-              })
-              .catch(error => {
-                alert(error.response.data);
-              });
-    }
-
     function getUserRole () {
       axios.get(url + '/role')
               .then(function(response) {

@@ -21,7 +21,7 @@
     <div class="flex items-center p-4 border-b">
         <button class="text-xl">&larr;</button>
         <h1 class="flex-grow text-center text-xl font-bold">내 정보</h1>
-        <button class="text-blue-500">수정</button>
+        <button class="text-blue-500" onclick="location.href='/myInfoModify'" >수정</button>
     </div>
     <div class="p-4">
         <div class="mb-6">
