@@ -131,11 +131,11 @@
             </select>
             </div>
 
-            <!-- 총 금액 표시 -->
-            <div class="mb-4">
-                <label for="totalPrice" class="block text-sm font-bold mb-2">총 금액</label>
-                <input type="text" id="totalPrice" class="w-full border rounded-lg p-2 bg-gray-100" readonly>
-            </div>
+<%--            <!-- 총 금액 표시 -->--%>
+<%--            <div class="mb-4">--%>
+<%--                <label for="totalPrice" class="block text-sm font-bold mb-2">총 금액</label>--%>
+<%--                <input type="text" id="totalPrice" class="w-full border rounded-lg p-2 bg-gray-100" readonly>--%>
+<%--            </div>--%>
 
             <div class="bg-gray-100 p-4 rounded-lg mb-4">
                 <div class="flex items-center">

@@ -36,6 +36,7 @@ public class OrderController {
     private HandledItemsService handledItemsService;
 
 
+
     @GetMapping("/main")
     public String main(Model model) {
         return "Customer/main";
@@ -64,10 +65,13 @@ public class OrderController {
             @RequestParam("laundryShopId") Long laundryShopId,
             @RequestParam("quantity") int quantity,
             @RequestParam("content") String content,
-            @RequestParam("item_id") Long itemId
+            @RequestParam("item_id") Long itemId,
+            @RequestParam("method") String paymentMethod // 결제 방법
     ) {
         try {
             HandledItems handledItem = handledItemsService.getHandledItemById(itemId);
+
+            int totalPrice = handledItem.getPrice() * quantity;
 
             // 수거 요청 생성
             Pickup pickup = new Pickup();
@@ -81,9 +85,19 @@ public class OrderController {
             pickupItem.setPickup(pickup);
             pickupItem.setQuantity(quantity);
             pickupItem.setHandledItems(handledItem);
+            pickupItem.setTotalPrice(totalPrice);
 
             // 수거 요청 저장
             orderService.saveOrder(pickup, pickupItem);
+
+            // 6. 결제 정보 저장
+            Payment payment = new Payment();
+            payment.setPickup(pickup);
+            payment.setPayment_datetime(new Timestamp(System.currentTimeMillis()));
+            payment.setAmount(totalPrice); // 총 금액
+            payment.setMethod(paymentMethod); // 결제 방법
+
+            orderService.savePayment(payment);
 
             return ResponseEntity.ok("수거 요청이 성공적으로 등록되었습니다.");
         } catch (Exception e) {
