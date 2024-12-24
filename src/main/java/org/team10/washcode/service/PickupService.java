@@ -2,7 +2,6 @@ package org.team10.washcode.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.parsers.ReturnTypeParser;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
@@ -10,11 +9,8 @@ import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
-
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +30,7 @@ public class PickupService {
                 .map(item -> new PickupResDTO.OrderItemDTO(
                         item.getHandledItems().getItem_name(),
                         item.getQuantity(),
-                        item.getTotalprice()
+                        item.getTotalPrice()
                 ))
                 .collect(Collectors.toList());
 
@@ -60,7 +56,7 @@ public class PickupService {
                     .map(item -> new PickupDetailResDTO.OrderItemDTO(
                             item.getHandledItems().getItem_name(),
                             item.getQuantity(),
-                            item.getTotalprice()
+                            item.getTotalPrice()
                     ))
                     .collect(Collectors.toList());
 
@@ -106,7 +102,7 @@ public class PickupService {
                     .map(item -> new PickupResDTO.OrderItemDTO(
                             item.getHandledItems().getItem_name(),
                             item.getQuantity(),
-                            item.getTotalprice()
+                            item.getTotalPrice()
                     ))
                     .collect(Collectors.toList());
 
@@ -137,7 +133,7 @@ public class PickupService {
                     .map(item -> new PickupDeliveryResDTO.OrderItemDTO(
                             item.getHandledItems().getItem_name(),
                             item.getQuantity(),
-                            item.getTotalprice()
+                            item.getTotalPrice()
                     ))
                     .collect(Collectors.toList());
 
