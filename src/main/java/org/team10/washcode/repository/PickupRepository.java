@@ -1,6 +1,8 @@
 package org.team10.washcode.repository;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,7 +23,7 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     List<Object[]> findOrderListByUserId(@Param("userId") int userId);
 
     //이용내역 조회(상세보기)
-        @Query("SELECT " +
+    @Query("SELECT " +
                 "u.address AS address, " +
                 "u.phone AS phone, " +
                 "ls.shop_name AS shopName, " +
@@ -44,10 +46,16 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
                 "LEFT JOIN HandledItems hi ON pi.handledItems.id = hi.id " +
                 "LEFT JOIN Payment pay ON p.id = pay.pickup.id " +
                 "WHERE u.id = :userId AND pi.pickup.id = :pickupId")
-        List<Object[]> findOrderDetails(
+    List<Object[]> findOrderDetails(
                 @Param("userId") int userId,
                 @Param("pickupId") int pickupId);
 
+
+    //취소버튼 ->status 상태 변경
+    @Transactional
+    @Modifying
+    @Query("UPDATE Pickup p SET p.status = 'CANCELLED' WHERE p.id = :pickupId AND p.user.id = :userId")
+    int cancleOrder(int pickupId, int userId);
 
 
 }

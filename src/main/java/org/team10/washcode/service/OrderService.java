@@ -3,6 +3,7 @@ package org.team10.washcode.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
@@ -25,11 +26,9 @@ public class OrderService {
     @Autowired
     private PickupItemRepository pickupItemRepository;
     @Autowired
-    private UserRepository userRepository;  // User 조회용
+    private PaymentRepository paymentRepository;
     @Autowired
-    private LaundryShopRepository laundryShopRepository;
-    @Autowired
-    private HandledItemsRepository handledItemsRepository;
+    private ReviewRepository reviewRepository;
 
     public void saveOrder(Pickup pickup, PickupItem pickupItem) {
         // Pickup 저장
@@ -83,9 +82,13 @@ public class OrderService {
 
         return orderResDTO;
     }
-
-
-
+    @Transactional
+    public void cancelOrder(int pickupId, int userId) {
+        int updatedRows = pickupRepository.cancleOrder(pickupId, userId);
+        if (updatedRows == 0) {
+            throw new IllegalArgumentException("No matching pickup found for pickupId: " + pickupId + " and userId: " + userId);
+        }
+    }
 
 
 

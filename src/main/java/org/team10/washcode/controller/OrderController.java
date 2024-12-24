@@ -35,6 +35,12 @@ public class OrderController {
     @Autowired
     private HandledItemsService handledItemsService;
 
+
+    @GetMapping("/main")
+    public String main(Model model) {
+        return "Customer/main";
+    }
+
     @GetMapping("/create")
     public String order(@RequestParam("id") int userId,
                         @RequestParam("laundryShopId") Long laundryShopId,
@@ -109,5 +115,21 @@ public class OrderController {
         model.addAttribute("order",orderDetails);
         //return ResponseEntity.ok(orderDetails);
         return "Customer/order-history-detail";
+    }
+
+//    @DeleteMapping("/delete/{userId}/{pickupId}")
+//    public String deleteOrder(@PathVariable int userId, @PathVariable int pickupId) {
+//        orderService.delteOrder(pickupId, userId);
+//        return "redirect:/api/orders/main";
+//    }
+
+    @PostMapping("/cancel/{userId}/{pickupId}")
+    public String cancelPickup(
+            @PathVariable int pickupId,
+            @PathVariable int userId) {
+        // 서비스 호출
+        orderService.cancelOrder(pickupId, userId);
+//        return ResponseEntity.ok("Pickup status updated to CANCELLED successfully.");
+        return "redirect:/api/orders/main";
     }
 }

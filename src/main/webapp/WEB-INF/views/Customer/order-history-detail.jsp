@@ -61,13 +61,16 @@
                 <h2 class="font-bold">요청사항</h2>
                 <p><%= (order.getContent() != null && !order.getContent().trim().isEmpty()) ? order.getContent() : "요청사항 없음." %></p>
             </div>
-            <div class="flex justify-between mt-4">
-                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>
-                <button class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">취소</button>
+            <div class="flex justify-between mt-4" style="text-align: right;">
+<%--                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>--%>
+                <form id="deleteForm" action="/api/orders/cancel/${userId}/${pickupId}" method="post">
+                <button type="submit" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
 
 <div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
     <div class="flex justify-around py-2">
