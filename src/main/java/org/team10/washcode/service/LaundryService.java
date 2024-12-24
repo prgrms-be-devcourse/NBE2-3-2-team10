@@ -2,12 +2,17 @@ package org.team10.washcode.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
+import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
+import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.entity.LaundryShop;
-
 import org.team10.washcode.entity.User;
+import org.team10.washcode.repository.HandledItemsRepository;
 import org.team10.washcode.repository.LaundryShopRepository;
-
-
+import org.team10.washcode.repository.UserRepository;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +21,10 @@ import java.util.stream.Collectors;
 public class LaundryService {
     @Autowired
     private LaundryShopRepository laundryShopRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private HandledItemsRepository handledItemsRepository;
 
     public LaundryShop getLaundryById(Long id){
         return laundryShopRepository.findById(id)
@@ -56,5 +65,59 @@ public class LaundryService {
         return R * c; // 거리 반환 (km)
 
     }
+
+
+    //세탁소 상세정보 조회
+    //세탁소 id로 세탁소 정보 찾기
+    public LaundryDetailResDTO getLaundryShopById(int id) {
+        LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
+        LaundryDetailResDTO to = new LaundryDetailResDTO();
+
+        to.setShop_name(laundryShop.getShop_name());
+        to.setPhone(laundryShop.getPhone());
+        to.setAddress(laundryShop.getAddress());
+        to.setNon_operating_days(laundryShop.getNon_operating_days());
+
+        return to;
+    }
+
+    public LaundryShop registerLaundryShop(ShopAddReqDTO to) {
+        User user = userRepository.findByName(to.getUser_name());
+        LaundryShop shop = new LaundryShop();
+        shop.setUser(user);
+        shop.setShop_name(to.getShop_name());
+        shop.setBusiness_number(to.getBusiness_number());
+        shop.setAddress(to.getAddress());
+        shop.setPhone(to.getPhone());
+        shop.setNon_operating_days(to.getNon_operating_days());
+        shop.setLatitude(to.getLatitude());
+        shop.setLongitude(to.getLongitude());
+        shop.setCreated_at(new Timestamp(System.currentTimeMillis()));
+
+
+        return laundryShopRepository.save(shop);
+    }
+
+    public LaundryShop getLaundryInfoByUserId(int userId) {
+        return laundryShopRepository.findByUserId(userId);
+    }
+
+    //세탁소 가격정보 저장 및 수정
+    public List<HandledItems> setHandledItems(List<HandledItemsResDTO> toList) {
+        List<HandledItems> handledItemsList = new ArrayList<>();
+
+        for (HandledItemsResDTO to : toList) {
+            HandledItems items = new HandledItems();
+            items.setItem_name(to.getItem_name());
+            items.setCategory(to.getCategory());
+            items.setPrice(to.getPrice());
+            // items.setLaundryshop(); // 필요에 따라 설정
+
+            handledItemsList.add(items);
+        }
+
+        return handledItemsRepository.saveAll(handledItemsList);
+    }
+
 }
 

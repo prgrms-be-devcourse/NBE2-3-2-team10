@@ -9,14 +9,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
+import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.service.KakaoService;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
+import org.team10.washcode.service.LaundryService;
+import org.team10.washcode.service.UserService;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.service.PickupService;
+
 
 import java.util.List;
 
@@ -27,6 +33,7 @@ public class PageController {
 
     private final KakaoService kakaoService;
     private final PickupService pickupService;
+    private final LaundryService laundryService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -109,18 +116,21 @@ public class PageController {
         return "Customer/laundryshop-by-map";
     }
 
-    @RequestMapping("register-shop")
-    public String registerShop() {
-        return "Shop/register-shop";
-    }
-
-    @RequestMapping("main")
+    @RequestMapping("/main")
     public String main() {
         return "Customer/main";
     }
 
-    @RequestMapping("laundryshop-detail/{laundry_id}")
-    public String laundryshopDetail() {
+    @RequestMapping("/laundryshop-detail/{laundry_id}")
+    public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
+        LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
+
+        if(to == null) {
+            return "error";
+        }
+
+        model.addAttribute("laundry", to);
         return "Customer/laundryshop-detail";
     }
+
 }
