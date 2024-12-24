@@ -108,7 +108,8 @@
 
     <script>
         const url = "http://localhost:8080"
-        window.onload = function() {
+
+        function getUserAddress() {
             axios.get(url + '/api/user/address')
                 .then(res => {
                     const string = res.data.split(' ');
@@ -117,6 +118,24 @@
                 .catch(error => {
                     alert(error.response.data);
                 });
+        }
+
+        function checkAccessToken() {
+            axios.post(url + '/api/user/check-login')
+                .then(res => {
+                    if (res.data === false) {
+                        alert("로그인이 필요합니다.");
+                        location.href = '/';
+                    }
+                })
+                .catch(error => {
+                    alert(error.response.data);
+                });
+        }
+
+        window.onload = () => {
+            checkAccessToken();
+            getUserAddress();
         }
     </script>
 

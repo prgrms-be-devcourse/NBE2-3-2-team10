@@ -71,9 +71,9 @@ public class UserController {
         return userService.logout();
     }
 
-//    @PostMapping("/check-login")
-//    @Operation(summary = "로그인 체크", description = "로그인 체크 API 입니다.")
-//    public ResponseEntity<?> checkLogin(){
-//        return userService.checkLogin();
-//    }
+    @PostMapping("/check-login")
+    @Operation(summary = "로그인 체크", description = "로그인 체크 API 입니다.")
+    public ResponseEntity<?> checkLogin(HttpServletRequest request){
+        return userService.checkLogin(request);
+    }
 }

@@ -76,7 +76,21 @@
 
     <script>
         const url = "http://localhost:8080"
-        window.onload = () => {
+
+        function checkAccessToken() {
+            axios.post(url + '/api/user/check-login')
+                .then(res => {
+                    if (res.data === false) {
+                        alert("로그인이 필요합니다.");
+                        location.href = '/';
+                    }
+                })
+                .catch(error => {
+                    alert(error.response.data);
+                });
+        }
+
+        function getUserInfo() {
             axios.get(url + '/api/user')
                 .then(function(response) {
                     document.getElementById('email').innerHTML = response.data.email;
@@ -86,7 +100,12 @@
                 }).catch(function(error) {
                 console.error(error);
             });
-        };
+        }
+
+        window.onload = () => {
+            checkAccessToken();
+            getUserInfo();
+        }
     </script>
 </body>
 </html>

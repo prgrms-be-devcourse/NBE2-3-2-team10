@@ -50,12 +50,6 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
       </svg>
     </button>
-    <button class="flex justify-between items-center p-4 w-full focus:outline-none">
-      <div>세탁소 등록</div>
-      <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-      </svg>
-    </button>
   </div>
 </div>
 <div>
@@ -87,15 +81,40 @@
 
   <script>
     const url = "http://localhost:8080/api/user"
-    window.onload = () => {
+
+    function checkAccessToken() {
+      axios.post(url + '/api/user/check-login')
+              .then(res => {
+                if (res.data === false) {
+                  alert("로그인이 필요합니다.");
+                  location.href = '/';
+                }
+              })
+              .catch(error => {
+                alert(error.response.data);
+              });
+    }
+
+    function getUserAddress() {
+      axios.get(url + '/api/user/address')
+              .then(res => {
+                const string = res.data.split(' ');
+                document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + "...";
+              })
+              .catch(error => {
+                alert(error.response.data);
+              });
+    }
+
+    function getUserRole () {
       axios.get(url + '/role')
               .then(function(response) {
                 document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
                 document.getElementById('name').innerHTML = response.data.name + " 님";
               }).catch(function(error) {
-                console.error(error);
-              });
-    };
+        console.error(error);
+      });
+    }
 
     function logout() {
       axios.post(url + '/logout')
@@ -106,6 +125,10 @@
                 console.error(error);
               });
     }
+
+    window.onload = () => {
+      getUserRole();
+    };
   </script>
 </div>
 </body>

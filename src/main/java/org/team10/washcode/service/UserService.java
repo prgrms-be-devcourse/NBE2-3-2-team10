@@ -28,10 +28,28 @@ public class UserService {
     @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
     private int REFRESH_TOKEN_EXPIRATION_TIME;
 
-
     @Autowired
     private UserRepository userRepository;
 
+    public ResponseCookie getAccessToken(Integer userId) {
+        return ResponseCookie
+                .from("ACCESSTOKEN", userId.toString()) // 추후 토큰값 추가
+                .domain("localhost")
+                .path("/")
+                .httpOnly(true)
+                .maxAge(ACCESS_TOKEN_EXPIRATION_TIME)
+                .build();
+    }
+
+    public ResponseCookie getRefreshToken() {
+        return ResponseCookie
+                .from("REFRESHTOKEN", "5678") // 추후 토큰값 추가
+                .domain("localhost")
+                .path("/")
+                .httpOnly(true)
+                .maxAge(REFRESH_TOKEN_EXPIRATION_TIME)
+                .build();
+    }
 
     public ResponseEntity<?> signup(RegisterReqDTO registerReqDTO){
         try {
@@ -71,21 +89,8 @@ public class UserService {
 
             Integer userId = userRepository.findIdByEmail(loginReqDTO.getEmail()).get();
 
-            ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", userId.toString()) // 추후 토큰값 추가
-                    .domain("localhost")
-                    .path("/")
-                    .httpOnly(true)
-                    .maxAge(ACCESS_TOKEN_EXPIRATION_TIME)
-                    .build();
-
-            ResponseCookie refresh_cookie = ResponseCookie
-                    .from("REFRESHTOKEN", "5678") // 추후 토큰값 추가
-                    .domain("localhost")
-                    .path("/")
-                    .httpOnly(true)
-                    .maxAge(REFRESH_TOKEN_EXPIRATION_TIME)
-                    .build();
+            ResponseCookie access_cookie = getAccessToken(userId);
+            ResponseCookie refresh_cookie = getRefreshToken();
 
             return ResponseEntity
                     .ok()
@@ -173,6 +178,7 @@ public class UserService {
 
     public ResponseEntity<?> logout() {
         try {
+            // Access Token 유효시간을 0으로 설정
             ResponseCookie access_cookie = ResponseCookie
                     .from("ACCESSTOKEN", "") // 추후 토큰값 추가
                     .domain("localhost")
@@ -181,6 +187,7 @@ public class UserService {
                     .maxAge(0)
                     .build();
 
+            // Refresh Token 유효시간을 0으로 설정
             ResponseCookie refresh_cookie = ResponseCookie
                     .from("REFRESHTOKEN", "") // 추후 토큰값 추가
                     .domain("localhost")
@@ -196,6 +203,42 @@ public class UserService {
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
             return ResponseEntity.status(500).body("Logout ERROR");
+        }
+    }
+
+    public ResponseEntity<?> checkLogin(HttpServletRequest request) {
+
+        // Access Token이 쿠키에 있는지 확인
+        // 없으면 로그인 안되어 있다고 401후, 에러 반환
+        Cookie[] cookies = request.getCookies();
+        String accessToken = null;
+        String refreshToken = null;
+        ResponseCookie accessCookie = null;
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("ACCESSTOKEN")) {
+                accessToken = cookie.getValue();
+            } else if (cookie.getName().equals("REFRESHTOKEN")) {
+                refreshToken = cookie.getValue();
+            }
+        }
+
+        try {
+            // Refresh Token이 일치하지 않으면 에러 반환
+            if ( !refreshToken.equals("5678") ) {
+                throw new IllegalArgumentException("Refresh Token is not valid");
+            }
+            accessCookie = getAccessToken(Integer.parseInt(accessToken));
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                    .body("Logged in");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[Error] " + e.getMessage());
+            return ResponseEntity.status(400).body("Bad Request: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+            return ResponseEntity.status(500).body("Refresh Token ERROR");
         }
     }
 }

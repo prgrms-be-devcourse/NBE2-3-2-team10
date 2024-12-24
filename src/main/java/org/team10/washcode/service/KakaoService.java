@@ -37,6 +37,7 @@ public class KakaoService {
     private int REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
     private static final int PASSWORD_LENGTH = 12;
@@ -146,10 +147,10 @@ public class KakaoService {
     }
 
     // 카카오를 통해 JTW 토큰을 발행하는 코드
-    public void login(int userId, HttpServletResponse response){
+    public void login(Integer userId, HttpServletResponse response){
         try {
             // 액세스 토큰 쿠키 생성
-            Cookie accessCookie = new Cookie("ACCESSTOKEN", "K" + userId); // 추후 토큰값 추가
+            Cookie accessCookie = new Cookie("ACCESSTOKEN", userId.toString()); // 추후 토큰값 추가
             accessCookie.setDomain("localhost");
             accessCookie.setPath("/");
             accessCookie.setHttpOnly(true);
