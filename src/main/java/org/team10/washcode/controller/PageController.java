@@ -20,6 +20,7 @@ import org.team10.washcode.service.PickupService;
 
 import java.util.List;
 
+
 @Controller
 @RequiredArgsConstructor
 public class PageController {
@@ -101,5 +102,25 @@ public class PageController {
     @RequestMapping("/modify-shop-info")
     public String modifyShopInfo(Model model) {
         return "Shop/modify-shop-info";
+    }
+
+    @RequestMapping("laundryshop-by-map")
+    public String laundryshopByMap() {
+        return "Customer/laundryshop-by-map";
+    }
+
+    @RequestMapping("register-shop")
+    public String registerShop() {
+        return "Shop/register-shop";
+    }
+
+    @RequestMapping("main")
+    public String main() {
+        return "Customer/main";
+    }
+
+    @RequestMapping("laundryshop-detail/{laundry_id}")
+    public String laundryshopDetail() {
+        return "Customer/laundryshop-detail";
     }
 }
