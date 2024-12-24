@@ -29,11 +29,19 @@
 
 <!-- 메뉴 카드 -->
 <div class="max-w-md mx-auto mt-4 space-y-4 px-4">
-  <!-- 수거 요청 버튼 -->
-  <button type="button" onclick="location.href='/pickup-check'" class="flex items-center justify-between w-full bg-white rounded-2xl shadow-md p-4 hover:bg-gray-100 active:bg-gray-200 focus:outline-none">
-    <span class="text-xl font-bold">수거 요청</span>
-    <img src="https://img.icons8.com/ios-filled/50/00bcd4/delivery.png" alt="수거 요청" class="h-10 w-10">
-  </button>
+
+  <div class="flex justify-between space-x-4">
+    <!-- 수거 요청 버튼 -->
+    <button type="button" onclick="location.href='/pickup-check'" class="flex-1 bg-white rounded-2xl shadow-md p-4 hover:bg-gray-100 active:bg-gray-200 focus:outline-none flex items-center justify-between">
+      <span class="text-xl font-bold">수거 요청</span>
+      <img src="https://img.icons8.com/ios-filled/50/00bcd4/iron.png" alt="수거 요청" class="h-10 w-10">
+    </button>
+    <!-- 배달 요청 버튼 -->
+    <button type="button" onclick="location.href='/pickup-delivery'" class="flex-1 bg-white rounded-2xl shadow-md p-4 hover:bg-gray-100 active:bg-gray-200 focus:outline-none flex items-center justify-between">
+      <span class="text-xl font-bold">배달 요청</span>
+      <img src="https://img.icons8.com/ios-filled/50/00bcd4/delivery.png" alt="배달 요청" class="h-10 w-10">
+    </button>
+  </div>
 
   <!-- 매출 관리 버튼 -->
   <button type="button" onclick="location.href='/sales-summary'" class="flex items-center justify-between w-full bg-white rounded-2xl shadow-md p-4 hover:bg-gray-100 active:bg-gray-200 focus:outline-none">

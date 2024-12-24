@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%
-%>
+<%@ page import="org.team10.washcode.ResponseDTO.order.OrderlistResDTO" %>
+<%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -20,28 +20,33 @@
     <div class="p-4 border-b">
         <h1 class="text-xl font-bold">이용내역</h1>
     </div>
-    <div class="p-4">
-        <div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">
-            <div class="flex justify-between items-center">
-                <h2 class="font-bold">세모 세탁</h2>
-                <span class="text-blue-500">예약이 완료되었어요.</span>
+    <form action="/api/orders/history" method="get">
+        <input type="hidden" name="userId" value="<%= request.getAttribute("userId") %>" />
+        <div class="p-4">
+            <%-- orders 리스트를 반복문을 통해 출력 --%>
+            <%
+                List<OrderlistResDTO> orders = (List<OrderlistResDTO>) request.getAttribute("orders");
+                if (orders != null) {
+                    for (OrderlistResDTO order : orders) {
+            %>
+            <div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold"><%= order.getShopName() %></h2>
+                    <span class="text-blue-500"><%= order.getStatus() %></span>
+                </div>
+                <p class="text-gray-500">주문 생성일 : <%= order.getCreatedAt() %></p>
+                <%-- 주문 상세보기 버튼 추가 --%>
+                <a href="/api/orders/history/<%= request.getAttribute("userId") %>/<%= order.getPickup_id() %>"
+                   class="text-blue-500 mt-2 inline-block">
+                    상세보기
+                </a>
             </div>
-            <p>와이셔츠 1개</p>
-            <p>청바지 2개</p>
-            <p>코트 1개</p>
-            <p class="text-gray-500">주문일자 : 2024년 12월 12일</p>
+            <%
+                    }
+                }
+            %>
         </div>
-        <div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">
-            <div class="flex justify-between items-center">
-                <h2 class="font-bold">세모 세탁</h2>
-                <span class="text-blue-500">배달완료</span>
-            </div>
-            <p>티셔츠 3개</p>
-            <p>바지 2개</p>
-            <p class="text-gray-500">주문일자 : 2024년 12월 07일</p>
-            <button class="mt-2 w-full bg-blue-500 text-white py-2 rounded-lg">리뷰작성</button>
-        </div>
-    </div>
+    </form>
 </div>
 <!-- Footer -->
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around max-w-[600px] overflow-x-auto mx-auto ">

@@ -26,6 +26,7 @@ public class Pickup {
 
     @Enumerated(EnumType.STRING)
     private PickupStatus status;          //상태
+
     private String content;         //요청내용
     @CreatedDate
     private Timestamp created_at;   //요청생성  

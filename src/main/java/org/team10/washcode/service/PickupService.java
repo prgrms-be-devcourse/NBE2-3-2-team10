@@ -4,13 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.Enum.PickupStatus;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
-
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,30 +21,26 @@ public class PickupService {
     private final PickupItemRepository pickupItemRepository;
 
     @Transactional
-    public PickupDetailResDTO getPickupDetail(Long pickupId) {
+    public PickupResDTO getPickupDetail(Long pickupId) {
         Pickup pickup = pickupRepository.findPickupWithFetchJoin(pickupId)
                 .orElseThrow(() -> new RuntimeException("해당 ID로 pickup 을 찾을 수 없습니다: " + pickupId));
 
-        Payment payment = paymentRepository.findByPickupId(pickupId);
-
         List<PickupItem> pickupItems = pickupItemRepository.findByPickupId(pickupId);
-        List<PickupDetailResDTO.OrderItemDTO> orderItems = pickupItems.stream()
-                .map(item -> new PickupDetailResDTO.OrderItemDTO(
+        List<PickupResDTO.OrderItemDTO> orderItems = pickupItems.stream()
+                .map(item -> new PickupResDTO.OrderItemDTO(
                         item.getHandledItems().getItem_name(),
                         item.getQuantity(),
-                        item.getTotalprice()
+                        item.getTotalPrice()
                 ))
                 .collect(Collectors.toList());
 
-        return new PickupDetailResDTO(
+        return new PickupResDTO(
                 pickup.getId(),
-                pickup.getLaundryshop().getShop_name(),
+                pickup.getStatus(),
                 pickup.getCreated_at(),
                 pickup.getUser().getAddress(),
-                pickup.getUser().getPhone(),
-                orderItems,
-                payment.getAmount(),
-                payment.getMethod()
+                pickup.getContent(),
+                orderItems
         );
     }
 
@@ -60,7 +56,7 @@ public class PickupService {
                     .map(item -> new PickupDetailResDTO.OrderItemDTO(
                             item.getHandledItems().getItem_name(),
                             item.getQuantity(),
-                            item.getTotalprice()
+                            item.getTotalPrice()
                     ))
                     .collect(Collectors.toList());
 
@@ -70,6 +66,7 @@ public class PickupService {
                     pickup.getCreated_at(),
                     pickup.getUser().getAddress(),
                     pickup.getUser().getPhone(),
+                    pickup.getContent(),
                     orderItems,
                     payment.getAmount(),
                     payment.getMethod()
@@ -83,9 +80,73 @@ public class PickupService {
                 .orElseThrow(() -> new RuntimeException("해당 ID로 pickup을 찾을 수 없습니다: " + pickupId));
 
         pickup.setStatus(newStatus);
-        pickupRepository.save(pickup); // 변경 사항 반영
+        pickupRepository.save(pickup);
     }
 
+    @Transactional
+    public List<PickupResDTO> getPickedupListAndUpdateStatus(Long userId) {
+        List<PickupStatus> statuses = Arrays.asList(
+                PickupStatus.PAYMENT_PENDING,
+                PickupStatus.PAYMENT_COMPLETED,
+                PickupStatus.IN_PROGRESS,
+                PickupStatus.CANCELLED_WITH_DELIVERY_FEE,
+                PickupStatus.CANCELLED
+        );
 
+        List<Pickup> pickups = pickupRepository.findAllByUserIdAndStatuses(userId, statuses);
+
+        return pickups.stream().map(pickup -> {
+
+            List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
+            List<PickupResDTO.OrderItemDTO> orderItems = pickupItems.stream()
+                    .map(item -> new PickupResDTO.OrderItemDTO(
+                            item.getHandledItems().getItem_name(),
+                            item.getQuantity(),
+                            item.getTotalPrice()
+                    ))
+                    .collect(Collectors.toList());
+
+            if (pickup.getStatus().equals(PickupStatus.PAYMENT_COMPLETED)) {
+                pickup.setStatus(PickupStatus.IN_PROGRESS);
+                pickupRepository.save(pickup);
+            }
+
+            return new PickupResDTO(
+                    pickup.getId(),
+                    pickup.getStatus(),
+                    pickup.getCreated_at(),
+                    pickup.getUser().getAddress(),
+                    pickup.getContent(),
+                    orderItems
+            );
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<PickupDeliveryResDTO> getPickupDeliveryList(Long userId) {
+        List<Pickup> pickups = pickupRepository.findAllByUserIdWithFetchJoinAndStatus(userId, PickupStatus.OUT_FOR_DELIVERY);
+
+        return pickups.stream().map(pickup -> {
+            List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
+
+            List<PickupDeliveryResDTO.OrderItemDTO> orderItems = pickupItems.stream()
+                    .map(item -> new PickupDeliveryResDTO.OrderItemDTO(
+                            item.getHandledItems().getItem_name(),
+                            item.getQuantity(),
+                            item.getTotalPrice()
+                    ))
+                    .collect(Collectors.toList());
+
+            return new PickupDeliveryResDTO(
+                    pickup.getId(),
+                    pickup.getLaundryshop().getShop_name(),
+                    pickup.getCreated_at(),
+                    pickup.getUser().getAddress(),
+                    pickup.getUser().getPhone(),
+                    pickup.getContent(),
+                    orderItems
+            );
+        }).collect(Collectors.toList());
+    }
 
 }

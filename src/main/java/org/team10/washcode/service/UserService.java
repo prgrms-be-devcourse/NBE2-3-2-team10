@@ -1,5 +1,7 @@
 package org.team10.washcode.service;
 
+
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -213,5 +215,10 @@ public class UserService {
             System.out.println("[Error] "+e.getMessage());
             return ResponseEntity.status(500).body("Refresh Token ERROR");
         }
+    }
+  
+    public User getUserById(int id){
+        return userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("user not found"));
     }
 }

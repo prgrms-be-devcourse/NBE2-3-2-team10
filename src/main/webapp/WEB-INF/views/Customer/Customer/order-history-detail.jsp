@@ -1,6 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="org.team10.washcode.ResponseDTO.order.OrderResDTO" %>
-<%@ page import="java.util.List" %>
 <%
 %>
 <!DOCTYPE html>
@@ -24,54 +22,34 @@
     </div>
     <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow mb-4">
-            <%
-                OrderResDTO order = (OrderResDTO) request.getAttribute("order");
-                if (order != null) {
-            %>
             <div class="flex justify-between items-center">
-                <h2 class="font-bold"><%= order.getShop_name() %></h2>
-                <span class="text-blue-500"><%= order.getStatus() %></span>
+                <h2 class="font-bold">세모 세탁소</h2>
+                <span class="text-blue-500">예약이 완료되었어요.</span>
             </div>
-            <%
-                List<OrderResDTO.OrderItem> orderItems = order.getOrder_items();
-                if (orderItems != null) {
-                    for (OrderResDTO.OrderItem item : orderItems) {
-            %>
-            <p><%= item.getItem_name() %> <%= item.getQuantity() %>개</p>
-            <%
-                    }
-                }
-            %>
-            <p class="text-gray-500">주문일자 : <%= order.getCreated_at() %></p>
-            <%
-                } // order != null 닫힘
-            %>
+            <p>와이셔츠 1개</p>
+            <p>청바지 2개</p>
+            <p>코트 1개</p>
+            <p class="text-gray-500">주문일자 : 2024년 12월 12일</p>
+
             <div class="border-t border-gray-200 mt-2 pt-2">
                 <h2 class="font-bold">결제금액</h2>
-                <p>주문 금액 : <%= order.getAmount() %>원</p>
-                <p>결제 방법 : <%= order.getMethod() %></p>
+                <p>주문 금액 : 28000원</p>
+                <p>결제 방법 : 카카오페이</p>
             </div>
 
             <div class="border-t border-gray-200 mt-2 pt-2">
                 <h2 class="font-bold">배달 주소</h2>
-                <p><%= order.getAddress() %></p>
-                <p>전화번호 : <%= order.getPhone() %></p>
+                <p>서울특별시 어쩌구 저쩌구 123, 동그라미 아파트 (123동 123호)</p>
+                <p>전화번호 : 010 - 1234 - 1234</p>
             </div>
-            <div class="border-t border-gray-200 mt-2 pt-2">
-                <h2 class="font-bold">요청사항</h2>
-                <p><%= (order.getContent() != null && !order.getContent().trim().isEmpty()) ? order.getContent() : "요청사항 없음." %></p>
-            </div>
-            <div class="flex justify-between mt-4" style="text-align: right;">
-<%--                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>--%>
-                <form id="deleteForm" action="/api/orders/cancel/${userId}/${pickupId}" method="post">
-                <button type="submit" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>
-                </form>
+
+            <div class="flex justify-between mt-4">
+                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>
+                <button class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">취소</button>
             </div>
         </div>
     </div>
 </div>
-
-
 <div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
     <div class="flex justify-around py-2">
         <button class="flex flex-col items-center text-blue-500">
