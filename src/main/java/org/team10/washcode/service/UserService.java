@@ -196,8 +196,7 @@ public class UserService {
         try {
             // AccessToken 유효성 확인
             if(accessToken!=null&&jwtProvider.validateToken(accessToken)){
-                return ResponseEntity.ok().body("accessToken 정상");
-            // RefreshToken 유효성 확인 후 AccessToken 재발급
+                return ResponseEntity.ok().body("accessToken 정상");// RefreshToken 유효성 확인 후 AccessToken 재발급
             }else if (!jwtProvider.validateToken(accessToken)&&refreshToken!=null&&jwtProvider.validateToken(refreshToken)){
                 String newAccessToken = jwtProvider.generateAccessToken(jwtProvider.getId(refreshToken),jwtProvider.getRole(refreshToken));
                 Map<String,String> responseAccessToken = new HashMap<>();

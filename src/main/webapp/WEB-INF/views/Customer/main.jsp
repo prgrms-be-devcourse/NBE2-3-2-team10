@@ -108,33 +108,38 @@
 
     <script>
         const url = "http://localhost:8080"
+        const token = sessionStorage.getItem("accessToken");
 
         function getUserAddress() {
-            axios.get(url + '/api/user/address')
-                .then(res => {
-                    const string = res.data.split(' ');
-                    document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + "...";
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.get(url + '/api/user/address', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                const string = res.data.split(' ');
+                document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + "...";
+            }).catch(error => {
+                alert(error.response.data);
+            });
         }
 
         function checkAccessToken() {
-            axios.post(url + '/api/user/check-login')
-                .then(res => {
-                    if (res.data === false) {
-                        alert("로그인이 필요합니다.");
-                        location.href = '/';
-                    }
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                if (res.data === false) {
+                    alert("로그인이 필요합니다.");
+                    location.href = '/';
+                }
+            }).catch(error => {
+                alert(error.response.data);
+            });
         }
 
         window.onload = () => {
-            checkAccessToken();
+            //checkAccessToken();
             getUserAddress();
         }
     </script>

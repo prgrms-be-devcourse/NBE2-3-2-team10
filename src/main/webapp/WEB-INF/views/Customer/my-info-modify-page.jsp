@@ -95,6 +95,7 @@
 
     <script>
         const url = "http://localhost:8080"
+        const token = sessionStorage.getItem("accessToken");
 
         var name = "";
         var phone = "";
@@ -108,30 +109,35 @@
 
 
         function checkAccessToken() {
-            axios.post(url + '/api/user/check-login')
-                .then(res => {
-                    if (res.data === false) {
-                        alert("로그인이 필요합니다.");
-                        location.href = '/';
-                    }
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                if (res.data === false) {
+                    alert("로그인이 필요합니다.");
+                    location.href = '/';
+                }
+            }).catch(error => {
+                alert(error.response.data);
+            });
         }
 
         function getUserInfo() {
-            axios.get(url + '/api/user')
-                .then(function(response) {
-                    email = response.data.email;
-                    name = response.data.name;
-                    phone = response.data.phone;
-                    address = response.data.address;
+            axios.get(url + '/api/user', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(function(response) {
+                email = response.data.email;
+                name = response.data.name;
+                phone = response.data.phone;
+                address = response.data.address;
 
-                    document.getElementById('email').value = email;
-                    document.getElementById('name').value = name;
-                    document.getElementById('address').textContent = response.data.address
-                }).catch(function(error) {
+                document.getElementById('email').value = email;
+                document.getElementById('name').value = name;
+                document.getElementById('address').textContent = response.data.address
+            }).catch(function(error) {
                 console.error(error);
             });
         }

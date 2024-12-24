@@ -76,28 +76,34 @@
 
     <script>
         const url = "http://localhost:8080"
+        const token = sessionStorage.getItem("accessToken");
 
         function checkAccessToken() {
-            axios.post(url + '/api/user/check-login')
-                .then(res => {
-                    if (res.data === false) {
-                        alert("로그인이 필요합니다.");
-                        location.href = '/';
-                    }
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                if (res.data === false) {
+                    alert("로그인이 필요합니다.");
+                    location.href = '/';
+                }
+            }).catch(error => {
+                alert(error.response.data);
+            });
         }
 
         function getUserInfo() {
-            axios.get(url + '/api/user')
-                .then(function(response) {
-                    document.getElementById('email').innerHTML = response.data.email;
-                    document.getElementById('name').innerHTML = response.data.name
-                    document.getElementById('phone').innerHTML = response.data.phone
-                    document.getElementById('address').innerHTML = response.data.address
-                }).catch(function(error) {
+            axios.get(url + '/api/user', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(function(response) {
+                document.getElementById('email').innerHTML = response.data.email;
+                document.getElementById('name').innerHTML = response.data.name
+                document.getElementById('phone').innerHTML = response.data.phone
+                document.getElementById('address').innerHTML = response.data.address
+            }).catch(function(error) {
                 console.error(error);
             });
         }

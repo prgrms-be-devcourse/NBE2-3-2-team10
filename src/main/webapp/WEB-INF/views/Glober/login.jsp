@@ -56,8 +56,9 @@
                 password: password
             })
             .then(res => {
-               alert('환영합니다!');
-                location.href = '/main';
+                sessionStorage.setItem("accessToken", res.data.accessToken); // 세션 스토리지에 저장
+                alert("환영합니다");
+                location.href = "/main";
             })
             .catch (error => {
                 alert(error.response.data);
