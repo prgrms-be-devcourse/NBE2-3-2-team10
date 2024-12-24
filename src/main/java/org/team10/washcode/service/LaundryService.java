@@ -26,10 +26,10 @@ public class LaundryService {
     @Autowired
     private HandledItemsRepository handledItemsRepository;
 
-    public LaundryShop getLaundryById(Long id){
+    public LaundryShop getLaundryById(Long id) {
         return laundryShopRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("LaundryShop not found"));
-
+                .orElseThrow(() -> new RuntimeException("LaundryShop not found"));
+    }
 
     public List<LaundryShop> getLaundryShops(double userLat, double userLng) {
         List<LaundryShop> shops = laundryShopRepository.findAll();
@@ -120,4 +120,5 @@ public class LaundryService {
     }
 
 }
+
 
