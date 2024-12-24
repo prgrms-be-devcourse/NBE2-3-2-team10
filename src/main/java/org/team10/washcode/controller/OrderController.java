@@ -50,7 +50,7 @@ public class OrderController {
         LaundryShop laundryShop = laundryService.getLaundryById(laundryShopId);
 
         // LaundryShopId에 맞는 HandledItems 리스트 조회
-        List<HandledItems> handledItems = handledItemsService.getItemsByLaundryShopId(laundryShopId);
+        List<HandledItems> handledItems = handledItemsService.getAllHandledItems(laundryShopId);
 
         model.addAttribute("user", user);
         model.addAttribute("laundryShop", laundryShop);
@@ -94,13 +94,12 @@ public class OrderController {
 
 
     @GetMapping("/history/{userId}")
-//    public ResponseEntity<List<OrderlistResDTO>> getOrderByUserId(@PathVariable int userId,Model model){
     public String getOrderByUserId(@PathVariable int userId,Model model){
         List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
 
         model.addAttribute("orders", orderList);
         model.addAttribute("userId",userId);
-//        return ResponseEntity.ok(orderList);
+
         return "Customer/order-history";
     }
 
@@ -117,11 +116,6 @@ public class OrderController {
         return "Customer/order-history-detail";
     }
 
-//    @DeleteMapping("/delete/{userId}/{pickupId}")
-//    public String deleteOrder(@PathVariable int userId, @PathVariable int pickupId) {
-//        orderService.delteOrder(pickupId, userId);
-//        return "redirect:/api/orders/main";
-//    }
 
     @PostMapping("/cancel/{userId}/{pickupId}")
     public String cancelPickup(

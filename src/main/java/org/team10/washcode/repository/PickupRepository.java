@@ -83,4 +83,6 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("UPDATE Pickup p SET p.status = 'CANCELLED' WHERE p.id = :pickupId AND p.user.id = :userId")
     int cancleOrder(int pickupId, int userId);
 
+
+
 }
