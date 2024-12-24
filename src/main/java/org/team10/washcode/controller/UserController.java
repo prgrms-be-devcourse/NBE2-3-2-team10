@@ -3,6 +3,7 @@ package org.team10.washcode.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,14 +56,14 @@ public class UserController {
 
     @GetMapping("/role")
     @Operation(summary = "회원등급 조회", description = "회원의 등급만 조회하는 API 입니다")
-    public ResponseEntity<?> getUserRole(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
-        return userService.getUserRole(cookie);
+    public ResponseEntity<?> getUserRole(@AuthenticationPrincipal int id){
+        return userService.getUserRole(id);
     }
 
     @GetMapping("/address")
     @Operation(summary = "회원주소 조회", description = "회원의 주소만 조회하는 API 입니다")
-    public ResponseEntity<?> getUserAddress(@CookieValue(value = "ACCESSTOKEN") Cookie cookie){
-        return userService.getUserAddress(cookie);
+    public ResponseEntity<?> getUserAddress(@AuthenticationPrincipal int id){
+        return userService.getUserAddress(id);
     }
 
     @PostMapping("/logout")
