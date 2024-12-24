@@ -14,9 +14,12 @@ import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
 import org.team10.washcode.RequestDTO.user.UserUpdateReqDTO;
 import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
+import org.team10.washcode.jwt.JwtProvider;
 import org.team10.washcode.repository.UserRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -28,9 +31,11 @@ public class UserService {
     @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
     private int REFRESH_TOKEN_EXPIRATION_TIME;
 
-
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtProvider jwtProvider;
 
 
     public ResponseEntity<?> signup(RegisterReqDTO registerReqDTO){
@@ -69,18 +74,16 @@ public class UserService {
                 return ResponseEntity.status(400).body("잘못된 비밀번호 입니다.");
             }
 
-            Integer userId = userRepository.findIdByEmail(loginReqDTO.getEmail()).get();
+            User user = userRepository.findByEmail(loginReqDTO.getEmail()).orElseThrow(() -> new RuntimeException("해당 계정을 찾을 수 없습니다."));
 
-            ResponseCookie access_cookie = ResponseCookie
-                    .from("ACCESSTOKEN", userId.toString()) // 추후 토큰값 추가
-                    .domain("localhost")
-                    .path("/")
-                    .httpOnly(true)
-                    .maxAge(ACCESS_TOKEN_EXPIRATION_TIME)
-                    .build();
+            String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
+            String refreshToken = jwtProvider.generateRefreshToken(user.getId(),user.getRole());
 
-            ResponseCookie refresh_cookie = ResponseCookie
-                    .from("REFRESHTOKEN", "5678") // 추후 토큰값 추가
+            Map<String,String> responseAccessToken = new HashMap<>();
+            responseAccessToken.put("accessToken",accessToken);
+
+            ResponseCookie refreshCookie = ResponseCookie
+                    .from("REFRESHTOKEN", refreshToken)
                     .domain("localhost")
                     .path("/")
                     .httpOnly(true)
@@ -89,23 +92,15 @@ public class UserService {
 
             return ResponseEntity
                     .ok()
-                    .header(HttpHeaders.SET_COOKIE, access_cookie.toString(), refresh_cookie.toString())
-                    .body("로그인에 성공했습니다.");
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .body(responseAccessToken);
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
             return ResponseEntity.status(500).body("DB 에러");
         }
     }
 
-    public ResponseEntity<?> getUser(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        int id = 0;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("ACCESSTOKEN")) {
-                id = Integer.parseInt(cookie.getValue());
-            }
-        }
-
+    public ResponseEntity<?> getUser(int id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
 
         return ResponseEntity
@@ -118,15 +113,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateUser(UserUpdateReqDTO userUpdateReqDTO, HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        Long id = 0L;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("ACCESSTOKEN")) {
-                id = Long.parseLong(cookie.getValue());
-            }
-        }
-
+    public ResponseEntity<?> updateUser(int id, UserUpdateReqDTO userUpdateReqDTO){
         try {
             User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
             user.setAddress(userUpdateReqDTO.getAddress());
@@ -143,16 +130,14 @@ public class UserService {
     }
 
 
-    public ResponseEntity<?> deleteUser(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("ACCESSTOKEN")) {
-                Long id = Long.parseLong(cookie.getValue());
-                userRepository.deleteById(id);
-                return ResponseEntity.ok().body("회원 탈퇴가 완료 되었습니다.");
-            }
+    public ResponseEntity<?> deleteUser(int id){
+        try {
+            userRepository.deleteById(Long.valueOf(id));
+            return ResponseEntity.ok().body("회원 탈퇴가 완료 되었습니다.");
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+            return ResponseEntity.status(500).body("DB 에러");
         }
-        return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
     }
 
     public ResponseEntity<?> getUserRole(Cookie cookie){
