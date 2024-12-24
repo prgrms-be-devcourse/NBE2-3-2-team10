@@ -6,11 +6,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
-
 import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findById(int id);
+
     @Query("select count(*) from User u where u.email = :email")
     int findByEmailExists(@Param("email") String email);
 
@@ -20,5 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select new org.team10.washcode.ResponseDTO.user.UserProfileResDTO(u.name, u.address, u.phone) from User u where u.id = :id")
     UserProfileResDTO findUserProfileById(@Param("id") int id);
 
+
     User findByName(String name);
+
 }
