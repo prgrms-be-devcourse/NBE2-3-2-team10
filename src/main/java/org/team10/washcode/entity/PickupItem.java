@@ -20,5 +20,9 @@ public class PickupItem {
     private HandledItems handledItems;  // 카테고리ID(FK, ItemCategory)
 
     private int quantity;     // 수량
-    private int totalprice;   // 총가격
+
+    @JoinColumn(name="total_price")
+    private int totalPrice;   // 총가격 Totalprice -> totalPrice
+
+
 }

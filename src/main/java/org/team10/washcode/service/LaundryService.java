@@ -3,15 +3,24 @@ package org.team10.washcode.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.entity.LaundryShop;
+
+import org.team10.washcode.entity.User;
 import org.team10.washcode.repository.LaundryShopRepository;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 public class LaundryService {
     @Autowired
     private LaundryShopRepository laundryShopRepository;
+
+    public LaundryShop getLaundryById(Long id){
+        return laundryShopRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("LaundryShop not found"));
+
 
     public List<LaundryShop> getLaundryShops(double userLat, double userLng) {
         List<LaundryShop> shops = laundryShopRepository.findAll();
@@ -45,6 +54,7 @@ public class LaundryService {
                 * Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // 거리 반환 (km)
+
     }
 }
 

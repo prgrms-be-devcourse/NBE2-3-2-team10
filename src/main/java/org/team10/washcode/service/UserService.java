@@ -1,5 +1,7 @@
 package org.team10.washcode.service;
 
+
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +102,11 @@ public class UserService {
             }
         }
         return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
+    }
+
+    public User getUserById(int id){
+        return userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("user not found"));
     }
 
 }
