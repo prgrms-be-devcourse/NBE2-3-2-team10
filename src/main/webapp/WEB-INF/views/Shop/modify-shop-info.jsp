@@ -238,6 +238,7 @@
             // 주소-좌표 변환 객체를 생성합니다
             var geocoder = new kakao.maps.services.Geocoder();
 
+
             geocoder.addressSearch(address, async function(result, status) {
                 // 정상적으로 검색이 완료됐으면
                 if (status === kakao.maps.services.Status.OK) {
@@ -245,6 +246,7 @@
                     latitude = result[0].y;
 
                     try {
+                        //세탁소 정보 등록 및 수정
                         const response = await fetch("/api/laundry/info", {
                             method: 'POST',
                             headers: {
@@ -262,6 +264,8 @@
                             })
                         });
 
+
+
                         if (response.ok) {
                             alert("등록이 완료되었습니다!");
                         } else {
@@ -276,6 +280,9 @@
                     alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
                 }
             });
+
+
+
         };
 
         function addRow() {

@@ -70,4 +70,7 @@ public class LaundryController {
         }
     }
 
+    //세탁소 가격표 정보 저장 및 수정
+
+
 }

@@ -3,13 +3,17 @@ package org.team10.washcode.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
+import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.entity.User;
+import org.team10.washcode.repository.HandledItemsRepository;
 import org.team10.washcode.repository.LaundryShopRepository;
 import org.team10.washcode.repository.UserRepository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +23,8 @@ public class LaundryService {
     private LaundryShopRepository laundryShopRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private HandledItemsRepository handledItemsRepository;
 
     public List<LaundryShop> getLaundryShops(double userLat, double userLng) {
         List<LaundryShop> shops = laundryShopRepository.findAll();
@@ -88,6 +94,23 @@ public class LaundryService {
 
     public LaundryShop getLaundryInfoByUserId(int userId) {
         return laundryShopRepository.findByUserId(userId);
+    }
+
+    //세탁소 가격정보 저장 및 수정
+    public List<HandledItems> setHandledItems(List<HandledItemsResDTO> toList) {
+        List<HandledItems> handledItemsList = new ArrayList<>();
+
+        for (HandledItemsResDTO to : toList) {
+            HandledItems items = new HandledItems();
+            items.setItem_name(to.getItem_name());
+            items.setCategory(to.getCategory());
+            items.setPrice(to.getPrice());
+            // items.setLaundryshop(); // 필요에 따라 설정
+
+            handledItemsList.add(items);
+        }
+
+        return handledItemsRepository.saveAll(handledItemsList);
     }
 
 }
