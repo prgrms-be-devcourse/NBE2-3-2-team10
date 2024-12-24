@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.service.KakaoService;
-
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.service.PickupService;
+
 import java.util.List;
 
 @Controller
@@ -57,7 +59,7 @@ public class PageController {
     public String shopMain(Model model) {
         return "Shop/shop-main";
     }
-  
+
     @RequestMapping("/pickup-check")
     public String pickupCheck(Model model) {
         List<PickupDetailResDTO> pickupList = pickupService.getPickupList(1L);
@@ -67,12 +69,23 @@ public class PageController {
 
     @RequestMapping("/pickup-list")
     public String pickupList(Model model) {
+        List<PickupResDTO> pickedUpList = pickupService.getPickedupListAndUpdateStatus(1L);
+        model.addAttribute("pickedUpList", pickedUpList);
         return "Shop/pickup-list";
     }
 
     @RequestMapping("/pickup-detail")
-    public String pickupDetail(Model model) {
+    public String pickupDetail(@RequestParam("id") Long pickupId, Model model) {
+        PickupResDTO pickupDetail = pickupService.getPickupDetail(pickupId);
+        model.addAttribute("pickupDetail", pickupDetail);
         return "Shop/pickup-detail";
+    }
+
+    @RequestMapping("/pickup-delivery")
+    public String pickupDelivery(Model model) {
+        List<PickupDeliveryResDTO> pickupList = pickupService.getPickupDeliveryList(1L);
+        model.addAttribute("pickupList", pickupList);
+        return "Shop/pickup-delivery";
     }
 
     @RequestMapping("/sales-summary")
