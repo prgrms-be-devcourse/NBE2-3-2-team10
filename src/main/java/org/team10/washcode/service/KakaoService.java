@@ -3,20 +3,22 @@ package org.team10.washcode.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
+import org.team10.washcode.repository.UserRepository;
 
 import java.security.SecureRandom;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,15 @@ public class KakaoService {
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
+
+    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
+    private int ACCESS_TOKEN_EXPIRATION_TIME;
+
+    @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
+    private int REFRESH_TOKEN_EXPIRATION_TIME;
+
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
     private static final int PASSWORD_LENGTH = 12;
@@ -44,7 +55,7 @@ public class KakaoService {
         body.add("redirect_uri", redirectUri);
         body.add("code", code);
 
-        // HTTP 요청 (https://kauth.kakao.com/oauth/token 으로
+        // HTTP 요청 (https://kauth.kakao.com/oauth/token 으로)
         HttpEntity<MultiValueMap<String, String>> kakaoTokenReq = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> res = null;
@@ -121,7 +132,8 @@ public class KakaoService {
         return kakaoUserDataDTO;
     }
 
-    // 비밀번호 랜덤 생성 메소드
+    // 랜덤 비밀번호 생성
+    // 나중에 UUID로 전환 예정
     public static String getRandomPassword() {
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
@@ -134,7 +146,34 @@ public class KakaoService {
         return password.toString();
     }
 
-    public KakaoUserDataDTO kakaoLogin(String code) {
+    // 카카오를 통해 JTW 토큰을 발행하는 코드
+    public void login(Integer userId, HttpServletResponse response){
+        try {
+            // 액세스 토큰 쿠키 생성
+            Cookie accessCookie = new Cookie("ACCESSTOKEN", userId.toString()); // 추후 토큰값 추가
+            accessCookie.setDomain("localhost");
+            accessCookie.setPath("/");
+            accessCookie.setHttpOnly(true);
+            accessCookie.setMaxAge(ACCESS_TOKEN_EXPIRATION_TIME); // 만료 시간 설정
+
+            // 리프레시 토큰 쿠키 생성
+            Cookie refreshCookie = new Cookie("REFRESHTOKEN", "K5678"); // 추후 토큰값 추가
+            refreshCookie.setDomain("localhost");
+            refreshCookie.setPath("/");
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setMaxAge(REFRESH_TOKEN_EXPIRATION_TIME); // 만료 시간 설정
+
+            // 쿠키를 응답에 추가
+            response.addCookie(accessCookie);
+            response.addCookie(refreshCookie);
+
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+        }
+    }
+
+
+    public String kakaoLogin(String code, Model model, HttpServletResponse response) {
 
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
@@ -142,6 +181,16 @@ public class KakaoService {
         // 2. "액세스 토큰"으로 "사용자 정보" 요청
         KakaoUserDataDTO result = getKakaoUserData(accessToken);
 
-        return result;
+        // 3. 카카오로 가입되어 있지 확인
+        // 3-1 가입되어 있지 않다면 회원가입 페이지로 이동
+        Optional<Integer> userId = userRepository.findIdByKakaoId(result.getId());
+        if (userId.isEmpty()) {
+            model.addAttribute("kakaoUserData", result);
+            return "Glober/register";
+        }
+
+        // 3-2 가입이 되어 있으면 쿠키를 통해 토큰 발행 후, 로그인 진행
+        login(userId.get(), response);
+        return "Customer/main";
     }
 }
