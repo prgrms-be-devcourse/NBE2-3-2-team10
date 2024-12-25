@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prototype</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -18,8 +19,8 @@
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
   <div class="p-4">
-    <div class="text-sm text-blue-500 font-bold">일반 회원</div>
-    <div class="text-xl font-bold mt-2">오현식 님</div>
+    <div class="text-sm text-blue-500 font-bold" id = 'role'></div>
+    <div class="text-xl font-bold mt-2" id = 'name'></div>
     <div class="text-gray-600 mt-1">깨끗한 하루 되세요!</div>
   </div>
   <div class="flex justify-around mt-4">
@@ -29,7 +30,7 @@
       </svg>
       <div class="text-sm mt-1">위시팡 내역</div>
     </button>
-    <button class="text-center focus:outline-none">
+    <button class="text-center focus:outline-none" onclick="location.href='/myInfo'">
       <svg class="w-8 h-8 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
       </svg>
@@ -43,7 +44,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
       </svg>
     </button>
-    <button class="flex justify-between items-center p-4 w-full focus:outline-none">
+    <button class="flex justify-between items-center p-4 border-b w-full focus:outline-none">
       <div>고객센터</div>
       <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -51,27 +52,82 @@
     </button>
   </div>
 </div>
-<div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
-  <div class="flex justify-around py-2">
-    <button class="text-center focus:outline-none">
-      <svg class="w-6 h-6 mx-auto text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-10 0a1 1 0 001 1h6a1 1 0 001-1m-7-1h6"></path>
-      </svg>
-      <div class="text-xs mt-1">홈</div>
-    </button>
-    <button class="text-center focus:outline-none">
-      <svg class="w-6 h-6 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-9 5h9"></path>
-      </svg>
-      <div class="text-xs mt-1">주문내역</div>
-    </button>
-    <button class="text-center focus:outline-none">
-      <svg class="w-6 h-6 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A1 1 0 014 17V7a1 1 0 011.121-.804l7 2.5a1 1 0 01.879.804l7 2.5A1 1 0 0120 13v10a1 1 0 01-1.121.804l-7-2.5a1 1 0 01-.879-.804l-7-2.5z"></path>
-      </svg>
-      <div class="text-xs mt-1">마이</div>
-    </button>
-  </div>
+<div>
+  <button class="text-gray-400 text-center w-full p-4 focus:outline-none" onclick="logout()">
+    로그아웃
+  </button>
+</div>
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around max-w-[600px] overflow-x-auto mx-auto ">
+  <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18m-9 9h9" />
+    </svg>
+    <span>홈</span>
+  </button>
+  <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
+    </svg>
+    <span>주문내역</span>
+  </button>
+  <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
+    </svg>
+    <span>마이</span>
+  </button>
+</footer>
+
+  <script>
+    const url = "http://localhost:8080/api/user"
+    const token = sessionStorage.getItem("accessToken");
+
+    function checkAccessToken() {
+      axios.post(url + '/api/user/check-login', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      }).then(res => {
+        if (res.data === false) {
+          alert("로그인이 필요합니다.");
+          location.href = '/';
+        }
+      }).catch(error => {
+        alert(error.response.data);
+      });
+    }
+
+    function getUserRole () {
+      axios.get(url + '/role', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      }).then(function(response) {
+        document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
+        document.getElementById('name').innerHTML = response.data.name + " 님";
+      }).catch(function(error) {
+        console.error(error);
+      });
+    }
+
+    function logout() {
+      axios.post(url + '/logout', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      }).then(() => {
+        alert("로그아웃 되었습니다.");
+        location.href = '/';
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+
+    window.onload = () => {
+      getUserRole();
+    };
+  </script>
 </div>
 </body>
 </html>

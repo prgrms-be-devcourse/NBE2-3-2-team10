@@ -1,21 +1,17 @@
 package org.team10.washcode.controller;
 
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.service.KakaoService;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.service.LaundryService;
@@ -42,18 +38,15 @@ public class PageController {
     private String kakaoApiKey;
 
     @RequestMapping("/kakaoLogin")
-    public String kakaoLogin(@RequestParam("code") String code, Model model) {
-
-        KakaoUserDataDTO kakaoUserDataDTO = kakaoService.kakaoLogin(code);
-        model.addAttribute("kakaoUserData", kakaoUserDataDTO);
-
-        return "Glober/register";
+    public String kakaoLogin(@RequestParam("code") String code, Model model, HttpServletResponse response) {
+        return kakaoService.kakaoLogin(code, model, response);
     }
 
     @RequestMapping("/")
     public String login(Model model) {
         model.addAttribute("kakaoApiKey", kakaoApiKey);
         model.addAttribute("redirectUri", redirectUri);
+
         return "Glober/login";
     }
 
@@ -62,6 +55,7 @@ public class PageController {
         model.addAttribute("kakaoUserData", null);
         return "Glober/register";
     }
+
 
     @RequestMapping("/shop-main")
     public String shopMain(Model model) {
@@ -111,14 +105,25 @@ public class PageController {
         return "Shop/modify-shop-info";
     }
 
+
+    @RequestMapping("/main")
+    public String main() { return "Customer/main"; }
+
+    @RequestMapping("/mypage")
+    public String mypage() { return "Customer/my-page"; }
+
+    @RequestMapping("/orderHistory")
+    public String orderHistory() { return "Customer/order-history"; }
+
+    @RequestMapping("/myInfo")
+    public String myInfo() { return "Customer/my-info"; }
+
+    @RequestMapping("/myInfoModify")
+    public String myInfoModify() { return "Customer/my-info-modify-page"; }
+
     @RequestMapping("laundryshop-by-map")
     public String laundryshopByMap() {
         return "Customer/laundryshop-by-map";
-    }
-
-    @RequestMapping("/main")
-    public String main() {
-        return "Customer/main";
     }
 
     @RequestMapping("/laundryshop-detail/{laundry_id}")
@@ -132,5 +137,4 @@ public class PageController {
         model.addAttribute("laundry", to);
         return "Customer/laundryshop-detail";
     }
-
 }

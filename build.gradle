@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // Spring Boot Stater & Spring Web
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -31,7 +33,7 @@ dependencies {
 
     // Spring OAuth2
 //    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // MariaDB & Spring JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
