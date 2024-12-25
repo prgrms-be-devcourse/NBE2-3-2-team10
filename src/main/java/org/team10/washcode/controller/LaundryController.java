@@ -3,6 +3,7 @@ package org.team10.washcode.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
 import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
@@ -37,9 +38,11 @@ public class LaundryController {
 
     //세탁소 정보 저장 및 수정
     @PostMapping("/info")
-    public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to) {
+    public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
+        System.out.println(id);
 
-        int laundry_id = laundryService.registerLaundryShop(to);
+
+        int laundry_id = laundryService.registerLaundryShop(to, id);
 
         // 성공 응답 반환
         return ResponseEntity.ok().body(Map.of("laundry_id", laundry_id));

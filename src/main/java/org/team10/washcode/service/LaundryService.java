@@ -82,9 +82,10 @@ public class LaundryService {
 
 
     //세탁소 저장하기
-    public int registerLaundryShop(ShopAddReqDTO to) {
-        User user = userRepository.findByName(to.getUser_name());
+    public int registerLaundryShop(ShopAddReqDTO to, int id) {
+        User user = userRepository.findById(id).orElse(null);
         LaundryShop shop = new LaundryShop();
+
         shop.setUser(user);
         shop.setShop_name(to.getShop_name());
         shop.setBusiness_number(to.getBusiness_number());

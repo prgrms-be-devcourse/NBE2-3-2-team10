@@ -254,7 +254,8 @@
                         const response1 = await fetch("/api/laundry/info", {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                Authorization:  'Bearer ' + token
                             },
                             body: JSON.stringify({
                                 user_name: user_name,
