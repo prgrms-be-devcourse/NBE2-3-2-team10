@@ -163,7 +163,7 @@ public class KakaoService {
     }
 
     // 카카오를 통해 JTW 토큰을 발행하는 코드
-    public void login(User user, HttpServletResponse response){
+    public void login(User user, HttpServletResponse response, Model model){
         try {
             String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
             String refreshToken = jwtProvider.generateRefreshToken(user.getId(),user.getRole());
@@ -178,12 +178,7 @@ public class KakaoService {
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
             // 응답 바디에 Access Token 포함
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("Authorization", "Bearer " + accessToken);
-
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            new ObjectMapper().writeValue(response.getWriter(), responseBody);
+            model.addAttribute("Authorization", "Bearer " + accessToken);
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
         }
@@ -207,7 +202,7 @@ public class KakaoService {
         }
 
         // 3-2 가입이 되어 있으면 쿠키를 통해 토큰 발행 후, 로그인 진행
-        login(user.get(), response);
+        login(user.get(), response, model);
         return "Customer/main";
     }
 }
