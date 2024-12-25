@@ -72,10 +72,19 @@ public class LaundryService {
         LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
+        System.out.println(laundryShop.getId());
         to.setShop_name(laundryShop.getShop_name());
         to.setPhone(laundryShop.getPhone());
         to.setAddress(laundryShop.getAddress());
         to.setNon_operating_days(laundryShop.getNon_operating_days());
+        to.setBusiness_number(laundryShop.getBusiness_number());
+        to.setUser_name(laundryShop.getUser_name());
+
+//        User user = laundryShop.getUser();
+//        to.setUser_name(user.getName());
+
+        List<HandledItems> handledItems = handledItemsRepository.findByLaundryshopId((long) laundryShop.getId());
+        to.setHandledItems(handledItems);
 
         return to;
     }

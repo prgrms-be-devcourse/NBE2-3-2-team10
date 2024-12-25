@@ -14,4 +14,5 @@ public interface HandledItemsRepository extends JpaRepository<HandledItems, Long
 
     List<HandledItems> findByLaundryshopId(Long laundryShopId);
 
+
 }

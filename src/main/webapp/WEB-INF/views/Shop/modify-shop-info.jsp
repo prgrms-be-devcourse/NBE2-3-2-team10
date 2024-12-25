@@ -82,8 +82,8 @@
                     id="business_number" name="business_number">
         </div>
         <div class="mb-4">
-            <label class="block text-gray-700">영업일</label>
-            <textarea placeholder="영업일을 입력하세요"
+            <label class="block text-gray-700">휴업일</label>
+            <textarea placeholder="휴업일을 입력하세요"
                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="non_operating_days" name="non_operating_days"></textarea>
         </div>
         <!-- Product Information -->
@@ -196,6 +196,85 @@
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const token = sessionStorage.getItem("accessToken");
+            if (!token) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/laundry/", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // 기존 데이터가 있으면 폼 필드에 채우기
+                    if (data) {
+                        document.getElementById("phone").value = data.phone || "";
+                        document.getElementById("address").value = data.address || "";
+                        document.getElementById("shop_name").value = data.shop_name || "";
+                        document.getElementById("non_operating_days").value = data.non_operating_days || "";
+                        document.getElementById("user_name").value = data.user_name;
+                        document.getElementById("business_number").value = data.business_number;
+
+                        // 상품 정보 테이블 채우기
+                        const productTableBody = document.getElementById("productTableBody");
+                        productTableBody.innerHTML = ""; // 기존 행 삭제
+                        data.handledItems.forEach(item => {
+                            const newRow = document.createElement("tr");
+                            newRow.innerHTML = `
+                        <td class="border p-2">
+                            <input
+                                    type="text"
+                                    placeholder="상품 이름"
+                                    class="w-full px-2 py-1 border rounded"
+                                    name="item_name"
+                                    value="\${item.item_name}"
+                            />
+                        </td>
+                        <td class="border p-2">
+                            <select class="w-full px-2 py-1 border rounded" name="category">
+                                <option \${item.category === "SHOES" ? "selected" : ""}>신발</option>
+                                <option \${item.category === "PADDING" ? "selected" : ""}>패딩</option>
+                                <option \${item.category === "PREMIUM_FABRIC" ? "selected" : ""}>프리미엄 패브릭</option>
+                                <option \${item.category === "CARRIER_SANITATION" ? "selected" : ""}>캐리어 소독</option>
+                                <option \${item.category === "COTTON_LAUNDRY" ? "selected" : ""}>면 세탁물</option>
+                                <option \${item.category === "BEDDING" ? "selected" : ""}>침구</option>
+                                <option \${item.category === "STORAGE_SERVICE" ? "selected" : ""}>보관서비스</option>
+                            </select>
+                        </td>
+                        <td class="border p-2">
+                            <input
+                                    type="number"
+                                    placeholder="숫자만 입력"
+                                    class="w-full px-2 py-1 border rounded"
+                                    name="price"
+                                    value="\${item.price}"
+                            />
+                        </td>
+                        <td class="border p-2 text-center">
+                            <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">-</button>
+                        </td>
+                    `;
+                            productTableBody.appendChild(newRow);
+                        });
+                    }
+                } else {
+                    console.error("Failed to fetch laundry info");
+                }
+            } catch (error) {
+                console.error("Error fetching laundry info:", error);
+            }
+        });
+
+        //저장 버튼 클릭시 세탁소 정보 저장
         document.getElementById('rbtn').onclick = function(event) {
             event.preventDefault();
 
@@ -251,7 +330,7 @@
 
                     try {
                         //세탁소 정보 등록 및 수정
-                        const response1 = await fetch("/api/laundry/info", {
+                        const response1 = await fetch("/api/laundry/", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

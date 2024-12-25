@@ -19,6 +19,7 @@ public class LaundryShop {
 
     private String shop_name;
     private String business_number;
+    private String user_name;
     private String phone;
     private String address;
     private String non_operating_days;

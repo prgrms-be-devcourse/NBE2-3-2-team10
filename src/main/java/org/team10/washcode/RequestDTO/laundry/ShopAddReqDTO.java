@@ -10,6 +10,7 @@ public class ShopAddReqDTO {
     private String address;
     private String phone;
     private String non_operating_days;
+    private String user_name;
 
     private double latitude;
     private double longitude;
