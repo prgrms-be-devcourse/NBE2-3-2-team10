@@ -26,10 +26,10 @@ public class LaundryService {
     @Autowired
     private HandledItemsRepository handledItemsRepository;
 
-    public LaundryShop getLaundryById(Long id){
+    public LaundryShop getLaundryById(Long id) {
         return laundryShopRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("LaundryShop not found"));
-
+                .orElseThrow(() -> new RuntimeException("LaundryShop not found"));
+    }
 
     public List<LaundryShop> getLaundryShops(double userLat, double userLng) {
         List<LaundryShop> shops = laundryShopRepository.findAll();
@@ -66,7 +66,19 @@ public class LaundryService {
 
     }
 
+    //세탁소 상세정보 조회
+    //세탁소 id로 세탁소 정보 찾기
+    public LaundryDetailResDTO getLaundryShopById(int id) {
+        LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
+        LaundryDetailResDTO to = new LaundryDetailResDTO();
 
+        to.setShop_name(laundryShop.getShop_name());
+        to.setPhone(laundryShop.getPhone());
+        to.setAddress(laundryShop.getAddress());
+        to.setNon_operating_days(laundryShop.getNon_operating_days());
+
+        return to;
+    }
 
 
     //세탁소 저장하기
