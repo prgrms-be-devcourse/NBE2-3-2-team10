@@ -178,7 +178,7 @@ public class KakaoService {
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
             // 응답 바디에 Access Token 포함
-            model.addAttribute("Authorization", "Bearer " + accessToken);
+            model.addAttribute("Authorization", accessToken);
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
         }
@@ -203,6 +203,6 @@ public class KakaoService {
 
         // 3-2 가입이 되어 있으면 쿠키를 통해 토큰 발행 후, 로그인 진행
         login(user.get(), response, model);
-        return "Customer/main";
+        return "Glober/kakaoLoginWait";
     }
 }

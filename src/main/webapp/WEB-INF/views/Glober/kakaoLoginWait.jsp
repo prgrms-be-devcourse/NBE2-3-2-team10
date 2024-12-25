@@ -37,7 +37,11 @@
         <p>잠시만 기다려 주세요...!</p>
     </div>
     <script>
+        sessionStorage.setItem('accessToken', '${Authorization}')
 
+        setTimeout(function() {
+            window.location.href = "/main";
+        }, 1000);
     </script>
 </div>
 </body>

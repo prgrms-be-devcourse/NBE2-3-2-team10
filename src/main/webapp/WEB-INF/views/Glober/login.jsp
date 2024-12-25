@@ -18,9 +18,7 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
     <div class="flex justify-center mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.657-1.343-3-3-3s-3 1.343-3 3 1.343 3 3 3 3-1.343 3-3zm0 0c0 1.657 1.343 3 3 3s3-1.343 3-3-1.343-3-3-3-3 1.343-3 3zm0 0V7m0 8v2m0 0h-2m2 0h2" />
-        </svg>
+        <img src = "./upload/logo.svg" class = "w-[130px]"/>
     </div>
     <div>
         <div class="mb-4">
