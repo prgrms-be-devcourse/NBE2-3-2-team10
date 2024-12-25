@@ -27,14 +27,20 @@
         <section class="mb-6">
             <h2 class="font-bold mb-2">정보 수정</h2>
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold">Email</label>
-                    <input type="email" id="email" class="w-full border p-2 rounded" disabled>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">아이디</label>
+                    <div class = "flex">
+                        <input
+                                type="email"
+                                id="email"
+                                class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                disabled >
+                    </div>
                 </div>
 
                 <!-- 비밀번호 입력란 -->
                 <div class="mb-4">
-                    <label class="block text-sm font-bold">비밀번호</label>
+                    <label class="block text-sm font-bold mb-0.5">비밀번호</label>
                     <input
                             type="password"
                             id="password"
@@ -48,25 +54,27 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold">이름</label>
+                    <label class="block text-sm font-bold mb-0.5">이름</label>
                     <input type="text" id="name" class="w-full border p-2 rounded" disabled>
                 </div>
-                <div>
-                    <label class="block text-sm font-bold">전화번호</label>
+
+                <!-- 전화번호 입력란 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">전화번호</label>
                     <div class="flex">
-                        <input type="text" value="" id = "phone" class="flex-grow border p-2 rounded-l">
-                        <button class="bg-blue-500 text-white px-4 rounded-r">인증 받기</button>
+                        <input type="tel" id="phone" placeholder="휴대 전화 번호를 입력해주세요" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">인증 번호</button>
                     </div>
-                    <div class="flex mt-3">
-                        <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-full px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-400 focus:outline-none">확인</button>
+                    <div class="flex mt-2">
+                        <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">확인</button>
                     </div>
                 </div>
             </div>
         </section>
         <section>
             <div class="flex justify-between items-center mb-2">
-                <h2 class="font-bold">배송지</h2>
+                <h2 class="font-bold mb-0.5 ">배송지</h2>
                 <button class="text-blue-500" onclick="findAddress()">수정</button>
             </div>
             <div class="border p-4 rounded shadow-sm">
@@ -80,7 +88,7 @@
                 type="button"
                 id="submitBtn"
                 onclick="updateUserInfo()"
-                class="w-[50%] py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">
+                class="w-[50%] py-3 mb-4 text-white font-bold rounded-lg bg-[#4AC7D5] hover:bg-[#39b2c3]">
             변경
         </button>
     </div>

@@ -49,6 +49,19 @@ public class UserService {
                 .build();
     }
 
+    public ResponseEntity<?> checkEmailDuplication (String email) {
+        try {
+            if (userRepository.findByEmailExists(email)) {
+                return ResponseEntity.status(409).body("이미 사용중인 이메일 입니다.");
+            } else {
+                return ResponseEntity.ok().body("사용 가능한 이메일 입니다.");
+            }
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+            return ResponseEntity.status(500).body("DB 에러");
+        }
+    }
+
     public ResponseEntity<?> signup(RegisterReqDTO registerReqDTO){
         try {
             // 이메일 검증

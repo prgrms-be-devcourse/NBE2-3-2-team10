@@ -25,13 +25,21 @@
         <!-- 아이디 입력란 -->
         <div class="mb-4">
             <label class="block text-gray-700">아이디</label>
-            <input
-                    type="email"
-                    id="email"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="${not empty kakaoUserData.email ? kakaoUserData.email : '이메일을 입력해주세요.'}"
-                    value="${not empty kakaoUserData.email ? kakaoUserData.email : ''}"
-            ${not empty kakaoUserData ? 'disabled' : ''}>
+            <div class = "flex">
+                <input
+                        type="email"
+                        id="email"
+                        class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="${not empty kakaoUserData.email ? kakaoUserData.email : '이메일을 입력해주세요.'}"
+                        value="${not empty kakaoUserData.email ? kakaoUserData.email : ''}"
+                ${not empty kakaoUserData ? 'disabled' : ''}>
+                <button
+                        type="button"
+                        onclick="checkEmailDuplication()"
+                        class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]" >
+                    중복확인
+                </button>
+            </div>
         </div>
 
         <!-- 비밀번호 입력란 -->
@@ -41,7 +49,7 @@
                     type="password"
                     id="password"
                     placeholder="${not empty kakaoUserData ? '****' : '8~30자리 영대-소문자, 숫자, 특수문자 조합'}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             ${not empty kakaoUserData ? 'disabled' : ''}>
         </div>
 
@@ -52,7 +60,7 @@
                     type="password"
                     id="password2"
                     placeholder="${not empty kakaoUserData ? '****' : '8~30자리 영대-소문자, 숫자, 특수문자 조합'}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             ${not empty kakaoUserData ? 'disabled' : ''}>
         </div>
 
@@ -63,7 +71,7 @@
                     type="text"
                     id="name"
                     placeholder="${not empty kakaoUserData.nickname ? kakaoUserData.nickname : '성함을 입력해주세요.'}"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value="${not empty kakaoUserData.nickname ? kakaoUserData.nickname : ''}"
             ${not empty kakaoUserData ? 'disabled' : ''}>
         </div>
@@ -76,12 +84,12 @@
                         type="text"
                         id="address"
                         placeholder="주소를 입력해주세요"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-[83%] h-10 px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         disabled >
                 <button
                         type="button"
                         onclick="findAddress()"
-                        class="px-4 py-2 text-white bg-blue-500 rounded-r-lg hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 w-[120px]">
+                        class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">
                     주소 찾기
                 </button>
             </div>
@@ -89,27 +97,26 @@
                     type="text"
                     id="detailAddress"
                     placeholder="상세 주소를 입력해주세요"
-                    class="w-full px-3 py-2 mt-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-
+                    class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" >
         </div>
 
         <!-- 전화번호 입력란 -->
         <div class="mb-4">
             <label class="block text-gray-700">전화번호</label>
             <div class="flex">
-                <input type="tel" id="phone" placeholder="휴대 전화 번호를 입력해주세요" class="w-full px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-400 focus:outline-none">인증 번호</button>
+                <input type="tel" id="phone" placeholder="휴대 전화 번호를 입력해주세요" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">인증 번호</button>
             </div>
-            <div class="flex mt-3">
-                <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-full px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-400 focus:outline-none">확인</button>
+            <div class="flex mt-2">
+                <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">확인</button>
             </div>
         </div>
 
         <!-- 유저 유형 선택 -->
         <div class="mb-6">
             <label class="block text-gray-700">유형</label>
-            <select id="userRole" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="userRole">
+            <select id="userRole" class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" name="userRole">
                 <option value="">고객 또는 상점 관리자를 선택해주세요</option>
                 <option value="USER">고객</option>
                 <option value="SHOP">상점 관리자</option>
@@ -121,7 +128,7 @@
                 type="button"
                 id="submitBtn"
                 onclick="reqRegister()"
-                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">
+                class="w-full py-3 mb-4 text-white font-bold rounded-lg bg-[#4AC7D5] hover:bg-[#39b2c3]">
             회원가입
         </button>
     </form>
@@ -211,6 +218,25 @@
                 .catch(error => {
                     alert(error.response.data);
                 });
+        }
+
+        // 이메일 중복 확인 함수
+        function checkEmailDuplication() {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('이메일을 입력해주세요.');
+                return;
+            }
+
+            axios.get(url + '/api/user/check-email', {
+                params: {
+                    email: email
+                }
+            }).then(res => {
+                alert(res.data); // `res.data`가 응답 본문입니다.
+            }).catch(error => {
+                alert(error.response.data); // 에러 메시지 출력
+            });
         }
     </script>
 </div>

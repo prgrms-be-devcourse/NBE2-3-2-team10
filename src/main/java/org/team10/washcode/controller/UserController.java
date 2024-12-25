@@ -76,4 +76,10 @@ public class UserController {
     public ResponseEntity<?> checkLogin(HttpServletRequest request){
         return userService.checkLogin(request);
     }
+
+    @GetMapping("/check-email")
+    @Operation(summary = "이메일 중복 체크", description = "이메일 중복 체크 API 입니다.")
+    public ResponseEntity<?> checkEmail(@RequestParam String email){
+        return userService.checkEmailDuplication(email);
+    }
 }
