@@ -124,10 +124,12 @@
                                 type="text"
                                 placeholder="상품 이름"
                                 class="w-full px-2 py-1 border rounded"
+                                name="item_name"
+                                id="item_name"
                         />
                     </td>
                     <td class="border p-2">
-                        <select class="w-full px-2 py-1 border rounded">
+                        <select class="w-full px-2 py-1 border rounded" id="category" name="category">
                             <option>신발</option>
                             <option>패딩</option>
                             <option>프리미엄 패브릭</option>
@@ -142,6 +144,8 @@
                                 type="number"
                                 placeholder="숫자만 입력"
                                 class="w-full px-2 py-1 border rounded"
+                                id="price"
+                                name="price"
                         />
                     </td>
                     <td class="border p-2 text-center">
@@ -237,7 +241,7 @@
 
             // 주소-좌표 변환 객체를 생성합니다
             var geocoder = new kakao.maps.services.Geocoder();
-
+            const token = sessionStorage.getItem("accessToken");
 
             geocoder.addressSearch(address, async function(result, status) {
                 // 정상적으로 검색이 완료됐으면
@@ -247,7 +251,7 @@
 
                     try {
                         //세탁소 정보 등록 및 수정
-                        const response = await fetch("/api/laundry/info", {
+                        const response1 = await fetch("/api/laundry/info", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -265,11 +269,16 @@
                         });
 
 
+                        if (response1.ok) {
+                            const data = await response1.json();
+                            const laundry_id = data.laundry_id;
 
-                        if (response.ok) {
+                            // 가격표 데이터 전송
+                            sendData(laundry_id);
+
                             alert("등록이 완료되었습니다!");
                         } else {
-                            const errorData = await response.json();
+                            const errorData = await response1.json();
                             alert(`오류 발생: ${errorData.message || '서버 에러'}`);
                         }
                     } catch (error) {
@@ -282,8 +291,38 @@
             });
 
 
-
         };
+
+        function sendData(laundry_id) {
+            const rows = document.querySelectorAll('#productTableBody tr');
+            const items = [];
+
+            rows.forEach(row => {
+                const item_name = row.querySelector('input[name="item_name"]').value;
+                const category = row.querySelector('select[name="category"]').value;
+                const price = row.querySelector('input[name="price"]').value;
+
+                if (item_name && category && price) {
+                    items.push({
+                        item_name: item_name,
+                        category: getCategoryEnum(category),
+                        price: price,
+                        laundry_id: laundry_id
+                    });
+                }
+            });
+
+            console.log(JSON.stringify(items));
+
+            // JSON 데이터를 서버로 보내기
+            const response2 = fetch("api/laundry/handled-items", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            });
+        }
 
         function addRow() {
             const table = document.querySelector('table tbody');
@@ -294,10 +333,12 @@
                                 type="text"
                                 placeholder="상품 이름"
                                 class="w-full px-2 py-1 border rounded"
+                                name="item_name"
+                                id="item_name"
                         />
                     </td>
                     <td class="border p-2">
-                        <select class="w-full px-2 py-1 border rounded">
+                        <select class="w-full px-2 py-1 border rounded" id="category" name="category">
                             <option>신발</option>
                             <option>패딩</option>
                             <option>프리미엄 패브릭</option>
@@ -312,6 +353,8 @@
                                 type="number"
                                 placeholder="숫자만 입력"
                                 class="w-full px-2 py-1 border rounded"
+                                id="price"
+                                name="price"
                         />
                     </td>
                     <td class="border p-2 text-center">
@@ -322,8 +365,21 @@
                     </td>
             `;
             table.appendChild(newRow);
-
         }
+
+        function getCategoryEnum(category) {
+            const categoryMap = {
+                "신발": "SHOES",
+                "패딩": "PADDING",
+                "프리미엄 패브릭": "PREMIUM_FABRIC",
+                "캐리어 소독": "CARRIER_SANITATION",
+                "면 세탁물": "COTTON_LAUNDRY",
+                "보관서비스": "STORAGE_SERVICE",
+                "침구": "BEDDING"
+            };
+            return categoryMap[category] || "";
+        }
+
 
     </script>
 

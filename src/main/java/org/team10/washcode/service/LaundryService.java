@@ -61,21 +61,10 @@ public class LaundryService {
     }
 
 
-    //세탁소 상세정보 조회
-    //세탁소 id로 세탁소 정보 찾기
-    public LaundryDetailResDTO getLaundryShopById(int id) {
-        LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
-        LaundryDetailResDTO to = new LaundryDetailResDTO();
 
-        to.setShop_name(laundryShop.getShop_name());
-        to.setPhone(laundryShop.getPhone());
-        to.setAddress(laundryShop.getAddress());
-        to.setNon_operating_days(laundryShop.getNon_operating_days());
 
-        return to;
-    }
-
-    public LaundryShop registerLaundryShop(ShopAddReqDTO to) {
+    //세탁소 저장하기
+    public int registerLaundryShop(ShopAddReqDTO to) {
         User user = userRepository.findByName(to.getUser_name());
         LaundryShop shop = new LaundryShop();
         shop.setUser(user);
@@ -88,8 +77,9 @@ public class LaundryService {
         shop.setLongitude(to.getLongitude());
         shop.setCreated_at(new Timestamp(System.currentTimeMillis()));
 
+        LaundryShop savedShop = laundryShopRepository.save(shop);
 
-        return laundryShopRepository.save(shop);
+        return savedShop.getId();
     }
 
     public LaundryShop getLaundryInfoByUserId(int userId) {
@@ -97,17 +87,20 @@ public class LaundryService {
     }
 
     //세탁소 가격정보 저장 및 수정
-    public List<HandledItems> setHandledItems(List<HandledItemsResDTO> toList) {
+    public List<HandledItems> setHandledItems(List<HandledItemsResDTO> items) {
         List<HandledItems> handledItemsList = new ArrayList<>();
 
-        for (HandledItemsResDTO to : toList) {
-            HandledItems items = new HandledItems();
-            items.setItem_name(to.getItem_name());
-            items.setCategory(to.getCategory());
-            items.setPrice(to.getPrice());
-            // items.setLaundryshop(); // 필요에 따라 설정
+        for (HandledItemsResDTO item : items) {
+            LaundryShop laundryShop = laundryShopRepository.findById((long)item.getLaundry_id())
+                    .orElseThrow(() -> new IllegalArgumentException("LaundryShop not found with ID: " + item.getLaundry_id()));
 
-            handledItemsList.add(items);
+            HandledItems handledItem = new HandledItems();
+            handledItem.setLaundryshop(laundryShop);
+            handledItem.setItem_name(item.getItem_name());
+            handledItem.setCategory(item.getCategory());
+            handledItem.setPrice(item.getPrice());
+
+            handledItemsRepository.save(handledItem);
         }
 
         return handledItemsRepository.saveAll(handledItemsList);

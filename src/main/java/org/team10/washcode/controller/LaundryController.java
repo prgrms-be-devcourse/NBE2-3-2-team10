@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
+import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.service.LaundryService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/laundry/")
@@ -31,46 +34,26 @@ public class LaundryController {
         }
     }
 
-    //세탁소 상세정보 조회
-    @GetMapping("{laundry_id}")
-    public LaundryDetailResDTO get(@PathVariable("laundry_id") int laundry_id) {
-        return laundryService.getLaundryShopById(laundry_id);
-    }
 
+    //세탁소 정보 저장 및 수정
     @PostMapping("/info")
     public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to) {
-        // 여기서 데이터 저장, 유효성 검사 등 로직 처리
-        System.out.println("받은 데이터: " + to);
 
-        laundryService.registerLaundryShop(to);
+        int laundry_id = laundryService.registerLaundryShop(to);
 
         // 성공 응답 반환
-        return ResponseEntity.ok().body("등록 완료");
+        return ResponseEntity.ok().body(Map.of("laundry_id", laundry_id));
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<?> getLaundryInfo(HttpServletRequest request) {
-        try {
-            // 로그인된 사용자의 ID 가져오기
-            int userId = (int) request.getAttribute("userId");
+    //가격표 저장 및 수정
+    @PostMapping("/handled-items")
+    public List<HandledItems> setHandledItems(@RequestBody List<HandledItemsResDTO> itemsList) {
+        System.out.println("Received items list: " + itemsList);
 
-            // 사용자의 세탁소 정보 가져오기
-            LaundryShop userLaundryInfo = laundryService.getLaundryInfoByUserId(userId);
-
-            // 세탁소 정보가 없을 경우
-            if (userLaundryInfo == null) {
-                return ResponseEntity.status(404).body("No laundry info found");
-            }
-
-            // 세탁소 정보 반환
-            return ResponseEntity.ok(userLaundryInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("서버 오류 발생");
-        }
+        return laundryService.setHandledItems(itemsList);
     }
 
-    //세탁소 가격표 정보 저장 및 수정
+
 
 
 }
