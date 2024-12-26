@@ -9,6 +9,7 @@ import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.entity.LaundryShop;
+import org.team10.washcode.service.HandledItemsService;
 import org.team10.washcode.service.LaundryService;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public class LaundryController {
 
     @Autowired
     private LaundryService laundryService;
+    @Autowired
+    private HandledItemsService handledItemsService;
 
     @GetMapping("/map")
     public List<LaundryShop> map(
@@ -74,7 +77,7 @@ public class LaundryController {
         return ResponseEntity.ok().body(Map.of("laundry_id", laundry_id));
     }
 
-    //가격표 저장
+    //가격표 수정
     @PutMapping("/handled-items")
     public List<HandledItems> setHandledItems_modify(@RequestBody List<HandledItemsResDTO> itemsList) {
         System.out.println("Received items list: " + itemsList);
@@ -82,7 +85,13 @@ public class LaundryController {
         return laundryService.setHandledItems(itemsList);
     }
 
+    //세탁소 카테고리 가져오기
+    @GetMapping("/{laundry_id}")
+    public List<HandledItems> getHandledItems(@PathVariable("laundry_id") long laundry_id) {
+        List<HandledItems> handledItems = handledItemsService.getItemsByLaundryShopId(laundry_id);
 
+        return handledItems;
+    }
 
 
 }
