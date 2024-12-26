@@ -55,7 +55,7 @@
 
                 <div>
                     <label class="block text-sm font-bold mb-0.5">이름</label>
-                    <input type="text" id="name" class="w-full border p-2 rounded" disabled>
+                    <input type="text" id="name" class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
                 </div>
 
                 <!-- 전화번호 입력란 -->
@@ -77,9 +77,16 @@
                 <h2 class="font-bold mb-0.5 ">배송지</h2>
                 <button class="text-blue-500" onclick="findAddress()">수정</button>
             </div>
-            <div class="border p-4 rounded shadow-sm">
+            <div class="border border-gray-300 p-4 rounded shadow-sm rounded-lg">
                 <span id="address"></span>
             </div>
+            <input
+                    type="text"
+                    id="detailAddress"
+                    placeholder="상세 주소를 입력해주세요"
+                    class="w-full mt-2 h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style="display: none;"
+            >
         </section>
     </main>
 
@@ -93,7 +100,9 @@
         </button>
     </div>
 
-    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t">
+    <div class = "mb-[60px]"></div>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t mw-[800px]">
         <div class="flex justify-around p-2">
             <button class="flex flex-col items-center text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -119,6 +128,7 @@
     <script>
         const url = "http://localhost:8080"
         const token = sessionStorage.getItem("accessToken");
+        const detailAddressInput = document.getElementById("detailAddress");
 
         var phone = "";
         var address = "";
@@ -163,6 +173,12 @@
         }
 
         function findAddress() {
+            const detailAddressInput = document.getElementById("detailAddress");
+
+            if (detailAddressInput.style.display === "none") {
+                detailAddressInput.style.display = "block";
+            }
+
             new daum.Postcode({
                 oncomplete: function(data) {
                     var addr = '';
@@ -212,13 +228,19 @@
                 return;
             }
 
+            if (detailAddressInput.style.display === "block" && !detailAddressInput.value) {
+                alert("상세 주소를 입력해주세요.");
+                return;
+            }
+
             const passwordField = document.getElementById('password').value;
             const addressField = document.getElementById('address').value;
             const phoneField = document.getElementById('phone').value;
+            const detailAddressField = document.getElementById('detailAddress').value;
 
             const formData = {
                 password: passwordField,
-                address: addressField ? addressField : address,
+                address: (detailAddressInput.style.display === "none") ? addressField : (address + detailAddressField),
                 phone: phoneField ? phoneField : phone
             };
 

@@ -43,11 +43,9 @@
             <h2 class="text-lg font-bold mb-2">배송 정보</h2>
             <div class="mb-2">
                 <span class="block font-semibold">배송지</span>
-                <span id = "address">서울특별시 송파구 충민로4길 6, 78층 7803동 30004호</span>
-            </div>
-            <div>
-                <span class="block font-semibold">공동현관 출입방법</span>
-                <span>밑에서 78층까지 소리치리시면 됩니다.</span>
+                <div class="border p-4 rounded shadow-sm mt-2">
+                    <span id="address"></span>
+                </div>
             </div>
         </div>
     </div>
