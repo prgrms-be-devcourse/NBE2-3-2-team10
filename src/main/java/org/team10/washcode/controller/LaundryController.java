@@ -42,7 +42,7 @@ public class LaundryController {
     public LaundryDetailResDTO checkLaundryExists(@AuthenticationPrincipal int id) {
         System.out.println("checkLaundryExists: " + id);
 
-        return laundryService.getLaundryShopById(id);
+        return laundryService.getLaundryShopByUserId(id);
     }
 
     //세탁소 정보 저장
