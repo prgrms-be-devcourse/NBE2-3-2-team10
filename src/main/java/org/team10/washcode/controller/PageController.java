@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
 import org.team10.washcode.service.KakaoService;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.service.LaundryService;
@@ -20,6 +21,7 @@ import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.service.PickupService;
 
 
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -92,6 +94,13 @@ public class PageController {
 
     @RequestMapping("/sales-summary")
     public String salesSummary(Model model) {
+
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+
+        List<PickupSalesSummeryDTO> pickupList = pickupService.getPickupSalesSummery(1L, currentYear, currentMonth);
+        model.addAttribute("pickupList", pickupList);
         return "Shop/sales-summary";
     }
 
