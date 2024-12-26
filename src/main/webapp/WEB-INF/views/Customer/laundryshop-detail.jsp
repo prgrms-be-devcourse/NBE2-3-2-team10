@@ -80,7 +80,7 @@
             <div class="flex space-x-4 mt-4" id="category">
 
             </div>
-            <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg">세탁 신청</button>
+            <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg" onclick="window.location.href=''">세탁 신청</button>
         </div>
         <div class="mt-4 bg-blue-100 p-4 rounded-lg shadow">
             <p class="text-gray-700"><strong>1234님</strong></p>
@@ -97,13 +97,13 @@
             </svg>
             <span>홈</span>
         </button>
-        <button class="flex flex-col items-center text-gray-500">
+        <button class="flex flex-col items-center text-gray-500" onclick="window.location.href='/orderHistory'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
             </svg>
             <span>주문내역</span>
         </button>
-        <button class="flex flex-col items-center text-gray-500">
+        <button class="flex flex-col items-center text-gray-500" onclick="window.location.href='/mypage'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
             </svg>
