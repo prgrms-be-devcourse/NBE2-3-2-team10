@@ -53,6 +53,7 @@
             };
             return categoryMap[category] || "";
         }
+
     </script>
 </head>
 <body class="bg-gray-100">
