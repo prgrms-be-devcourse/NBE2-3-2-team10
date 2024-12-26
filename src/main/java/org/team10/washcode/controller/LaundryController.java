@@ -42,7 +42,7 @@ public class LaundryController {
         return laundryService.getLaundryShopById(id);
     }
 
-    //세탁소 정보 저장 및 수정
+    //세탁소 정보 저장
     @PostMapping("/")
     public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
         System.out.println(to.getUser_name());
@@ -54,9 +54,29 @@ public class LaundryController {
         return ResponseEntity.ok().body(Map.of("laundry_id", laundry_id));
     }
 
-    //가격표 저장 및 수정
+    //가격표 저장
     @PostMapping("/handled-items")
     public List<HandledItems> setHandledItems(@RequestBody List<HandledItemsResDTO> itemsList) {
+        System.out.println("Received items list: " + itemsList);
+
+        return laundryService.setHandledItems(itemsList);
+    }
+
+    //세탁소 정보 수정
+    @PutMapping("/")
+    public ResponseEntity<?> modifyLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
+        System.out.println(to.getUser_name());
+
+
+        int laundry_id = laundryService.registerLaundryShop(to, id);
+
+        // 성공 응답 반환
+        return ResponseEntity.ok().body(Map.of("laundry_id", laundry_id));
+    }
+
+    //가격표 저장
+    @PutMapping("/handled-items")
+    public List<HandledItems> setHandledItems_modify(@RequestBody List<HandledItemsResDTO> itemsList) {
         System.out.println("Received items list: " + itemsList);
 
         return laundryService.setHandledItems(itemsList);

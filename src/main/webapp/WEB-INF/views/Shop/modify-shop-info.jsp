@@ -159,11 +159,12 @@
             </table>
         </div>
 
-        <!-- 정보 저장 버튼 -->
-        <button
-                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="rbtn">
-            정보 저장
-        </button>
+        <div id="btn">
+            <!-- 정보 저장 버튼 -->
+            <button class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="rbtn">
+                정보 저장
+            </button>
+        </div>
     </form>
 </div>
 
@@ -198,11 +199,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const token = sessionStorage.getItem("accessToken");
-            if (!token) {
-                alert("로그인이 필요합니다.");
-                return;
-            }
-
+            const btn = document.getElementById("btn");
             try {
                 const response = await fetch("/api/laundry/", {
                     method: "GET",
@@ -223,6 +220,11 @@
                         document.getElementById("non_operating_days").value = data.non_operating_days || "";
                         document.getElementById("user_name").value = data.user_name;
                         document.getElementById("business_number").value = data.business_number;
+
+                        btn.innerHTML = `
+                        <button class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="mbtn">
+                            정보 수정
+                        </button>`
 
                         // 상품 정보 테이블 채우기
                         const productTableBody = document.getElementById("productTableBody");
@@ -354,7 +356,7 @@
                             const laundry_id = data.laundry_id;
 
                             // 가격표 데이터 전송
-                            sendData(laundry_id);
+                            sendData_register(laundry_id);
 
                             alert("등록이 완료되었습니다!");
                         } else {
@@ -369,11 +371,108 @@
                     alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
                 }
             });
-
-
         };
 
-        function sendData(laundry_id) {
+        //세탁소 정보 수정
+        document.body.addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'mbtn') {
+                event.preventDefault();
+
+                const user_name = document.getElementById("user_name").value;
+                const phone = document.getElementById("phone").value;
+                const address = document.getElementById("address").value;
+                const shop_name = document.getElementById("shop_name").value;
+                const business_number = document.getElementById("business_number").value;
+                const non_operating_days = document.getElementById("non_operating_days").value;
+                let latitude = 0;
+                let longitude = 0;
+
+                if(user_name.trim() === ""){
+                    alert("이름을 입력하세요.");
+                    return false;
+                }
+
+                if(phone.trim() === ""){
+                    alert("전화번호를 입력하세요.");
+                    return false
+                }
+
+                if(address.trim() === ""){
+                    alert("주소를 입력하세요.");
+                    return false
+                }
+
+                if(shop_name.trim() === ""){
+                    alert("세탁소명을 입력하세요.");
+                    return false
+                }
+
+                if(business_number.trim() === ""){
+                    alert("사업자 번호를 입력하세요.");
+                    return false
+                }
+
+                if(non_operating_days.trim() === ""){
+                    alert("휴무일을 입력하세요.");
+                    return false
+                }
+
+
+                // 주소-좌표 변환 객체를 생성합니다
+                var geocoder = new kakao.maps.services.Geocoder();
+                const token = sessionStorage.getItem("accessToken");
+
+                geocoder.addressSearch(address, async function(result, status) {
+                    // 정상적으로 검색이 완료됐으면
+                    if (status === kakao.maps.services.Status.OK) {
+                        longitude = result[0].x;
+                        latitude = result[0].y;
+
+                        try {
+                            //세탁소 정보 등록 및 수정
+                            const response1 = await fetch("/api/laundry/", {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization:  'Bearer ' + token
+                                },
+                                body: JSON.stringify({
+                                    user_name: user_name,
+                                    phone: phone,
+                                    address: address,
+                                    shop_name: shop_name,
+                                    business_number: business_number,
+                                    non_operating_days: non_operating_days,
+                                    latitude: latitude,
+                                    longitude: longitude
+                                })
+                            });
+
+
+                            if (response1.ok) {
+                                const data = await response1.json();
+                                const laundry_id = data.laundry_id;
+
+                                // 가격표 데이터 전송
+                                sendData_modify(laundry_id);
+
+                                alert("등록이 완료되었습니다!");
+                            } else {
+                                const errorData = await response1.json();
+                                alert(`오류 발생: ${errorData.message || '서버 에러'}`);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('네트워크 오류가 발생했습니다.');
+                        }
+                    } else {
+                        alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
+                    }
+                });
+            }
+        });
+
+        function sendData_register(laundry_id) {
             const rows = document.querySelectorAll('#productTableBody tr');
             const items = [];
 
@@ -397,6 +496,38 @@
             // JSON 데이터를 서버로 보내기
             const response2 = fetch("api/laundry/handled-items", {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            });
+        }
+
+        //세탁소 가격정보 수정
+        function sendData_modify(laundry_id) {
+            const rows = document.querySelectorAll('#productTableBody tr');
+            const items = [];
+
+            rows.forEach(row => {
+                const item_name = row.querySelector('input[name="item_name"]').value;
+                const category = row.querySelector('select[name="category"]').value;
+                const price = row.querySelector('input[name="price"]').value;
+
+                if (item_name && category && price) {
+                    items.push({
+                        item_name: item_name,
+                        category: getCategoryEnum(category),
+                        price: price,
+                        laundry_id: laundry_id
+                    });
+                }
+            });
+
+            console.log(JSON.stringify(items));
+
+            // JSON 데이터를 서버로 보내기
+            const response2 = fetch("api/laundry/handled-items", {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
