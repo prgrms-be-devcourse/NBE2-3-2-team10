@@ -268,8 +268,6 @@
                             productTableBody.appendChild(newRow);
                         });
                     }
-                } else {
-                    console.error("Failed to fetch laundry info");
                 }
             } catch (error) {
                 console.error("Error fetching laundry info:", error);

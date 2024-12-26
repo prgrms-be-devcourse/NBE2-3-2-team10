@@ -37,7 +37,7 @@ public class LaundryController {
     //세탁소 정보가 이미 저장되어있는지 확인
     @GetMapping("/")
     public LaundryDetailResDTO checkLaundryExists(@AuthenticationPrincipal int id) {
-        System.out.println(id);
+        System.out.println("checkLaundryExists: " + id);
 
         return laundryService.getLaundryShopById(id);
     }

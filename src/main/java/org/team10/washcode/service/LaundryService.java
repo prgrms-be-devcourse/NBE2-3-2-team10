@@ -70,10 +70,12 @@ public class LaundryService {
     //세탁소 상세정보 조회
     //세탁소 id로 세탁소 정보 찾기
     public LaundryDetailResDTO getLaundryShopById(int id) {
-        LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
+        LaundryShop laundryShop = laundryShopRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("LaundryShop not found"));
+
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
-        System.out.println(laundryShop.getId());
+        System.out.println("LaundryDetailResDTO: " + laundryShop.getId());
         to.setShop_name(laundryShop.getShop_name());
         to.setPhone(laundryShop.getPhone());
         to.setAddress(laundryShop.getAddress());
@@ -81,8 +83,6 @@ public class LaundryService {
         to.setBusiness_number(laundryShop.getBusiness_number());
         to.setUser_name(laundryShop.getUser_name());
 
-//        User user = laundryShop.getUser();
-//        to.setUser_name(user.getName());
 
         List<HandledItems> handledItems = handledItemsRepository.findByLaundryshopId((long) laundryShop.getId());
         to.setHandledItems(handledItems);
@@ -100,6 +100,7 @@ public class LaundryService {
         shop.setUser(user);
         shop.setShop_name(to.getShop_name());
         shop.setBusiness_number(to.getBusiness_number());
+        shop.setUser_name(to.getUser_name());
         shop.setAddress(to.getAddress());
         shop.setPhone(to.getPhone());
         shop.setNon_operating_days(to.getNon_operating_days());
