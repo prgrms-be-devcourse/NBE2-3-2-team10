@@ -1,5 +1,6 @@
 package org.team10.washcode.jwt;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,11 +10,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.team10.washcode.Enum.UserRole;
 
 import java.io.IOException;
+import java.util.List;
 
+@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -21,10 +25,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String accessToken = jwtProvider.resolveAccessToken(request);
-        // 1-1. 유효한 토큰인지 확인
-        if(accessToken!=null && jwtProvider.validateToken(accessToken)){
-            // 2. 유저정보 저장
+            // 1-1. 유효한 토큰인지 확인
+        if(accessToken!=null && jwtProvider.validateToken(accessToken)) {
+                // 2. 유저정보 저장
             this.setAuthentication(accessToken);
         }
         filterChain.doFilter(request,response);

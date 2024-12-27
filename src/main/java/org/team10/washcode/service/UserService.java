@@ -10,12 +10,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
 import org.team10.washcode.RequestDTO.user.UserUpdateReqDTO;
 import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
+import org.team10.washcode.jwt.CustomUserDetails;
 import org.team10.washcode.jwt.JwtProvider;
 import org.team10.washcode.repository.UserRepository;
 
@@ -63,7 +68,9 @@ public class UserService {
             user.setAddress(registerReqDTO.getAddress());
             user.setPhone(registerReqDTO.getPhone());
             user.setRole(registerReqDTO.getRole());
-            user.setKakao_id(registerReqDTO.getKakao_id());
+            if(registerReqDTO.getKakao_id()!=null) {
+                user.setKakao_id(registerReqDTO.getKakao_id());
+            }
 
             userRepository.save(user);
 
@@ -85,6 +92,7 @@ public class UserService {
                 return ResponseEntity.status(400).body("잘못된 비밀번호 입니다.");
             }
 
+
             User user = userRepository.findByEmail(loginReqDTO.getEmail()).orElseThrow(() -> new RuntimeException("해당 계정을 찾을 수 없습니다."));
 
             String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
@@ -94,6 +102,11 @@ public class UserService {
             responseAccessToken.put("accessToken",accessToken);
 
             ResponseCookie refreshCookie = getRefreshToken(refreshToken);
+
+            UserDetails userDetails = new CustomUserDetails(user.getId(), user.getRole());
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails.getUsername(),null,userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return ResponseEntity
                     .ok()
