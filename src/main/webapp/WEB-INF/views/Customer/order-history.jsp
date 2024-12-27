@@ -32,7 +32,7 @@
             <div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">
                 <div class="flex justify-between items-center">
                     <h2 class="font-bold"><%= order.getShopName() %></h2>
-                    <span class="text-blue-500"><%= order.getStatus() %></span>
+                    <span class="text-blue-500"><%= order.getStatus().getDesc() %></span>
                 </div>
                 <p class="text-gray-500">주문 생성일 : <%= order.getCreatedAt() %></p>
                 <%-- 주문 상세보기 버튼 추가 --%>

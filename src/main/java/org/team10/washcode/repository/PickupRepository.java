@@ -84,6 +84,7 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("UPDATE Pickup p SET p.status = 'CANCELLED' WHERE p.id = :pickupId AND p.user.id = :userId")
     int cancleOrder(int pickupId, int userId);
 
+
     @Query("SELECT DISTINCT p FROM Pickup p " +
             "JOIN FETCH p.user u " +
             "JOIN FETCH p.laundryshop l " +
@@ -96,5 +97,6 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
                                                  @Param("statuses") List<PickupStatus> statuses,
                                                  @Param("year") int year,
                                                  @Param("month") int month);
+
 
 }

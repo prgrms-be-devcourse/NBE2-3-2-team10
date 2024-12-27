@@ -36,6 +36,7 @@ public class OrderController {
     private HandledItemsService handledItemsService;
 
 
+
     @GetMapping("/main")
     public String main(Model model) {
         return "Customer/main";
@@ -50,7 +51,7 @@ public class OrderController {
         LaundryShop laundryShop = laundryService.getLaundryById(laundryShopId);
 
         // LaundryShopId에 맞는 HandledItems 리스트 조회
-        List<HandledItems> handledItems = handledItemsService.getItemsByLaundryShopId(laundryShopId);
+        List<HandledItems> handledItems = handledItemsService.getAllHandledItems(laundryShopId);
 
         model.addAttribute("user", user);
         model.addAttribute("laundryShop", laundryShop);
@@ -59,15 +60,19 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createOrder(
+    //public ResponseEntity<String> createOrder(
+    public String createOrder(
             @RequestParam("userId") int userId,
             @RequestParam("laundryShopId") Long laundryShopId,
             @RequestParam("quantity") int quantity,
             @RequestParam("content") String content,
-            @RequestParam("item_id") Long itemId
+            @RequestParam("item_id") Long itemId,
+            @RequestParam("method") String paymentMethod // 결제 방법
     ) {
-        try {
+
             HandledItems handledItem = handledItemsService.getHandledItemById(itemId);
+
+            int totalPrice = handledItem.getPrice() * quantity;
 
             // 수거 요청 생성
             Pickup pickup = new Pickup();
@@ -81,26 +86,32 @@ public class OrderController {
             pickupItem.setPickup(pickup);
             pickupItem.setQuantity(quantity);
             pickupItem.setHandledItems(handledItem);
+            pickupItem.setTotalPrice(totalPrice);
 
             // 수거 요청 저장
             orderService.saveOrder(pickup, pickupItem);
 
-            return ResponseEntity.ok("수거 요청이 성공적으로 등록되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수거 요청 처리 중 오류가 발생했습니다.");
-        }
+            // 6. 결제 정보 저장
+            Payment payment = new Payment();
+            payment.setPickup(pickup);
+            payment.setPayment_datetime(new Timestamp(System.currentTimeMillis()));
+            payment.setAmount(totalPrice); // 총 금액
+            payment.setMethod(paymentMethod); // 결제 방법
+
+            orderService.savePayment(payment);
+
+            return "redirect:/api/orders/main";
+
     }
 
 
     @GetMapping("/history/{userId}")
-//    public ResponseEntity<List<OrderlistResDTO>> getOrderByUserId(@PathVariable int userId,Model model){
     public String getOrderByUserId(@PathVariable int userId,Model model){
         List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
 
         model.addAttribute("orders", orderList);
         model.addAttribute("userId",userId);
-//        return ResponseEntity.ok(orderList);
+
         return "Customer/order-history";
     }
 
@@ -117,11 +128,6 @@ public class OrderController {
         return "Customer/order-history-detail";
     }
 
-//    @DeleteMapping("/delete/{userId}/{pickupId}")
-//    public String deleteOrder(@PathVariable int userId, @PathVariable int pickupId) {
-//        orderService.delteOrder(pickupId, userId);
-//        return "redirect:/api/orders/main";
-//    }
 
     @PostMapping("/cancel/{userId}/{pickupId}")
     public String cancelPickup(
