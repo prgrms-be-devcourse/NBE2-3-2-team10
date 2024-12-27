@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
@@ -35,9 +36,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-  
+
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ResponseCookie getRefreshToken(String refreshToken) {
         return ResponseCookie
@@ -69,9 +73,11 @@ public class UserService {
                 return ResponseEntity.status(409).body("이미 사용중인 이메일 입니다.");
             }
 
+            String encodePassword = passwordEncoder.encode(registerReqDTO.getPassword());
+
             User user = new User();
             user.setEmail(registerReqDTO.getEmail());
-            user.setPassword(registerReqDTO.getPassword());
+            user.setPassword(encodePassword);
             user.setName(registerReqDTO.getName());
             user.setAddress(registerReqDTO.getAddress());
             user.setPhone(registerReqDTO.getPhone());
@@ -94,7 +100,7 @@ public class UserService {
                 return ResponseEntity.status(409).body("계정을 찾을 수 없습니다.");
             }
             // 비밀번호 검증 (추후 암호화 예정)
-            if(!userRepository.findByPasswordEquals(loginReqDTO.getEmail(),loginReqDTO.getPassword())){
+            if(!passwordEncoder.matches(loginReqDTO.getPassword(), userRepository.findByPassword(loginReqDTO.getEmail()))){
                 return ResponseEntity.status(400).body("잘못된 비밀번호 입니다.");
             }
 
