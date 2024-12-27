@@ -28,4 +28,13 @@ public class HandledItemsService {
         }
     }
 
+    public List<HandledItems> getItemsByLaundryShopId(Long laundryShopId) {
+        try {
+            return handledItemsRepository.findByLaundryshopId(laundryShopId);
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외 출력
+            throw new RuntimeException("HandledItems 조회 중 오류 발생", e); // 예외를 다시 던져서 에러 로깅
+        }
+    }
+
 }
