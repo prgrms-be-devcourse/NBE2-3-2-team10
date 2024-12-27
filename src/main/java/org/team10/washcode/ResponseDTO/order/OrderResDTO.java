@@ -7,6 +7,7 @@ import org.team10.washcode.Enum.PickupStatus;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+
 @Getter
 @Setter
 public class OrderResDTO {
@@ -24,7 +25,9 @@ public class OrderResDTO {
     //결제 방법
     private String method;
     private int amount;
+    private Timestamp payment_datetime;
 
+    private int price;//각 카테고리별 가격
     List<OrderItem> order_items;
 
     // OrderItem을 정적 이너 클래스로 정의
@@ -34,6 +37,7 @@ public class OrderResDTO {
         private String item_name;
         private int quantity;
         private int totalPrice;
+
 
         public OrderItem(String item_name, int quantity, int totalPrice) {
             this.item_name = item_name;

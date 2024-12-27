@@ -30,7 +30,7 @@
             %>
             <div class="flex justify-between items-center">
                 <h2 class="font-bold"><%= order.getShop_name() %></h2>
-                <span class="text-blue-500"><%= order.getStatus(). %></span>
+                <span class="text-blue-500"><%= order.getStatus() %></span>
             </div>
             <%
                 List<OrderResDTO.OrderItem> orderItems = order.getOrder_items();

@@ -1,3 +1,5 @@
+<%@ page import="org.team10.washcode.ResponseDTO.order.OrderlistResDTO" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
 %>
@@ -36,31 +38,28 @@
     </div>
 
     <!-- 거래 내역 리스트 -->
+    <%
+        List<OrderlistResDTO> orders =(List<OrderlistResDTO>) request.getAttribute("orders");
+        if (orders != null) {
+            for (OrderlistResDTO order : orders) {
+    %>
     <div class="p-4">
         <div class="bg-gray-50 p-4 rounded-lg shadow mb-4">
             <div class="flex justify-between items-center">
-                <span class="text-gray-700">2024년 12월 13일 (금)</span>
-                <span class="text-blue-500 font-medium">99,999원</span>
+                <span class="text-gray-700"><%=order.getCreated_at()%></span>
+<%--                <span class="text-blue-500 font-medium">99,999원</span>--%>
             </div>
-            <p class="text-gray-500 mt-1">세탁짱 강남점</p>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg shadow mb-4">
-            <div class="flex justify-between items-center">
-                <span class="text-gray-700">2024년 12월 14일 (토)</span>
-                <span class="text-blue-500 font-medium">130,000원</span>
-            </div>
-            <p class="text-gray-500 mt-1">워시팡 서비스</p>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg shadow mb-4">
-            <div class="flex justify-between items-center">
-                <span class="text-gray-700">2024년 12월 15일 (일)</span>
-                <span class="text-blue-500 font-medium">25,000원</span>
-            </div>
-            <p class="text-gray-500 mt-1">세탁짱 수거배송</p>
+            <p class="text-gray-500 mt-1"><%=order.getShop_name()%></p>
+            <a href="/api/orders/payment/<%= request.getAttribute("userId") %>/<%= order.getPickup_id() %>"
+               class="text-blue-500 mt-2 inline-block">
+                상세보기
+            </a>
         </div>
     </div>
+    <%
+            }
+        }
+    %>
 </div>
 
 <!-- 하단 네비게이션 바 -->

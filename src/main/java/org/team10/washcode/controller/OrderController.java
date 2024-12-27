@@ -3,6 +3,7 @@ package org.team10.washcode.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.Enum.PickupStatus;
@@ -10,6 +11,7 @@ import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
+import org.team10.washcode.ResponseDTO.order.PaymentDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.LaundryShopRepository;
 import org.team10.washcode.repository.PickupItemRepository;
@@ -38,14 +40,16 @@ public class OrderController {
 
 
     @GetMapping("/main")
-    public String main(Model model) {
+    public String main() {
         return "Customer/main";
     }
 
     @GetMapping("/create")
-    public String order(@RequestParam("id") int userId,
-                        @RequestParam("laundryShopId") Long laundryShopId,
-                        Model model) {
+    public String order(
+            @RequestParam("id") int userId,
+//            @AuthenticationPrincipal int userId,
+            @RequestParam("laundryShopId") Long laundryShopId,
+            Model model) {
         // User, LaundryShop 조회
         User user = userService.getUserById(userId);
         LaundryShop laundryShop = laundryService.getLaundryById(laundryShopId);
@@ -138,4 +142,26 @@ public class OrderController {
 //        return ResponseEntity.ok("Pickup status updated to CANCELLED successfully.");
         return "redirect:/api/orders/main";
     }
+    //결제내역 조회
+    @GetMapping("/payment/{userId}")
+    public String Payment(@PathVariable int userId,Model model) {
+        List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
+
+        model.addAttribute("orders", orderList);
+        model.addAttribute("userId",userId);
+        return "Customer/payment-history";
+    }
+
+    @GetMapping("/payment/{userId}/{pickupId}")
+    public String PaymentHistory(
+            @PathVariable int userId,
+            @PathVariable int pickupId,
+            Model model) {
+//        List<PaymentDTO> paymentList = orderService.getPaymentDetail(userId, pickupId);
+//        model.addAttribute("payment", paymentList);
+        OrderResDTO orderDetails = orderService.getOrderDetail(userId, pickupId);
+        model.addAttribute("order",orderDetails);
+        return "Customer/payment-history-detail";
+    }
+
 }

@@ -9,6 +9,7 @@ import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
+import org.team10.washcode.ResponseDTO.order.PaymentDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
 
@@ -29,6 +30,7 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+
 
     public void saveOrder(Pickup pickup, PickupItem pickupItem) {
         // Pickup 저장
@@ -69,14 +71,14 @@ public class OrderService {
             orderResDTO.setPhone((String) obj[1]);
             orderResDTO.setShop_name((String) obj[2]);
             orderResDTO.setContent((String) obj[5]);
-            //orderResDTO.setStatus(PickupStatus.valueOf((String) obj[4]));  // 상태는 Enum으로 변환
+            orderResDTO.setName((String) obj[15]);
+
             orderResDTO.setStatus((PickupStatus) obj[4]);
             orderResDTO.setCreated_at((Timestamp) obj[6]);
             orderResDTO.setUpdate_at((Timestamp) obj[7]);
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
-//pi_id[3], pi_it=id[8],quantity[9],category[12]
-            // OrderItem 추가
+
             OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
                     (String) obj[11], // item_name
                     (Integer) obj[9], // quantity
@@ -93,6 +95,10 @@ public class OrderService {
         if (updatedRows == 0) {
             throw new IllegalArgumentException("No matching pickup found for pickupId: " + pickupId + " and userId: " + userId);
         }
+    }
+
+    public List<PaymentDTO> getPaymentDetail(int pickupId, int userId) {
+        return paymentRepository.findPaymentDetail(pickupId, userId);
     }
 
 

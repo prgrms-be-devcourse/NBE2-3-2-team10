@@ -65,7 +65,9 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
             "hi.item_name AS itemName, " +
             "hi.category AS category, " +
             "pay.amount AS amount, " +
-            "pay.method AS method " +
+            "pay.method AS method, " +
+            "u.name AS name, " +
+            "pay.payment_datetime AS paymentDateTime " +
             "FROM User u " +
             "JOIN Pickup p ON u.id = p.user.id " +
             "JOIN LaundryShop ls ON ls.id = p.laundryshop.id " +
