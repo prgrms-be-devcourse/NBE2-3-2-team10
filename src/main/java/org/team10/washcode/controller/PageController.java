@@ -3,6 +3,7 @@ package org.team10.washcode.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
+import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.service.*;
 import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
 import org.team10.washcode.service.KakaoService;
+
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 
@@ -31,7 +34,9 @@ public class PageController {
     private final KakaoService kakaoService;
     private final PickupService pickupService;
     private final LaundryService laundryService;
+    private final HandledItemsService handledItemsService;
     private final ReviewService reviewService;
+
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -140,12 +145,13 @@ public class PageController {
     @RequestMapping("/laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
         LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
-
         if(to == null) {
             return "error";
         }
 
+
         model.addAttribute("laundry", to);
+        model.addAttribute("laundryId", id);
         return "Customer/laundryshop-detail";
     }
 

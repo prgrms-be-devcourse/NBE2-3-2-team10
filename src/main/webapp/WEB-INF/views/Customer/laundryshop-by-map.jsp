@@ -175,6 +175,7 @@
         </div>
     </div>
 
+
     <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
         <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
             <img src = "./footer/Home.svg" class = "h-6 w-6"/>
