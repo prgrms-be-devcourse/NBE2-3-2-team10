@@ -3,7 +3,6 @@ package org.team10.washcode.ResponseDTO.laundry;
 import lombok.Getter;
 import lombok.Setter;
 import org.team10.washcode.entity.HandledItems;
-import org.team10.washcode.entity.User;
 
 import java.util.List;
 @Setter
@@ -14,7 +13,8 @@ public class LaundryDetailResDTO {
     private String phone;
     private String address;
     private String non_operating_days;
+    private String business_number;
+    private String user_name;
 
-    private List<HandledItemsResDTO> handledItems;
-
+    private List<HandledItems> handledItems;
 }

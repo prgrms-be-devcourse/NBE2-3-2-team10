@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.team10.washcode.entity.HandledItems;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HandledItemsRepository extends JpaRepository<HandledItems, Long> {
@@ -14,7 +15,9 @@ public interface HandledItemsRepository extends JpaRepository<HandledItems, Long
 
     //List<HandledItems> findByLaundryshopId(Long laundryShopId);
 
+
     //세탁소 아이디를 받아서 handledItem 내용 조회(id, laundryshop_id,price, item_name, category)
     @Query("SELECT h FROM HandledItems h WHERE h.laundryshop.id = :laundryshopId")
     List<HandledItems> findByLaundryshopId(@Param("laundryshopId") Long laundryshopId);
+
 }

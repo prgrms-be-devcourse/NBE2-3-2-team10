@@ -26,6 +26,6 @@ public interface LaundryShopRepository extends JpaRepository<LaundryShop, Long> 
     @Query("SELECT L FROM LaundryShop L WHERE L.id = :id")
     LaundryShop findByShopId(@Param("id") int id);
 
-    LaundryShop findByUserId(int userId);
+    Optional<LaundryShop> findByUserId(int userId);
 
 }
