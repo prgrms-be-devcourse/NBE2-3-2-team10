@@ -27,86 +27,108 @@
         <section class="mb-6">
             <h2 class="font-bold mb-2">정보 수정</h2>
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold">Email</label>
-                    <input type="email" id="email" class="w-full border p-2 rounded" disabled>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold">이름</label>
-                    <input type="text" id="name" class="w-full border p-2 rounded" disabled>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold">전화번호</label>
-                    <div class="flex">
-                        <input type="text" value="" class="flex-grow border p-2 rounded-l">
-                        <button class="bg-blue-500 text-white px-4 rounded-r">인증 받기</button>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">아이디</label>
+                    <div class = "flex">
+                        <input
+                                type="email"
+                                id="email"
+                                class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                disabled >
                     </div>
-                    <div class="flex mt-3">
-                        <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-full px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-400 focus:outline-none">확인</button>
+                </div>
+
+                <!-- 비밀번호 입력란 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">비밀번호</label>
+                    <input
+                            type="password"
+                            id="password"
+                            placeholder="8~30자리 영어, 숫자, 특수문자 조합"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input
+                            type="password"
+                            id="password2"
+                            placeholder="비밀번호를 똑같이 입력해주세요"
+                            class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-0.5">이름</label>
+                    <input type="text" id="name" class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                </div>
+
+                <!-- 전화번호 입력란 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">전화번호</label>
+                    <div class="flex">
+                        <input type="tel" id="phone" placeholder="휴대 전화 번호를 입력해주세요" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">인증 번호</button>
+                    </div>
+                    <div class="flex mt-2">
+                        <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">확인</button>
                     </div>
                 </div>
             </div>
         </section>
         <section>
             <div class="flex justify-between items-center mb-2">
-                <h2 class="font-bold">배송지</h2>
+                <h2 class="font-bold mb-0.5 ">배송지</h2>
                 <button class="text-blue-500" onclick="findAddress()">수정</button>
             </div>
-            <div class="border p-4 rounded shadow-sm">
+            <div class="border border-gray-300 p-4 rounded shadow-sm rounded-lg">
                 <span id="address"></span>
             </div>
+            <input
+                    type="text"
+                    id="detailAddress"
+                    placeholder="상세 주소를 입력해주세요"
+                    class="w-full mt-2 h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style="display: none;"
+            >
         </section>
     </main>
 
-    <!-- 회원가입 버튼 -->
     <div class="flex justify-center">
         <button
                 type="button"
                 id="submitBtn"
-                onclick="reqRegister()"
-                class="w-[50%] py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">
+                onclick="updateUserInfo()"
+                class="w-[50%] py-3 mb-4 text-white font-bold rounded-lg bg-[#4AC7D5] hover:bg-[#39b2c3]">
             변경
         </button>
     </div>
 
-    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t">
-        <div class="flex justify-around p-2">
-            <button class="flex flex-col items-center text-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0l-7 7-2-2m0 0l-7-7 7-7" />
-                </svg>
-                <span>홈</span>
-            </button>
-            <button class="flex flex-col items-center text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 9h18M3 15h18M3 21h18" />
-                </svg>
-                <span>주문내역</span>
-            </button>
-            <button class="flex flex-col items-center text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>마이</span>
-            </button>
-        </div>
+    <div class = "mb-[60px]"></div>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+        <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
+            <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">홈</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
+            <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">주문내역</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
+            <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">내 정보</span>
+        </button>
     </footer>
 
     <script>
         const url = "http://localhost:8080"
         const token = sessionStorage.getItem("accessToken");
+        const detailAddressInput = document.getElementById("detailAddress");
 
-        var name = "";
         var phone = "";
         var address = "";
-        var email = "";
 
         window.onload = () => {
             checkAccessToken();
             getUserInfo();
         }
-
 
         function checkAccessToken() {
             axios.post(url + '/api/user/check-login', {
@@ -136,13 +158,19 @@
 
                 document.getElementById('email').value = email;
                 document.getElementById('name').value = name;
-                document.getElementById('address').textContent = response.data.address
+                document.getElementById('address').textContent = address
             }).catch(function(error) {
                 console.error(error);
             });
         }
 
         function findAddress() {
+            const detailAddressInput = document.getElementById("detailAddress");
+
+            if (detailAddressInput.style.display === "none") {
+                detailAddressInput.style.display = "block";
+            }
+
             new daum.Postcode({
                 oncomplete: function(data) {
                     var addr = '';
@@ -172,6 +200,56 @@
                 }
             }).open();
         }
+
+        // 유저 정보를 변경하는 Axios 요청을 보내는 함수
+        function updateUserInfo() {
+            const regex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]{8,30}$/;
+
+            if (!document.getElementById('password').value) {
+                alert('비밀번호를 입력해주세요.');
+                return;
+            }
+
+            if (!regex.test(document.getElementById('password').value)) {
+                alert("비밀번호는 8~30자 사이의 영어, 숫자, 특수문자 조합이어야 합니다.");
+                return true;
+            }
+
+            if (document.getElementById('password').value !== document.getElementById('password2').value) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            if (detailAddressInput.style.display === "block" && !detailAddressInput.value) {
+                alert("상세 주소를 입력해주세요.");
+                return;
+            }
+
+            const passwordField = document.getElementById('password').value;
+            const addressField = document.getElementById('address').value;
+            const phoneField = document.getElementById('phone').value;
+            const detailAddressField = document.getElementById('detailAddress').value;
+
+            const formData = {
+                password: passwordField,
+                address: (detailAddressInput.style.display === "none") ? addressField : (address + detailAddressField),
+                phone: phoneField ? phoneField : phone
+            };
+
+            alert(formData.address + " " + formData.password + " " + formData.phone)
+
+            axios.put(url + '/api/user', formData, {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then((res) => {
+                alert("정보가 변경되었습니다.");
+                location.href = '/myInfoModify';
+            }).catch(() => {
+                console.error(error);
+            });
+        }
+
     </script>
 </div>
 </body>

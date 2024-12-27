@@ -2,6 +2,7 @@ package org.team10.washcode.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
 
@@ -17,6 +18,7 @@ public class Payment {
     @JoinColumn(name = "pickup_id")
     private Pickup pickup;     //요청 id
 
+    @CreatedDate
     private Timestamp payment_datetime; //결제일시
     private int amount;     //결제금액
     private String method; //결제수단

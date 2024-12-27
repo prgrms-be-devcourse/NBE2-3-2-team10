@@ -58,24 +58,18 @@
   </button>
 </div>
 <!-- Footer -->
-<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around max-w-[600px] overflow-x-auto mx-auto ">
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
   <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18m-9 9h9" />
-    </svg>
-    <span>홈</span>
+    <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+    <span class="text-black text-[10pt] mt-1">홈</span>
   </button>
   <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
-    </svg>
-    <span>주문내역</span>
+    <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+    <span class="text-black text-[10pt] mt-1">주문내역</span>
   </button>
   <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
-    </svg>
-    <span>마이</span>
+    <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+    <span class="text-black text-[10pt] mt-1">내 정보</span>
   </button>
 </footer>
 
@@ -118,6 +112,7 @@
         }
       }).then(() => {
         alert("로그아웃 되었습니다.");
+        sessionStorage.removeItem("accessToken");
         location.href = '/';
       }).catch((error) => {
         console.error(error);

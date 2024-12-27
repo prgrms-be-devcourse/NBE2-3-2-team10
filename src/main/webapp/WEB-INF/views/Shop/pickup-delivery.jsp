@@ -105,38 +105,20 @@
 %>
 
 <!-- 하단 네비게이션 -->
-<div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
-    <div class="flex justify-around py-2">
-        <!-- 홈 버튼 -->
-        <button onclick="location.href='/shop-main'" class="flex flex-col items-center text-teal-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0l-7 7-2-2m9 2h6"/>
-            </svg>
-            <span class="text-xs mt-1">홈</span>
-        </button>
-
-        <!-- 주문내역 버튼 -->
-        <button onclick="location.href='/pickup-list'" class="flex flex-col items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
-            <span class="text-xs mt-1">주문내역</span>
-        </button>
-
-        <!-- 마이페이지 버튼 -->
-        <button class="flex flex-col items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 11c0 1.104-.896 2-2 2s-2-.896-2-2 .896-2 2-2 2 .896 2 2zm0 0c0 1.104.896 2 2 2s2-.896 2-2-.896-2-2-2-2 .896-2 2zm0 0v6m0 0H9m3 0h3"/>
-            </svg>
-            <span class="text-xs mt-1">마이</span>
-        </button>
-    </div>
-</div>
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/shop-main'">
+        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >
+        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop-mypage'">
+        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
+    </button>
+</footer>
 
 </body>
 </html>

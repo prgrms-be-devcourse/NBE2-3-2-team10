@@ -14,11 +14,16 @@ import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.entity.HandledItems;
+import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.service.*;
+import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
+import org.team10.washcode.service.KakaoService;
+
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 
 
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -30,6 +35,8 @@ public class PageController {
     private final PickupService pickupService;
     private final LaundryService laundryService;
     private final HandledItemsService handledItemsService;
+    private final ReviewService reviewService;
+
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -92,11 +99,20 @@ public class PageController {
 
     @RequestMapping("/sales-summary")
     public String salesSummary(Model model) {
+
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+
+        List<PickupSalesSummeryDTO> pickupList = pickupService.getPickupSalesSummery(1L, currentYear, currentMonth);
+        model.addAttribute("pickupList", pickupList);
         return "Shop/sales-summary";
     }
 
     @RequestMapping("/shop-review")
     public String shopReview(Model model) {
+        List<ReviewResDTO> reviewList = reviewService.getReviewList(1);
+        model.addAttribute("reviewList", reviewList);
         return "Shop/shop-review";
     }
 
@@ -137,5 +153,10 @@ public class PageController {
         model.addAttribute("laundry", to);
         model.addAttribute("laundryId", id);
         return "Customer/laundryshop-detail";
+    }
+
+    @RequestMapping("/shop-mypage")
+    public String shopMyPage() {
+        return "Shop/shop-my-page";
     }
 }

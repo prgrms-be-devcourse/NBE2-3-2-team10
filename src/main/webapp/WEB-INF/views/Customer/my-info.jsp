@@ -43,34 +43,26 @@
             <h2 class="text-lg font-bold mb-2">배송 정보</h2>
             <div class="mb-2">
                 <span class="block font-semibold">배송지</span>
-                <span id = "address">서울특별시 송파구 충민로4길 6, 78층 7803동 30004호</span>
-            </div>
-            <div>
-                <span class="block font-semibold">공동현관 출입방법</span>
-                <span>밑에서 78층까지 소리치리시면 됩니다.</span>
+                <div class="border p-4 rounded shadow-sm mt-2">
+                    <span id="address"></span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <!-- Footer -->
-<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around max-w-[600px] overflow-x-auto mx-auto ">
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
     <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18m-9 9h9" />
-        </svg>
-        <span>홈</span>
+        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
     <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
-        </svg>
-        <span>주문내역</span>
+        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
     </button>
     <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
-        </svg>
-        <span>마이</span>
+        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
 
@@ -84,10 +76,7 @@
                     Authorization: 'Bearer ' + token
                 }
             }).then(res => {
-                if (res.data === false) {
-                    alert("로그인이 필요합니다.");
-                    location.href = '/';
-                }
+                sessionStorage.setItem("accessToken", res.data.accessToken);
             }).catch(error => {
                 alert(error.response.data);
             });

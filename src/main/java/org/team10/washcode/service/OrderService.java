@@ -39,6 +39,11 @@ public class OrderService {
         pickupItemRepository.save(pickupItem); // PickupItem 저장
     }
 
+    // 결제 저장 메서드
+    public Payment savePayment(Payment payment) {
+        return paymentRepository.save(payment); // JPA로 저장
+    }
+
     // 조회하기
    public List<OrderlistResDTO> getOrdersByUserId(int userId) {
         List<Object[]> result = pickupRepository.findOrderListByUserId(userId);

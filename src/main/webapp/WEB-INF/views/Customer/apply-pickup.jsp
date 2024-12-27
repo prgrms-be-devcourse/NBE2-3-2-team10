@@ -2,15 +2,11 @@
 <%@ page import="org.team10.washcode.RequestDTO.order.OrderItemReqDTO" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="org.team10.washcode.entity.HandledItems" %>
+<%@ page import="org.team10.washcode.Enum.LaundryCategory" %>
 <%
-    // handledItems는 서버에서 모델을 통해 전달된 리스트입니다.
-    List<OrderItemReqDTO> handledItems = (List<OrderItemReqDTO>) request.getAttribute("handledItems");
-    // 각 항목을 처리하려면 예를 들어 반복문을 사용해야 합니다.
-//    for (OrderItemReqDTO orderItem : handledItems) {
-//        for (OrderItemReqDTO.HandledItemsTO item : orderItem.getHandledItems()) {
-//            out.println("카테고리: " + item.getCategory() + ", 가격: " + item.getPrice());
-//        }
-//    }
+    //List<OrderItemReqDTO> handledItems = (List<OrderItemReqDTO>) request.getAttribute("handledItems");
+    List<HandledItems> handledItems = (List<HandledItems>) request.getAttribute("handledItems");
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -25,7 +21,35 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
+    <script>
+        // 카테고리와 수량 요소 선택
+        const itemSelect = document.getElementById('item_id');
+        const quantityInput = document.getElementById('quantity');
+        const totalPriceInput = document.getElementById('totalPrice');
 
+        // 총 금액 계산 함수
+        function calculateTotalPrice() {
+            // 선택된 옵션에서 data-price 값 가져오기
+            const selectedOption = itemSelect.options[itemSelect.selectedIndex];
+            const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+
+            // 수량 값 가져오기
+            const quantity = parseInt(quantityInput.value) || 0;
+
+            // 총 금액 계산
+            const totalPrice = price * quantity;
+
+            // 총 금액 표시
+            totalPriceInput.value = totalPrice.toLocaleString('ko-KR') + '원'; // 천 단위 콤마 추가
+        }
+
+        // 이벤트 리스너 추가
+        itemSelect.addEventListener('change', calculateTotalPrice);
+        quantityInput.addEventListener('input', calculateTotalPrice);
+
+        // 페이지 로드 시 초기 계산
+        document.addEventListener('DOMContentLoaded', calculateTotalPrice);
+    </script>
 </head>
 <body class="bg-gray-100">
 <!-- Header -->
@@ -72,13 +96,15 @@
             <div class="mb-4">
                 <label for="item_id">카테고리</label>
                 <select name="item_id" id="item_id" class="form-select" aria-label="Select item" required>
-                    <option value="1" selected>신발</option>
-                    <option value="2">패딩</option>
-                    <option value="3">프리미엄 패브릭</option>
-                    <option value="4">캐리어소독</option>
-                    <option value="5">면 세탁물</option>
-                    <option value="6">보관 서비스</option>
-                    <option value="7">침구</option>
+                    <% if (handledItems != null) { %>
+                    <% for (HandledItems item : handledItems) { %>
+                    <option value="<%= item.getId() %>" data-price="<%= item.getPrice() %>">
+                        <%= item.getCategory().getDescription() %> (<%= item.getPrice() %>원)
+                    </option>
+                    <% } %>
+                    <% } else { %>
+                    <option value="">세탁 가능한 품목이 없습니다</option>
+                    <% } %>
                 </select>
             </div>
 
@@ -91,8 +117,25 @@
             <!-- 요청 사항 -->
             <div class="mb-4">
                 <label for="request" class="block text-sm font-bold mb-2">요청 사항</label>
-                <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요"></textarea>
+                <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요(공동현관 비밀번호 등)"></textarea>
             </div>
+
+            <%-- 결제수단--%>
+            <div>
+            <label for="method">결제방법</label>
+            <select name="method" id="method" class="form-select form-select-sm" aria-label="Small select example" >
+                <option value="현금">현금(만나서 결제)</option>
+                <option value="신용카드">신용카드</option>
+                <option value="카카오페이">카카오페이</option>
+                <option value="토스페이">토스페이</option>
+            </select>
+            </div>
+
+<%--            <!-- 총 금액 표시 -->--%>
+<%--            <div class="mb-4">--%>
+<%--                <label for="totalPrice" class="block text-sm font-bold mb-2">총 금액</label>--%>
+<%--                <input type="text" id="totalPrice" class="w-full border rounded-lg p-2 bg-gray-100" readonly>--%>
+<%--            </div>--%>
 
             <div class="bg-gray-100 p-4 rounded-lg mb-4">
                 <div class="flex items-center">
@@ -106,27 +149,20 @@
     </div>
 </form>
 
-<!-- Footer -->
-<div class="fixed bottom-0 left-0 right-0 flex justify-around bg-white p-4 border-t">
-    <button class="flex flex-col items-center text-blue-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18m-9 9h9" />
-        </svg>
-        <span>홈</span>
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
+        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
-    <button class="flex flex-col items-center text-gray-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
-        </svg>
-        <span>주문내역</span>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
+        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
     </button>
-    <button class="flex flex-col items-center text-gray-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M3 12h18m-9 9h9" />
-        </svg>
-        <span>마이</span>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
+        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
-</div>
+</footer>
 
 </body>
 </html>
