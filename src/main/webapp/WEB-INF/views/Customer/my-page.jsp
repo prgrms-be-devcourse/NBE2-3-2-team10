@@ -118,6 +118,7 @@
         }
       }).then(() => {
         alert("로그아웃 되었습니다.");
+        sessionStorage.removeItem("accessToken");
         location.href = '/';
       }).catch((error) => {
         console.error(error);

@@ -7,6 +7,7 @@ import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
 import java.util.Arrays;
@@ -144,6 +145,36 @@ public class PickupService {
                     pickup.getUser().getAddress(),
                     pickup.getUser().getPhone(),
                     pickup.getContent(),
+                    orderItems
+            );
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<PickupSalesSummeryDTO> getPickupSalesSummery(Long userId, int year, int month) {
+        List<PickupStatus> statuses = Arrays.asList(
+                PickupStatus.DELIVERED,
+                PickupStatus.CANCELLED_WITH_DELIVERY_FEE,
+                PickupStatus.CANCELLED
+        );
+        List<Pickup> pickups = pickupRepository.findSalesSummeryByUserIdAndDate(userId, statuses, year, month);
+
+        return pickups.stream().map(pickup -> {
+
+            List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
+            List<PickupSalesSummeryDTO.OrderItemDTO> orderItems = pickupItems.stream()
+                    .map(item -> new PickupSalesSummeryDTO.OrderItemDTO(
+                            item.getHandledItems().getItem_name(),
+                            item.getQuantity(),
+                            item.getTotalPrice()
+                    ))
+                    .collect(Collectors.toList());
+
+            return new PickupSalesSummeryDTO(
+                    pickup.getId(),
+                    pickup.getStatus(),
+                    pickup.getCreated_at(),
+                    pickup.getUser().getAddress(),
                     orderItems
             );
         }).collect(Collectors.toList());

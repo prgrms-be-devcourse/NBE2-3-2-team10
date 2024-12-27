@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
 import org.team10.washcode.service.PickupService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,5 +46,15 @@ public class PickupController {
     public ResponseEntity<List<PickupResDTO>> getPickedUpListByUserId(@PathVariable Long id) {
         List<PickupResDTO> pickedUpList = pickupService.getPickedupListAndUpdateStatus(id);
         return ResponseEntity.ok(pickedUpList);
+    }
+
+    @GetMapping("/sales-summary")
+    public List<PickupSalesSummeryDTO> getSalesSummary(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month
+    ) {
+        Long userId = 1L;
+        System.out.println(pickupService.getPickupSalesSummery(userId, year, month));
+        return pickupService.getPickupSalesSummery(userId, year, month);
     }
 }
