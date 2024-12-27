@@ -60,7 +60,8 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createOrder(
+    //public ResponseEntity<String> createOrder(
+    public String createOrder(
             @RequestParam("userId") int userId,
             @RequestParam("laundryShopId") Long laundryShopId,
             @RequestParam("quantity") int quantity,
@@ -68,7 +69,7 @@ public class OrderController {
             @RequestParam("item_id") Long itemId,
             @RequestParam("method") String paymentMethod // 결제 방법
     ) {
-        try {
+
             HandledItems handledItem = handledItemsService.getHandledItemById(itemId);
 
             int totalPrice = handledItem.getPrice() * quantity;
@@ -99,11 +100,8 @@ public class OrderController {
 
             orderService.savePayment(payment);
 
-            return ResponseEntity.ok("수거 요청이 성공적으로 등록되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수거 요청 처리 중 오류가 발생했습니다.");
-        }
+            return "redirect:/api/orders/main";
+
     }
 
 

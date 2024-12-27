@@ -117,7 +117,7 @@
             <!-- 요청 사항 -->
             <div class="mb-4">
                 <label for="request" class="block text-sm font-bold mb-2">요청 사항</label>
-                <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요"></textarea>
+                <textarea id="request" name="content" class="w-full border rounded-lg p-2" placeholder="세탁소에 요청하실 사항을 입력해주세요(공동현관 비밀번호 등)"></textarea>
             </div>
 
             <%-- 결제수단--%>
