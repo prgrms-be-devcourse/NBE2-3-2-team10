@@ -148,4 +148,9 @@ public class PageController {
         model.addAttribute("laundry", to);
         return "Customer/laundryshop-detail";
     }
+
+    @RequestMapping("/shop-mypage")
+    public String shopMyPage() {
+        return "Shop/shop-my-page";
+    }
 }
