@@ -1,5 +1,7 @@
 package org.team10.washcode.service;
 
+
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -45,6 +47,19 @@ public class UserService {
                 .httpOnly(true)
                 .maxAge(REFRESH_TOKEN_EXPIRATION_TIME)
                 .build();
+    }
+
+    public ResponseEntity<?> checkEmailDuplication (String email) {
+        try {
+            if (userRepository.findByEmailExists(email)) {
+                return ResponseEntity.status(409).body("이미 사용중인 이메일 입니다.");
+            } else {
+                return ResponseEntity.ok().body("사용 가능한 이메일 입니다.");
+            }
+        } catch (Exception e) {
+            System.out.println("[Error] "+e.getMessage());
+            return ResponseEntity.status(500).body("DB 에러");
+        }
     }
 
     public ResponseEntity<?> signup(RegisterReqDTO registerReqDTO){
@@ -121,6 +136,10 @@ public class UserService {
             User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
             user.setAddress(userUpdateReqDTO.getAddress());
             user.setPhone(userUpdateReqDTO.getPhone());
+            user.setPassword(userUpdateReqDTO.getPassword());
+
+            System.out.println(userUpdateReqDTO.getPassword() + " " + userUpdateReqDTO.getAddress() + " " + userUpdateReqDTO.getPhone());
+
             if(userUpdateReqDTO.getPassword()!=null){
                 user.setPassword(userUpdateReqDTO.getPassword());
             }
@@ -193,26 +212,29 @@ public class UserService {
                 refreshToken = cookie.getValue();
             }
         }
+
         try {
             // AccessToken 유효성 확인
-            if(accessToken!=null&&jwtProvider.validateToken(accessToken)){
+            if (accessToken!=null&&jwtProvider.validateToken(accessToken)){
                 return ResponseEntity.ok().body("accessToken 정상");
-            // RefreshToken 유효성 확인 후 AccessToken 재발급
-            }else if (!jwtProvider.validateToken(accessToken)&&refreshToken!=null&&jwtProvider.validateToken(refreshToken)){
+                // RefreshToken 유효성 확인 후 AccessToken 재발급
+            } else if (!jwtProvider.validateToken(accessToken) && refreshToken!=null && jwtProvider.validateToken(refreshToken)){
                 String newAccessToken = jwtProvider.generateAccessToken(jwtProvider.getId(refreshToken),jwtProvider.getRole(refreshToken));
                 Map<String,String> responseAccessToken = new HashMap<>();
                 responseAccessToken.put("accessToken",newAccessToken);
                 return ResponseEntity.ok().body(responseAccessToken);
             // 모든 토큰 유효성 검사 실패
-            }else {
-                return ResponseEntity.status(400).body("모든 토큰이 유효하지 않습니다.");
+            } else {
+                return ResponseEntity.status(400).body("token Expired");
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println("[Error] " + e.getMessage());
-            return ResponseEntity.status(400).body("Bad Request: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());
             return ResponseEntity.status(500).body("Refresh Token ERROR");
         }
+    }
+  
+    public User getUserById(int id){
+        return userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("user not found"));
     }
 }

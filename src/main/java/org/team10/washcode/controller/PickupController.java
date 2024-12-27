@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.service.PickupService;
 
 import java.util.List;
@@ -17,13 +18,13 @@ public class PickupController {
 
     private final PickupService pickupService;
 
-    @GetMapping("pickupId/{id}")
-    public ResponseEntity<PickupDetailResDTO> getPickupDetail(@PathVariable Long id) {
-        PickupDetailResDTO pickupDetail = pickupService.getPickupDetail(id);
+    @GetMapping("/pickupId/{id}")
+    public ResponseEntity<PickupResDTO> getPickupDetail(@PathVariable Long id) {
+        PickupResDTO pickupDetail = pickupService.getPickupDetail(id);
         return ResponseEntity.ok(pickupDetail);
     }
 
-    @GetMapping("userId/{id}")
+    @GetMapping("/pickupList/userId/{id}")
     public ResponseEntity<List<PickupDetailResDTO>> getPickupList(@PathVariable Long id) {
         List<PickupDetailResDTO> pickupList = pickupService.getPickupList(id);
         return ResponseEntity.ok(pickupList);
@@ -31,10 +32,16 @@ public class PickupController {
 
     @PostMapping("/updateStatus")
     public ResponseEntity<Void> updateStatus(@RequestParam("pickupId") Long pickupId,
-                               @RequestParam("status") String statusStr) {
+                                             @RequestParam("status") String statusStr) {
         PickupStatus newStatus = PickupStatus.valueOf(statusStr);
         pickupService.updatePickupStatus(pickupId, newStatus);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/pickedUpList/userId/{id}")
+    public ResponseEntity<List<PickupResDTO>> getPickedUpListByUserId(@PathVariable Long id) {
+        List<PickupResDTO> pickedUpList = pickupService.getPickedupListAndUpdateStatus(id);
+        return ResponseEntity.ok(pickedUpList);
     }
 }

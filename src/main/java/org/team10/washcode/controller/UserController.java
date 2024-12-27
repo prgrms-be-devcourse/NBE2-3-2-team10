@@ -44,7 +44,6 @@ public class UserController {
     @PutMapping
     @Operation(summary = "회원정보 수정", description = "회원정보를 수정하는 API 입니다.")
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal int id, @RequestBody UserUpdateReqDTO userUpdateReqDTO){
-
         return userService.updateUser(id, userUpdateReqDTO);
     }
 
@@ -76,5 +75,11 @@ public class UserController {
     @Operation(summary = "로그인 체크", description = "로그인 체크 API 입니다.")
     public ResponseEntity<?> checkLogin(HttpServletRequest request){
         return userService.checkLogin(request);
+    }
+
+    @GetMapping("/check-email")
+    @Operation(summary = "이메일 중복 체크", description = "이메일 중복 체크 API 입니다.")
+    public ResponseEntity<?> checkEmail(@RequestParam String email){
+        return userService.checkEmailDuplication(email);
     }
 }

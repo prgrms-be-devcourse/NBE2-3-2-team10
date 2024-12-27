@@ -43,11 +43,9 @@
             <h2 class="text-lg font-bold mb-2">배송 정보</h2>
             <div class="mb-2">
                 <span class="block font-semibold">배송지</span>
-                <span id = "address">서울특별시 송파구 충민로4길 6, 78층 7803동 30004호</span>
-            </div>
-            <div>
-                <span class="block font-semibold">공동현관 출입방법</span>
-                <span>밑에서 78층까지 소리치리시면 됩니다.</span>
+                <div class="border p-4 rounded shadow-sm mt-2">
+                    <span id="address"></span>
+                </div>
             </div>
         </div>
     </div>
@@ -76,28 +74,31 @@
 
     <script>
         const url = "http://localhost:8080"
+        const token = sessionStorage.getItem("accessToken");
 
         function checkAccessToken() {
-            axios.post(url + '/api/user/check-login')
-                .then(res => {
-                    if (res.data === false) {
-                        alert("로그인이 필요합니다.");
-                        location.href = '/';
-                    }
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+            }).catch(error => {
+                alert(error.response.data);
+            });
         }
 
         function getUserInfo() {
-            axios.get(url + '/api/user')
-                .then(function(response) {
-                    document.getElementById('email').innerHTML = response.data.email;
-                    document.getElementById('name').innerHTML = response.data.name
-                    document.getElementById('phone').innerHTML = response.data.phone
-                    document.getElementById('address').innerHTML = response.data.address
-                }).catch(function(error) {
+            axios.get(url + '/api/user', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(function(response) {
+                document.getElementById('email').innerHTML = response.data.email;
+                document.getElementById('name').innerHTML = response.data.name
+                document.getElementById('phone').innerHTML = response.data.phone
+                document.getElementById('address').innerHTML = response.data.address
+            }).catch(function(error) {
                 console.error(error);
             });
         }

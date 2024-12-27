@@ -14,6 +14,33 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function sample6_execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    var addr = ''; // 주소 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                        addr = data.roadAddress;
+                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                        addr = data.jibunAddress;
+                    }
+
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById("address").value = addr;
+                }
+            }).open();
+        }
+    </script>
+
 </head>
 <body class="bg-gray-100">
 <!-- 메인 컨텐츠 -->
@@ -25,45 +52,112 @@
         <div class="mb-4">
             <label class="block text-gray-700">업체명</label>
             <input type="text" placeholder="업체명을 입력하세요"
-                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="shop_name" name="shop_name">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">전화번호</label>
             <input type="tel" placeholder="전화번호를 입력하세요"
-                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="phone" name="phone">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">대표자명</label>
             <input type="text" placeholder="대표자명을 입력하세요"
-                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="user_name">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">주소</label>
             <div class="flex">
                 <input type="text" placeholder="주소를 입력하세요"
-                       class="w-full px-3 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg">주소 찾기</button>
+                       class="w-full px-3 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="address" name="address">
+                <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg" onclick="sample6_execDaumPostcode()">주소 찾기</button>
             </div>
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">사업자번호</label>
             <input type="text" placeholder="사업자번호를 입력하세요"
-                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="business_number" name="business_number">
         </div>
         <div class="mb-4">
             <label class="block text-gray-700">영업일</label>
             <textarea placeholder="영업일을 입력하세요"
-                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="non_operating_days" name="non_operating_days"></textarea>
         </div>
+        <!-- Product Information -->
         <div class="mb-4">
-            <label class="block text-gray-700">가격표</label>
-            <textarea placeholder="가격표를 입력하세요"
-                      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <label class="block text-gray-700 font-semibold mb-2">
+                상품 정보
+            <div class="flex justify-end space-x-2">
+                <button class="px-2 py-1 bg-green-500 text-white rounded addRowBtn whitespace-nowrap" onclick="addRow()" type="button">
+                    가격표 추가
+                </button>
+                <!-- Delete Button -->
+                <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">
+                    전체 삭제
+                </button>
+            </div>
+            </label>
+
+            <div class="relative">
+                <!-- 필요 시 여기에 상품 정보에 대한 textarea 또는 입력 창을 추가할 수 있습니다 -->
+            </div>
+        </div>
+
+        <!-- Product Table -->
+        <div class="mb-4">
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">이름</th>
+                    <th class="border p-2 whitespace-nowrap">카테고리</th>
+                    <th class="border p-2">가격</th>
+                    <th class="border p-2">작업</th>
+                </tr>
+                </thead>
+                <tbody id="productTableBody">
+                <tr>
+                    <td class="border p-2">
+                        <input
+                                type="text"
+                                placeholder="상품 이름"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2">
+                        <select class="w-full px-2 py-1 border rounded">
+                            <option>신발</option>
+                            <option>패딩</option>
+                            <option>프리미엄 패브릭</option>
+                            <option>캐리어 소독</option>
+                            <option>면 세탁물</option>
+                            <option>침구</option>
+                            <option>보관서비스</option>
+                        </select>
+                    </td>
+                    <td class="border p-2">
+                        <input
+                                type="number"
+                                placeholder="숫자만 입력"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2 text-center">
+                        <!-- Delete Button -->
+                        <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">
+                            -
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- 정보 저장 버튼 -->
-        <button type="submit"
-                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">
+        <button
+                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="rbtn">
             정보 저장
         </button>
     </form>
@@ -95,5 +189,143 @@
         </button>
     </div>
 </div>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
+    <script>
+        document.getElementById('rbtn').onclick = function(event) {
+            event.preventDefault();
+
+            const user_name = document.getElementById("user_name").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const shop_name = document.getElementById("shop_name").value;
+            const business_number = document.getElementById("business_number").value;
+            const non_operating_days = document.getElementById("non_operating_days").value;
+            let latitude = 0;
+            let longitude = 0;
+
+            if(user_name.trim() === ""){
+                alert("이름을 입력하세요.");
+                return false;
+            }
+
+            if(phone.trim() === ""){
+                alert("전화번호를 입력하세요.");
+                return false
+            }
+
+            if(address.trim() === ""){
+                alert("주소를 입력하세요.");
+                return false
+            }
+
+            if(shop_name.trim() === ""){
+                alert("세탁소명을 입력하세요.");
+                return false
+            }
+
+            if(business_number.trim() === ""){
+                alert("사업자 번호를 입력하세요.");
+                return false
+            }
+
+            if(non_operating_days.trim() === ""){
+                alert("휴무일을 입력하세요.");
+                return false
+            }
+
+
+            // 주소-좌표 변환 객체를 생성합니다
+            var geocoder = new kakao.maps.services.Geocoder();
+
+
+            geocoder.addressSearch(address, async function(result, status) {
+                // 정상적으로 검색이 완료됐으면
+                if (status === kakao.maps.services.Status.OK) {
+                    longitude = result[0].x;
+                    latitude = result[0].y;
+
+                    try {
+                        //세탁소 정보 등록 및 수정
+                        const response = await fetch("/api/laundry/info", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                user_name: user_name,
+                                phone: phone,
+                                address: address,
+                                shop_name: shop_name,
+                                business_number: business_number,
+                                non_operating_days: non_operating_days,
+                                latitude: latitude,
+                                longitude: longitude
+                            })
+                        });
+
+
+
+                        if (response.ok) {
+                            alert("등록이 완료되었습니다!");
+                        } else {
+                            const errorData = await response.json();
+                            alert(`오류 발생: ${errorData.message || '서버 에러'}`);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('네트워크 오류가 발생했습니다.');
+                    }
+                } else {
+                    alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
+                }
+            });
+
+
+
+        };
+
+        function addRow() {
+            const table = document.querySelector('table tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                    <td class="border p-2">
+                        <input
+                                type="text"
+                                placeholder="상품 이름"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2">
+                        <select class="w-full px-2 py-1 border rounded">
+                            <option>신발</option>
+                            <option>패딩</option>
+                            <option>프리미엄 패브릭</option>
+                            <option>캐리어 소독</option>
+                            <option>면 세탁물</option>
+                            <option>침구</option>
+                            <option>보관서비스</option>
+                        </select>
+                    </td>
+                    <td class="border p-2">
+                        <input
+                                type="number"
+                                placeholder="숫자만 입력"
+                                class="w-full px-2 py-1 border rounded"
+                        />
+                    </td>
+                    <td class="border p-2 text-center">
+                        <!-- Delete Button -->
+                        <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">
+                            -
+                        </button>
+                    </td>
+            `;
+            table.appendChild(newRow);
+
+        }
+
+    </script>
+
 </body>
 </html>

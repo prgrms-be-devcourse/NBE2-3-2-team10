@@ -11,6 +11,8 @@ public class ShopAddReqDTO {
     private String phone;
     private String non_operating_days;
 
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
+
+    private String user_name;
 }

@@ -20,6 +20,7 @@ public class PickupDetailResDTO {
     private Timestamp createdAt;           // 요청 일자
     private String address;                // 배달 주소
     private String phone;                  // 전화번호
+    private String content;                // 요청 내용
 
     private List<OrderItemDTO> orderItems; // 주문 항목 리스트 (여러 개의 아이템)
 

@@ -28,7 +28,7 @@
 <main class="p-4 space-y-4 max-w-[600px] overflow-x-auto mx-auto">
     <!-- Buttons -->
     <div class="flex space-x-4">
-        <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow">내 주변 세탁소 찾기</button>
+        <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow" onclick="window.location.href='/laundryshop-by-map'">내 주변 세탁소 찾기</button>
         <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow">이용방법</button>
     </div>
 
@@ -108,29 +108,32 @@
 
     <script>
         const url = "http://localhost:8080"
+        const token = sessionStorage.getItem("accessToken");
 
         function getUserAddress() {
-            axios.get(url + '/api/user/address')
-                .then(res => {
-                    const string = res.data.split(' ');
-                    document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + "...";
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.get(url + '/api/user/address', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                const string = res.data.split(' ');
+                document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + "...";
+            }).catch(error => {
+                alert(error.response.data);
+            });
         }
 
         function checkAccessToken() {
-            axios.post(url + '/api/user/check-login')
-                .then(res => {
-                    if (res.data === false) {
-                        alert("로그인이 필요합니다.");
-                        location.href = '/';
-                    }
-                })
-                .catch(error => {
-                    alert(error.response.data);
-                });
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+            }).catch(error => {
+                alert(error.response.data);
+                location.href = '/';
+            });
         }
 
         window.onload = () => {
