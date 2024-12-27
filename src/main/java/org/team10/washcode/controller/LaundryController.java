@@ -12,6 +12,7 @@ import org.team10.washcode.entity.LaundryShop;
 import org.team10.washcode.service.HandledItemsService;
 import org.team10.washcode.service.LaundryService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,10 +88,16 @@ public class LaundryController {
 
     //세탁소 카테고리 가져오기
     @GetMapping("/{laundry_id}")
-    public List<HandledItems> getHandledItems(@PathVariable("laundry_id") long laundry_id) {
+    public Map<String, Object> getHandledItems(
+            @PathVariable("laundry_id") long laundry_id,
+            @AuthenticationPrincipal int id) {
         List<HandledItems> handledItems = handledItemsService.getItemsByLaundryShopId(laundry_id);
 
-        return handledItems;
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", id);
+        response.put("handledItems", handledItems);
+
+        return response;
     }
 
 

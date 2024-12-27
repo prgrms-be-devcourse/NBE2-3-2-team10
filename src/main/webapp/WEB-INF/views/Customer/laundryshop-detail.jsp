@@ -16,15 +16,26 @@
     </style>
     <script>
         window.onload = function() {
+            const token = sessionStorage.getItem("accessToken")
+
             // 페이지 로드가 완료된 후 fetch를 사용하여 데이터 받아오기
-            fetch("/api/laundry/${laundryId}")
+            fetch(`/api/laundry/${laundryId}`, {
+                method: "GET",
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // 받아온 데이터를 출력
 
+                    const handledItems = data.handledItems; // handledItems 추출
+
                     // 중복된 항목 제거
-                    const uniqueItems = Array.from(new Set(data.map(item => item.category))).map(category => {
-                        return data.find(item => item.category === category);
+                    const uniqueItems = Array.from(
+                        new Set(handledItems.map(item => item.category))
+                    ).map(category => {
+                        return handledItems.find(item => item.category === category);
                     });
 
                     // 데이터를 화면에 표시
@@ -35,6 +46,15 @@
                         itemElement.innerHTML = `<img src="https://source.unsplash.com/random/50x50?jacket" alt="\${category}" width="50" height="50">`;
                         laundryItemsContainer.appendChild(itemElement);
                     });
+
+                    const obtn = document.getElementById('obtn');
+                    <%--obtn.innerHTML = `<button className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg"--%>
+                    <%--                   onClick="window.location.href='/api/orders/create?id=\${data.id}&laundryShopId=${laundryId}'">세탁 신청--%>
+                    <%--                  </button>`--%>
+                    obtn.addEventListener('click', function() {
+                        window.location.href = `/api/orders/create?id=\${data.id}&laundryShopId=${laundryId}`;
+                    });
+
                 })
                 .catch(error => {
                     console.error('데이터를 가져오는 중 오류 발생:', error);
@@ -80,7 +100,7 @@
             <div class="flex space-x-4 mt-4" id="category">
 
             </div>
-            <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg" onclick="window.location.href=''">세탁 신청</button>
+            <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg" id="obtn">세탁 신청</button>
         </div>
         <div class="mt-4 bg-blue-100 p-4 rounded-lg shadow">
             <p class="text-gray-700"><strong>1234님</strong></p>
