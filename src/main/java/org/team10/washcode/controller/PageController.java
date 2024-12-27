@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
-import org.team10.washcode.service.KakaoService;
+import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
+import org.team10.washcode.service.*;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
-import org.team10.washcode.service.LaundryService;
-import org.team10.washcode.service.UserService;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
-import org.team10.washcode.service.PickupService;
 
 
 import java.util.List;
@@ -30,6 +28,7 @@ public class PageController {
     private final KakaoService kakaoService;
     private final PickupService pickupService;
     private final LaundryService laundryService;
+    private final ReviewService reviewService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -97,6 +96,8 @@ public class PageController {
 
     @RequestMapping("/shop-review")
     public String shopReview(Model model) {
+        List<ReviewResDTO> reviewList = reviewService.getReviewList(1);
+        model.addAttribute("reviewList", reviewList);
         return "Shop/shop-review";
     }
 
