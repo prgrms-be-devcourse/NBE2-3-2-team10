@@ -82,8 +82,8 @@
                     id="business_number" name="business_number">
         </div>
         <div class="mb-4">
-            <label class="block text-gray-700">영업일</label>
-            <textarea placeholder="영업일을 입력하세요"
+            <label class="block text-gray-700">휴업일</label>
+            <textarea placeholder="휴업일을 입력하세요"
                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="non_operating_days" name="non_operating_days"></textarea>
         </div>
         <!-- Product Information -->
@@ -124,10 +124,12 @@
                                 type="text"
                                 placeholder="상품 이름"
                                 class="w-full px-2 py-1 border rounded"
+                                name="item_name"
+                                id="item_name"
                         />
                     </td>
                     <td class="border p-2">
-                        <select class="w-full px-2 py-1 border rounded">
+                        <select class="w-full px-2 py-1 border rounded" id="category" name="category">
                             <option>신발</option>
                             <option>패딩</option>
                             <option>프리미엄 패브릭</option>
@@ -142,6 +144,8 @@
                                 type="number"
                                 placeholder="숫자만 입력"
                                 class="w-full px-2 py-1 border rounded"
+                                id="price"
+                                name="price"
                         />
                     </td>
                     <td class="border p-2 text-center">
@@ -155,11 +159,12 @@
             </table>
         </div>
 
-        <!-- 정보 저장 버튼 -->
-        <button
-                class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="rbtn">
-            정보 저장
-        </button>
+        <div id="btn">
+            <!-- 정보 저장 버튼 -->
+            <button class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="rbtn">
+                정보 저장
+            </button>
+        </div>
     </form>
 </div>
 
@@ -192,6 +197,84 @@
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const token = sessionStorage.getItem("accessToken");
+            const btn = document.getElementById("btn");
+            try {
+                const response = await fetch("/api/laundry/", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // 기존 데이터가 있으면 폼 필드에 채우기
+                    if (data) {
+                        document.getElementById("phone").value = data.phone || "";
+                        document.getElementById("address").value = data.address || "";
+                        document.getElementById("shop_name").value = data.shop_name || "";
+                        document.getElementById("non_operating_days").value = data.non_operating_days || "";
+                        document.getElementById("user_name").value = data.user_name;
+                        document.getElementById("business_number").value = data.business_number;
+
+                        btn.innerHTML = `
+                        <button class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="mbtn">
+                            정보 수정
+                        </button>`
+
+                        // 상품 정보 테이블 채우기
+                        const productTableBody = document.getElementById("productTableBody");
+                        productTableBody.innerHTML = ""; // 기존 행 삭제
+                        data.handledItems.forEach(item => {
+                            const newRow = document.createElement("tr");
+                            newRow.innerHTML = `
+                        <td class="border p-2">
+                            <input
+                                    type="text"
+                                    placeholder="상품 이름"
+                                    class="w-full px-2 py-1 border rounded"
+                                    name="item_name"
+                                    value="\${item.item_name}"
+                            />
+                        </td>
+                        <td class="border p-2">
+                            <select class="w-full px-2 py-1 border rounded" name="category">
+                                <option \${item.category === "SHOES" ? "selected" : ""}>신발</option>
+                                <option \${item.category === "PADDING" ? "selected" : ""}>패딩</option>
+                                <option \${item.category === "PREMIUM_FABRIC" ? "selected" : ""}>프리미엄 패브릭</option>
+                                <option \${item.category === "CARRIER_SANITATION" ? "selected" : ""}>캐리어 소독</option>
+                                <option \${item.category === "COTTON_LAUNDRY" ? "selected" : ""}>면 세탁물</option>
+                                <option \${item.category === "BEDDING" ? "selected" : ""}>침구</option>
+                                <option \${item.category === "STORAGE_SERVICE" ? "selected" : ""}>보관서비스</option>
+                            </select>
+                        </td>
+                        <td class="border p-2">
+                            <input
+                                    type="number"
+                                    placeholder="숫자만 입력"
+                                    class="w-full px-2 py-1 border rounded"
+                                    name="price"
+                                    value="\${item.price}"
+                            />
+                        </td>
+                        <td class="border p-2 text-center">
+                            <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">-</button>
+                        </td>
+                    `;
+                            productTableBody.appendChild(newRow);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching laundry info:", error);
+            }
+        });
+
+        //저장 버튼 클릭시 세탁소 정보 저장
         document.getElementById('rbtn').onclick = function(event) {
             event.preventDefault();
 
@@ -237,7 +320,7 @@
 
             // 주소-좌표 변환 객체를 생성합니다
             var geocoder = new kakao.maps.services.Geocoder();
-
+            const token = sessionStorage.getItem("accessToken");
 
             geocoder.addressSearch(address, async function(result, status) {
                 // 정상적으로 검색이 완료됐으면
@@ -247,10 +330,11 @@
 
                     try {
                         //세탁소 정보 등록 및 수정
-                        const response = await fetch("/api/laundry/info", {
+                        const response1 = await fetch("/api/laundry/", {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                Authorization:  'Bearer ' + token
                             },
                             body: JSON.stringify({
                                 user_name: user_name,
@@ -265,11 +349,16 @@
                         });
 
 
+                        if (response1.ok) {
+                            const data = await response1.json();
+                            const laundry_id = data.laundry_id;
 
-                        if (response.ok) {
+                            // 가격표 데이터 전송
+                            sendData_register(laundry_id);
+
                             alert("등록이 완료되었습니다!");
                         } else {
-                            const errorData = await response.json();
+                            const errorData = await response1.json();
                             alert(`오류 발생: ${errorData.message || '서버 에러'}`);
                         }
                     } catch (error) {
@@ -280,10 +369,169 @@
                     alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
                 }
             });
-
-
-
         };
+
+        //세탁소 정보 수정
+        document.body.addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'mbtn') {
+                event.preventDefault();
+
+                const user_name = document.getElementById("user_name").value;
+                const phone = document.getElementById("phone").value;
+                const address = document.getElementById("address").value;
+                const shop_name = document.getElementById("shop_name").value;
+                const business_number = document.getElementById("business_number").value;
+                const non_operating_days = document.getElementById("non_operating_days").value;
+                let latitude = 0;
+                let longitude = 0;
+
+                if(user_name.trim() === ""){
+                    alert("이름을 입력하세요.");
+                    return false;
+                }
+
+                if(phone.trim() === ""){
+                    alert("전화번호를 입력하세요.");
+                    return false
+                }
+
+                if(address.trim() === ""){
+                    alert("주소를 입력하세요.");
+                    return false
+                }
+
+                if(shop_name.trim() === ""){
+                    alert("세탁소명을 입력하세요.");
+                    return false
+                }
+
+                if(business_number.trim() === ""){
+                    alert("사업자 번호를 입력하세요.");
+                    return false
+                }
+
+                if(non_operating_days.trim() === ""){
+                    alert("휴무일을 입력하세요.");
+                    return false
+                }
+
+
+                // 주소-좌표 변환 객체를 생성합니다
+                var geocoder = new kakao.maps.services.Geocoder();
+                const token = sessionStorage.getItem("accessToken");
+
+                geocoder.addressSearch(address, async function(result, status) {
+                    // 정상적으로 검색이 완료됐으면
+                    if (status === kakao.maps.services.Status.OK) {
+                        longitude = result[0].x;
+                        latitude = result[0].y;
+
+                        try {
+                            //세탁소 정보 등록 및 수정
+                            const response1 = await fetch("/api/laundry/", {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization:  'Bearer ' + token
+                                },
+                                body: JSON.stringify({
+                                    user_name: user_name,
+                                    phone: phone,
+                                    address: address,
+                                    shop_name: shop_name,
+                                    business_number: business_number,
+                                    non_operating_days: non_operating_days,
+                                    latitude: latitude,
+                                    longitude: longitude
+                                })
+                            });
+
+
+                            if (response1.ok) {
+                                const data = await response1.json();
+                                const laundry_id = data.laundry_id;
+
+                                // 가격표 데이터 전송
+                                sendData_modify(laundry_id);
+
+                                alert("등록이 완료되었습니다!");
+                            } else {
+                                const errorData = await response1.json();
+                                alert(`오류 발생: ${errorData.message || '서버 에러'}`);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('네트워크 오류가 발생했습니다.');
+                        }
+                    } else {
+                        alert("주소 검색에 실패했습니다. 올바른 주소를 입력해주세요.");
+                    }
+                });
+            }
+        });
+
+        function sendData_register(laundry_id) {
+            const rows = document.querySelectorAll('#productTableBody tr');
+            const items = [];
+
+            rows.forEach(row => {
+                const item_name = row.querySelector('input[name="item_name"]').value;
+                const category = row.querySelector('select[name="category"]').value;
+                const price = row.querySelector('input[name="price"]').value;
+
+                if (item_name && category && price) {
+                    items.push({
+                        item_name: item_name,
+                        category: getCategoryEnum(category),
+                        price: price,
+                        laundry_id: laundry_id
+                    });
+                }
+            });
+
+            console.log(JSON.stringify(items));
+
+            // JSON 데이터를 서버로 보내기
+            const response2 = fetch("api/laundry/handled-items", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            });
+        }
+
+        //세탁소 가격정보 수정
+        function sendData_modify(laundry_id) {
+            const rows = document.querySelectorAll('#productTableBody tr');
+            const items = [];
+
+            rows.forEach(row => {
+                const item_name = row.querySelector('input[name="item_name"]').value;
+                const category = row.querySelector('select[name="category"]').value;
+                const price = row.querySelector('input[name="price"]').value;
+
+                if (item_name && category && price) {
+                    items.push({
+                        item_name: item_name,
+                        category: getCategoryEnum(category),
+                        price: price,
+                        laundry_id: laundry_id
+                    });
+                }
+            });
+
+            console.log(JSON.stringify(items));
+
+            // JSON 데이터를 서버로 보내기
+            const response2 = fetch("api/laundry/handled-items", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            });
+        }
 
         function addRow() {
             const table = document.querySelector('table tbody');
@@ -294,10 +542,12 @@
                                 type="text"
                                 placeholder="상품 이름"
                                 class="w-full px-2 py-1 border rounded"
+                                name="item_name"
+                                id="item_name"
                         />
                     </td>
                     <td class="border p-2">
-                        <select class="w-full px-2 py-1 border rounded">
+                        <select class="w-full px-2 py-1 border rounded" id="category" name="category">
                             <option>신발</option>
                             <option>패딩</option>
                             <option>프리미엄 패브릭</option>
@@ -312,6 +562,8 @@
                                 type="number"
                                 placeholder="숫자만 입력"
                                 class="w-full px-2 py-1 border rounded"
+                                id="price"
+                                name="price"
                         />
                     </td>
                     <td class="border p-2 text-center">
@@ -322,8 +574,21 @@
                     </td>
             `;
             table.appendChild(newRow);
-
         }
+
+        function getCategoryEnum(category) {
+            const categoryMap = {
+                "신발": "SHOES",
+                "패딩": "PADDING",
+                "프리미엄 패브릭": "PREMIUM_FABRIC",
+                "캐리어 소독": "CARRIER_SANITATION",
+                "면 세탁물": "COTTON_LAUNDRY",
+                "보관서비스": "STORAGE_SERVICE",
+                "침구": "BEDDING"
+            };
+            return categoryMap[category] || "";
+        }
+
 
     </script>
 

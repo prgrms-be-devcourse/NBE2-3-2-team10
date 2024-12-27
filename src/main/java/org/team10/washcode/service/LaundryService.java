@@ -14,6 +14,7 @@ import org.team10.washcode.repository.UserRepository;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -66,27 +67,40 @@ public class LaundryService {
 
     }
 
-
     //세탁소 상세정보 조회
     //세탁소 id로 세탁소 정보 찾기
     public LaundryDetailResDTO getLaundryShopById(int id) {
-        LaundryShop laundryShop = laundryShopRepository.findByShopId(id);
+        LaundryShop laundryShop = laundryShopRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("LaundryShop not found"));
+
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
+        System.out.println("LaundryDetailResDTO: " + laundryShop.getId());
         to.setShop_name(laundryShop.getShop_name());
         to.setPhone(laundryShop.getPhone());
         to.setAddress(laundryShop.getAddress());
         to.setNon_operating_days(laundryShop.getNon_operating_days());
+        to.setBusiness_number(laundryShop.getBusiness_number());
+        to.setUser_name(laundryShop.getUser_name());
+
+
+        List<HandledItems> handledItems = handledItemsRepository.findByLaundryshopId((long) laundryShop.getId());
+        to.setHandledItems(handledItems);
 
         return to;
     }
 
-    public LaundryShop registerLaundryShop(ShopAddReqDTO to) {
-        User user = userRepository.findByName(to.getUser_name());
-        LaundryShop shop = new LaundryShop();
+
+    //세탁소 저장하기
+    public int registerLaundryShop(ShopAddReqDTO to, int id) {
+        User user = userRepository.findById(id).orElse(null);
+        LaundryShop shop = laundryShopRepository.findByUserId(id)
+                .orElseGet(LaundryShop::new);
+
         shop.setUser(user);
         shop.setShop_name(to.getShop_name());
         shop.setBusiness_number(to.getBusiness_number());
+        shop.setUser_name(to.getUser_name());
         shop.setAddress(to.getAddress());
         shop.setPhone(to.getPhone());
         shop.setNon_operating_days(to.getNon_operating_days());
@@ -94,28 +108,72 @@ public class LaundryService {
         shop.setLongitude(to.getLongitude());
         shop.setCreated_at(new Timestamp(System.currentTimeMillis()));
 
+        LaundryShop savedShop = laundryShopRepository.save(shop);
 
-        return laundryShopRepository.save(shop);
+        return savedShop.getId();
     }
 
-    public LaundryShop getLaundryInfoByUserId(int userId) {
-        return laundryShopRepository.findByUserId(userId);
-    }
 
-    //세탁소 가격정보 저장 및 수정
-    public List<HandledItems> setHandledItems(List<HandledItemsResDTO> toList) {
-        List<HandledItems> handledItemsList = new ArrayList<>();
+    //가격표 정보 등록 및 수정
+    public List<HandledItems> setHandledItems(List<HandledItemsResDTO> items) {
+        Long laundryId = (long) items.get(0).getLaundry_id();
+        LaundryShop laundryShop = laundryShopRepository.findById(laundryId)
+                .orElseThrow(() -> new IllegalArgumentException("LaundryShop not found with ID: " + laundryId));
 
-        for (HandledItemsResDTO to : toList) {
-            HandledItems items = new HandledItems();
-            items.setItem_name(to.getItem_name());
-            items.setCategory(to.getCategory());
-            items.setPrice(to.getPrice());
-            // items.setLaundryshop(); // 필요에 따라 설정
 
-            handledItemsList.add(items);
+        //laundry_id로 이미 저장되어있는 가격표가 있다면 불러옴
+        List<HandledItems> handledItemsList = handledItemsRepository.findByLaundryshopId(laundryId);
+
+
+        //없으면 새로 생성
+        if (handledItemsList == null) {
+            handledItemsList = new ArrayList<>();
         }
 
+        List<HandledItems> toBeDeletedItems = handledItemsList.stream()
+                .filter(existingItem -> !items.stream()
+                        .anyMatch(item -> item.getItem_name().equals(existingItem.getItem_name()) &&
+                                item.getCategory().equals(existingItem.getCategory())))
+                .collect(Collectors.toList());
+
+        // 삭제할 항목들 삭제
+        for (HandledItems itemToDelete : toBeDeletedItems) {
+            handledItemsRepository.delete(itemToDelete); // 해당 항목 삭제
+            handledItemsList.remove(itemToDelete); // 로컬 리스트에서 삭제된 항목 제거
+        }
+
+        for (HandledItemsResDTO item : items) {
+            // 기존 항목이 있는지 찾아보기
+            Optional<HandledItems> existingItemOptional = handledItemsList.stream()
+                    .filter(existingItem -> existingItem.getItem_name().equals(item.getItem_name()) &&
+                            existingItem.getCategory().equals(item.getCategory()))
+                    .findFirst();
+
+            HandledItems handledItem;
+
+            if (existingItemOptional.isPresent()) {
+                // 기존 항목이 있다면 업데이트
+                handledItem = existingItemOptional.get();
+
+                handledItem.setItem_name(item.getItem_name());
+                handledItem.setCategory(item.getCategory());
+                handledItem.setPrice(item.getPrice());
+            } else {
+                // 기존 항목이 없다면 새로 생성
+                handledItem = new HandledItems();
+                handledItem.setLaundryshop(laundryShop);
+                handledItem.setItem_name(item.getItem_name());
+                handledItem.setCategory(item.getCategory());
+                handledItem.setPrice(item.getPrice());
+
+                handledItemsList.add(handledItem);  // 새 항목 추가
+            }
+
+            // 저장
+            handledItemsRepository.save(handledItem);
+        }
+
+        // 전체 항목 저장
         return handledItemsRepository.saveAll(handledItemsList);
     }
 

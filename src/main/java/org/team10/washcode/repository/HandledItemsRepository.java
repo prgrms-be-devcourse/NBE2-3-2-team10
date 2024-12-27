@@ -7,11 +7,14 @@ import org.springframework.stereotype.Repository;
 import org.team10.washcode.entity.HandledItems;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HandledItemsRepository extends JpaRepository<HandledItems, Long> {
     List<HandledItems> findAll(); //모든 데이터 가져오기
 
     List<HandledItems> findByLaundryshopId(Long laundryShopId);
+
+
 
 }
