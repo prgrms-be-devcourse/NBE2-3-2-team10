@@ -1,5 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="org.team10.washcode.ResponseDTO.review.ReviewResDTO" %>
+<%@ page import="java.util.List" %>
 <%
+    List<ReviewResDTO> reviewList = (List<ReviewResDTO>) request.getAttribute("reviewList");
+    if (reviewList == null) {
+        reviewList = java.util.Collections.emptyList();
+    }
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -31,53 +37,39 @@
 
     <!-- 메인 컨텐츠 -->
     <div class="mt-2 space-y-4 px-4 pb-20">
-        <!-- 첫 번째 리뷰 -->
+        <%
+            for (ReviewResDTO review : reviewList) {
+        %>
         <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <p class="font-bold">1234님</p>
-            <p class="text-sm mt-2">되게 깨끗하게 잘 해주셨어요.<br>정말 완전 만족해요 ㅎㅎ</p>
+            <!-- 작성자 이름 -->
+            <p class="font-bold">
+                <%= review.getUser_name() %>님
+            </p>
+            <!-- 리뷰 내용 -->
+            <p class="text-sm mt-2">
+                <%= review.getContent() %>
+            </p>
         </div>
-
-        <!-- 두 번째 리뷰 -->
-        <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <p class="font-bold">3333님</p>
-            <p class="text-sm mt-2">운동화가 깨끗해졌어요</p>
-        </div>
-
-        <!-- 세 번째 리뷰 -->
-        <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <p class="font-bold">4444님</p>
-            <p class="text-sm mt-2">좋습니다.<br>사장님 번창하세요~</p>
-        </div>
+        <%
+            }
+        %>
     </div>
 </div>
 
 <!-- 하단 네비게이션 -->
-<div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
-    <div class="flex justify-around py-2">
-        <!-- 홈 버튼 -->
-        <button onclick="location.href='/shop-main'" class="flex flex-col items-center text-blue-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18" />
-            </svg>
-            <span class="text-xs font-medium">홈</span>
-        </button>
-
-        <!-- 주문내역 버튼 -->
-        <button onclick="location.href='/pickup-list'" class="flex flex-col items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span class="text-xs font-medium">주문내역</span>
-        </button>
-
-        <!-- 마이페이지 버튼 -->
-        <button class="flex flex-col items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
-            </svg>
-            <span class="text-xs font-medium">마이페이지</span>
-        </button>
-    </div>
-</div>
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/shop-main'">
+        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >
+        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop-mypage'">
+        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
+    </button>
+</footer>
 </body>
 </html>

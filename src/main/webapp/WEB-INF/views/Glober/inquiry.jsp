@@ -50,27 +50,19 @@
 <div class="pb-20"></div>
 
 <!-- 하단 네비게이션 바 -->
-<div class="fixed bottom-0 left-0 right-0 bg-white shadow-md">
-    <div class="flex justify-around py-2">
-        <button class="flex flex-col items-center text-blue-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001 1h6a1 1 0 001-1V10m-7 11V10m0 11H5a1 1 0 01-1-1V10m0 0L3 12" />
-            </svg>
-            <span>홈</span>
-        </button>
-        <button class="flex flex-col items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-9 5h9" />
-            </svg>
-            <span>주문내역</span>
-        </button>
-        <button class="flex flex-col items-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A1 1 0 016 17h12a1 1 0 01.879.516l1.5 2.5A1 1 0 0119.5 22h-15a1 1 0 01-.879-1.484l1.5-2.5zM12 2a5 5 0 00-5 5v3a5 5 0 0010 0V7a5 5 0 00-5-5z" />
-            </svg>
-            <span>마이</span>
-        </button>
-    </div>
-</div>
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
+        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
+        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
+        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
+    </button>
+</footer>
 </body>
 </html>
