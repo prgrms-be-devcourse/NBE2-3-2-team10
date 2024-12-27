@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
 import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
@@ -98,6 +100,14 @@ public class LaundryController {
         response.put("handledItems", handledItems);
 
         return response;
+    }
+
+    @GetMapping("/category/{category}")
+    public List<LaundryShop> getLaundryShopsCategory(@PathVariable("category") String category) {
+        LaundryCategory laundryCategory = LaundryCategory.valueOf(category.toUpperCase());
+
+        return laundryService.findLaundryShopsByCategory(laundryCategory);
+
     }
 
 

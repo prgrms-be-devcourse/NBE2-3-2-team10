@@ -34,35 +34,31 @@
 
     <!-- Categories -->
     <div class="grid grid-cols-4 gap-4">
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/SHOES'">
             <div class="bg-gray-200 p-4 rounded-full">👟</div>
             <div class="mt-2">신발</div>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/PADDING'">
             <div class="bg-gray-200 p-4 rounded-full">🧥</div>
             <div class="mt-2">패딩</div>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/PREMIUM_FABRIC'">
             <div class="bg-gray-200 p-4 rounded-full">🤵</div>
             <div class="mt-2">프리미엄</div>
         </div>
-        <div class="flex flex-col items-center">
-            <div class="bg-gray-200 p-4 rounded-full">🛋️</div>
-            <div class="mt-2">블로킹</div>
-        </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/CARRIER_SANITATION'">
             <div class="bg-gray-200 p-4 rounded-full">👗</div>
-            <div class="mt-2">캐리어 보관</div>
+            <div class="mt-2">캐리어 소독</div>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/COTTON_LAUNDRY'">
             <div class="bg-gray-200 p-4 rounded-full">👖</div>
             <div class="mt-2">면 세탁물</div>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/BEDSTORAGE_SERVICEDING'">
             <div class="bg-gray-200 p-4 rounded-full">👕</div>
             <div class="mt-2">보관 서비스</div>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/SHBEDDINGOES'">
             <div class="bg-gray-200 p-4 rounded-full">🛏️</div>
             <div class="mt-2">침구</div>
         </div>
