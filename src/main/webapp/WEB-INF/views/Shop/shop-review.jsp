@@ -1,5 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="org.team10.washcode.ResponseDTO.review.ReviewResDTO" %>
+<%@ page import="java.util.List" %>
 <%
+    List<ReviewResDTO> reviewList = (List<ReviewResDTO>) request.getAttribute("reviewList");
+    if (reviewList == null) {
+        reviewList = java.util.Collections.emptyList();
+    }
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -31,23 +37,22 @@
 
     <!-- 메인 컨텐츠 -->
     <div class="mt-2 space-y-4 px-4 pb-20">
-        <!-- 첫 번째 리뷰 -->
+        <%
+            for (ReviewResDTO review : reviewList) {
+        %>
         <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <p class="font-bold">1234님</p>
-            <p class="text-sm mt-2">되게 깨끗하게 잘 해주셨어요.<br>정말 완전 만족해요 ㅎㅎ</p>
+            <!-- 작성자 이름 -->
+            <p class="font-bold">
+                <%= review.getUser_name() %>님
+            </p>
+            <!-- 리뷰 내용 -->
+            <p class="text-sm mt-2">
+                <%= review.getContent() %>
+            </p>
         </div>
-
-        <!-- 두 번째 리뷰 -->
-        <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <p class="font-bold">3333님</p>
-            <p class="text-sm mt-2">운동화가 깨끗해졌어요</p>
-        </div>
-
-        <!-- 세 번째 리뷰 -->
-        <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-            <p class="font-bold">4444님</p>
-            <p class="text-sm mt-2">좋습니다.<br>사장님 번창하세요~</p>
-        </div>
+        <%
+            }
+        %>
     </div>
 </div>
 
