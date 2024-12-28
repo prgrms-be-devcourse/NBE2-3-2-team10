@@ -22,10 +22,11 @@
                     console.log(data);  // 디버깅용: 데이터 확인
 
                     let result = '';
-                    data.forEach(shop => {
+                    data.forEach(item => {
                        // var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
-                       <%-- const category_test = ${category}.getDescription();--%>
-                       <%-- console.log(category_test);--%>
+
+                        const shop = item.shop; // 세탁소 정보
+                        const cheapestItem = item.cheapestItem; // 가장 저렴한 항목 정보
 
                         result += `<div class="bg-white p-4 rounded-lg shadow shop-item" data-id="\${shop.id}">
                                         <div class="flex justify-between items-center">
@@ -37,8 +38,8 @@
                                         </div>
                                         <div class="mt-2">
                                             <span class="text-green-500 font-bold">25%</span>
-                                            <span class="text-xl font-bold">35,600원</span>
-                                            <span class="text-gray-500">/4주</span>
+                                            <span class="text-xl font-bold">\${cheapestItem.price.toLocaleString()}원</span>
+                                            <span class="text-gray-500">/\${cheapestItem.item_name}</span>
                                         </div>
                                     </div>`;
                     });

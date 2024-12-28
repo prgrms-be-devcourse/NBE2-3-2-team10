@@ -11,12 +11,11 @@ import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.entity.LaundryShop;
+import org.team10.washcode.repository.HandledItemsRepository;
 import org.team10.washcode.service.HandledItemsService;
 import org.team10.washcode.service.LaundryService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/laundry")
@@ -26,6 +25,8 @@ public class LaundryController {
     private LaundryService laundryService;
     @Autowired
     private HandledItemsService handledItemsService;
+    @Autowired
+    private HandledItemsRepository handledItemsRepository;
 
     @GetMapping("/map")
     public List<LaundryShop> map(
@@ -102,13 +103,33 @@ public class LaundryController {
         return response;
     }
 
+    //카테고리별로 세탁소 list 조회
     @GetMapping("/category/{category}")
-    public List<LaundryShop> getLaundryShopsCategory(@PathVariable("category") String category) {
+    public List<Map<String, Object>> getLaundryShopsCategory(@PathVariable("category") String category) {
         LaundryCategory laundryCategory = LaundryCategory.valueOf(category.toUpperCase());
 
-        return laundryService.findLaundryShopsByCategory(laundryCategory);
+        List<LaundryShop> shops = laundryService.findLaundryShopsByCategory(laundryCategory);
 
-    }
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (LaundryShop shop : shops) {
+            Map<String, Object> shopData = new HashMap<>();
+            shopData.put("shop", shop);
+
+            // 해당 세탁소의 가장 저렴한 항목 조회
+            List<HandledItems> handledItems = handledItemsRepository.findByLaundryshopId((long) shop.getId());
+            HandledItems cheapestItem = handledItems.stream()
+                    .min(Comparator.comparing(HandledItems::getPrice))
+                    .orElse(null);
+
+            shopData.put("cheapestItem", cheapestItem);
+
+            result.add(shopData);
+        }
+
+        return result;    }
+
 
 
 }
