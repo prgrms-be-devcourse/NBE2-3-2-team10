@@ -21,6 +21,7 @@ public interface HandledItemsRepository extends JpaRepository<HandledItems, Long
     @Query("SELECT h FROM HandledItems h WHERE h.laundryshop.id = :laundryshopId")
     List<HandledItems> findByLaundryshopId(@Param("laundryshopId") Long laundryshopId);
 
+    //카테고리별로 세탁소 id 조회
     @Query("SELECT h.laundryshop.id FROM HandledItems h WHERE h.category = :category")
     List<Integer> findLaundryShopIdsByCategory(LaundryCategory category);
 }

@@ -93,7 +93,7 @@ public class LaundryController {
     public Map<String, Object> getHandledItems(
             @PathVariable("laundry_id") long laundry_id,
             @AuthenticationPrincipal int id) {
-        List<HandledItems> handledItems = handledItemsService.getItemsByLaundryShopId(laundry_id);
+        List<HandledItems> handledItems = handledItemsService.getAllHandledItems(laundry_id);
 
         Map<String, Object> response = new HashMap<>();
         response.put("id", id);
