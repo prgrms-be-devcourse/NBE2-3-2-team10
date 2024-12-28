@@ -6,9 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +21,11 @@ import org.team10.washcode.jwt.JwtProvider;
 import org.team10.washcode.repository.UserRepository;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
-    private int ACCESS_TOKEN_EXPIRATION_TIME;
 
     @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
     private int REFRESH_TOKEN_EXPIRATION_TIME;
@@ -40,8 +33,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final RedisTemplate<String, String> redisTemplate;
-
 
     public ResponseCookie getRefreshToken(String refreshToken) {
         return ResponseCookie

@@ -24,13 +24,4 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(host, port);
     }
-
-    // RedisTemplate 선언
-    // RedisRepositories 라는 방식도 있는 듯 싶다.
-    @Bean
-    public RedisTemplate<?, ?> redisTemplate() {
-        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        return redisTemplate;
-    }
 }
