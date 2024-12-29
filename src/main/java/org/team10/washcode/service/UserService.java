@@ -12,6 +12,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.Enum.UserRole;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
 import org.team10.washcode.RequestDTO.user.UserUpdateReqDTO;
@@ -210,16 +211,32 @@ public class UserService {
             }
         }
 
+        User user = null;
+
         try {
             // AccessToken 유효성 확인
-            if (accessToken!=null&&jwtProvider.validateToken(accessToken)){
+            if (accessToken != null && jwtProvider.validateToken(accessToken)){
                 return ResponseEntity.ok().body("accessToken 정상");
                 // RefreshToken 유효성 확인 후 AccessToken 재발급
-            } else if (!jwtProvider.validateToken(accessToken) && refreshToken!=null && jwtProvider.validateToken(refreshToken)){
-                String newAccessToken = jwtProvider.generateAccessToken(jwtProvider.getId(refreshToken),jwtProvider.getRole(refreshToken));
+            } else if (refreshToken != null && !jwtProvider.validateToken(accessToken) && jwtProvider.validateToken(refreshToken)){
+                // RefreshToken 유효성 확인 후, UserId & Role 가져오기
+                int userId = jwtProvider.getId(refreshToken);
+                UserRole role = jwtProvider.getRole(refreshToken);
+
+                // RefreshToken 재발급
+                // RTR 방식 (Refresh Token Rotation) -> AccessToken 발급 시, 새로운 RefreshToken도 같이 발급
+                refreshToken = jwtProvider.generateRefreshToken(userId, role);
+                ResponseCookie refreshCookie = getRefreshToken(refreshToken);
+
+                // AccessToken 반환
+                String newAccessToken = jwtProvider.generateAccessToken(userId, role);
                 Map<String,String> responseAccessToken = new HashMap<>();
-                responseAccessToken.put("accessToken",newAccessToken);
-                return ResponseEntity.ok().body(responseAccessToken);
+                responseAccessToken.put("accessToken", newAccessToken);
+
+                return ResponseEntity
+                        .ok()
+                        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                        .body(responseAccessToken);
             // 모든 토큰 유효성 검사 실패
             } else {
                 return ResponseEntity.status(400).body("token Expired");
