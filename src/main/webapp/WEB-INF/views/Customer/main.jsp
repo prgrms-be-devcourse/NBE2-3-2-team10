@@ -19,13 +19,13 @@
 <body class="bg-white">
 
 <!-- Header -->
-<header class="bg-white shadow p-4 flex justify-between items-center max-w-[600px] overflow-x-auto mx-auto">
+<header class="bg-white shadow p-4 flex justify-between items-center max-w-[448px] overflow-x-auto mx-auto">
     <div class="text-lg font-bold" id="myAddress">로그인을 진행해주세요.</div>
     <div class="text-xl">❤️</div>
 </header>
 
 <!-- Main Content -->
-<main class="p-4 space-y-4 max-w-[600px] overflow-x-auto mx-auto">
+<main class="p-4 space-y-4 max-w-[448px] overflow-x-auto mx-auto">
     <!-- Buttons -->
     <div class="flex space-x-4">
         <button class="flex-1 bg-blue-500 text-white py-2 rounded-lg shadow" onclick="window.location.href='/laundryshop-by-map'">내 주변 세탁소 찾기</button>
@@ -85,7 +85,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[600px] rounded-t-lg">
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
     <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
         <img src = "./footer/Home.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">홈</span>
@@ -124,15 +124,15 @@
                 }
             }).then(res => {
                 sessionStorage.setItem("accessToken", res.data.accessToken);
+                getUserAddress();
             }).catch(error => {
-                alert(error.response.data);
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
                 location.href = '/';
             });
         }
 
         window.onload = () => {
             checkAccessToken();
-            getUserAddress();
         }
     </script>
 
