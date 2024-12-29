@@ -5,18 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team10.washcode.Enum.PickupStatus;
-import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
-import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.*;
+import org.team10.washcode.repository.db.PaymentRepository;
+import org.team10.washcode.repository.db.PickupItemRepository;
+import org.team10.washcode.repository.db.PickupRepository;
+import org.team10.washcode.repository.db.ReviewRepository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

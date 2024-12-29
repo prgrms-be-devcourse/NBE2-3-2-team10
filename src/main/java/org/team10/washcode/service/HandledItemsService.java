@@ -3,7 +3,7 @@ package org.team10.washcode.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.entity.HandledItems;
-import org.team10.washcode.repository.HandledItemsRepository;
+import org.team10.washcode.repository.db.HandledItemsRepository;
 
 import java.util.List;
 

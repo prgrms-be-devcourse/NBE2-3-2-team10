@@ -14,4 +14,6 @@ public class Token {
     private String refreshToken;
     @TimeToLive
     private Long expiration;
+
+    public String getToken() { return refreshToken; }
 }

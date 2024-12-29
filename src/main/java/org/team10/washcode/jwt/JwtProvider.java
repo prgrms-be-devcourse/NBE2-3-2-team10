@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.team10.washcode.Enum.UserRole;
 import org.team10.washcode.entity.redis.Token;
-import org.team10.washcode.repository.TokenRepository;
+import org.team10.washcode.repository.redis.TokenRepository;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
