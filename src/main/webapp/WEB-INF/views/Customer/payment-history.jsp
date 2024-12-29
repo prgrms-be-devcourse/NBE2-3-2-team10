@@ -32,9 +32,21 @@
 
     <!-- 필터 섹션 -->
     <div class="flex justify-around text-blue-500 py-2 border-b">
-        <span class="cursor-pointer font-medium">1개월</span>
-        <span class="cursor-pointer font-medium">3개월</span>
-        <span class="cursor-pointer font-medium">6개월</span>
+        <!-- 1개월 필터 -->
+        <a href="/api/orders/payment/<%= request.getAttribute("userId") %>?filter=1"
+           class="cursor-pointer font-medium <%= "1".equals(request.getAttribute("filter")) ? "text-blue-700 font-bold" : "" %>">
+            1개월
+        </a>
+        <!-- 3개월 필터 -->
+        <a href="/api/orders/payment/<%= request.getAttribute("userId") %>?filter=3"
+           class="cursor-pointer font-medium <%= "3".equals(request.getAttribute("filter")) ? "text-blue-700 font-bold" : "" %>">
+            3개월
+        </a>
+        <!-- 6개월 필터 -->
+        <a href="/api/orders/payment/<%= request.getAttribute("userId") %>?filter=6"
+           class="cursor-pointer font-medium <%= "6".equals(request.getAttribute("filter")) ? "text-blue-700 font-bold" : "" %>">
+            6개월
+        </a>
     </div>
 
     <!-- 거래 내역 리스트 -->

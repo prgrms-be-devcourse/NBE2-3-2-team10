@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.Query;
@@ -48,6 +50,13 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
             "JOIN Pickup p ON ls.id = p.laundryshop.id " +
             "WHERE p.user.id = :userId")
     List<Object[]> findOrderListByUserId(@Param("userId") int userId);
+
+    // 필터링된 데이터 가져오기(개월 수)
+    @Query("SELECT ls.shop_name, p.id, p.status, p.created_at " +
+            "FROM LaundryShop ls " +
+            "JOIN Pickup p ON ls.id = p.laundryshop.id " +
+            "WHERE p.user.id = :userId AND p.created_at >= :fromDate")
+    List<Object[]> findByUserIdAndDate(@Param("userId") int userId, @Param("fromDate") Timestamp fromDate);
 
     //이용내역 조회(상세보기)
     @Query("SELECT " +

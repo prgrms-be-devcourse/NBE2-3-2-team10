@@ -1,26 +1,17 @@
 package org.team10.washcode.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.Enum.PickupStatus;
-import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
-import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
-import org.team10.washcode.ResponseDTO.order.PaymentDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.LaundryShopRepository;
-import org.team10.washcode.repository.PickupItemRepository;
-import org.team10.washcode.repository.PickupRepository;
-import org.team10.washcode.repository.UserRepository;
 import org.team10.washcode.service.*;
 import org.springframework.ui.Model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -121,7 +112,6 @@ public class OrderController {
 
 
     @GetMapping("/history/{userId}/{pickupId}")
-    //public ResponseEntity<OrderResDTO> getOrderDetails(
     public String getOrderDetails(
             @PathVariable int userId,
             @PathVariable int pickupId,
@@ -142,23 +132,58 @@ public class OrderController {
 //        return ResponseEntity.ok("Pickup status updated to CANCELLED successfully.");
         return "redirect:/api/orders/main";
     }
+
     //결제내역 조회
+//    @GetMapping("/payment/{userId}")
+//    public String Payment(@PathVariable int userId,
+//                          @RequestParam(value = "filter", required = false) int filter,
+//                          Model model) {
+////        List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
+//        List<OrderlistResDTO> orderList;
+//
+//        if (filter != null) {
+//            // 현재 시간 기준으로 filter개월 전 날짜 계산
+//            Timestamp fromDate = Timestamp.valueOf(LocalDateTime.now().minusMonths(filter));
+//            orderList = orderService.getOrdersByUserIdAndDate(userId, fromDate);
+//        } else {
+//            // 필터가 없는 경우 전체 데이터 조회
+//            orderList = orderService.getOrdersByUserId(userId);
+//        }
+//
+//        model.addAttribute("orders", orderList);
+//        model.addAttribute("userId",userId);
+//        model.addAttribute("filter", filter);
+//        return "Customer/payment-history";
+//    }
     @GetMapping("/payment/{userId}")
-    public String Payment(@PathVariable int userId,Model model) {
-        List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
+    public String getPaymentHistory(@PathVariable int userId,
+                                    @RequestParam(value = "filter", required = false) Integer filter,
+                                    Model model) {
+        List<OrderlistResDTO> orderList;
+
+        if (filter != null) {
+            // 현재 시간 기준으로 filter개월 전 날짜 계산
+            Timestamp fromDate = Timestamp.valueOf(LocalDateTime.now().minusMonths(filter));
+            orderList = orderService.getOrdersByUserIdAndDate(userId, fromDate);
+        } else {
+            // 필터가 없는 경우 전체 데이터 조회
+            orderList = orderService.getOrdersByUserId(userId);
+        }
 
         model.addAttribute("orders", orderList);
-        model.addAttribute("userId",userId);
+        model.addAttribute("userId", userId);
+        model.addAttribute("filter", filter); // 현재 선택된 필터 값 전달
         return "Customer/payment-history";
     }
 
+
+
+    //결제내역 상세조회
     @GetMapping("/payment/{userId}/{pickupId}")
     public String PaymentHistory(
             @PathVariable int userId,
             @PathVariable int pickupId,
             Model model) {
-//        List<PaymentDTO> paymentList = orderService.getPaymentDetail(userId, pickupId);
-//        model.addAttribute("payment", paymentList);
         OrderResDTO orderDetails = orderService.getOrderDetail(userId, pickupId);
         model.addAttribute("order",orderDetails);
         return "Customer/payment-history-detail";

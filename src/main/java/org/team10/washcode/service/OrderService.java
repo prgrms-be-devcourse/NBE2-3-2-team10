@@ -5,18 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team10.washcode.Enum.PickupStatus;
-import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
-import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
-import org.team10.washcode.ResponseDTO.order.PaymentDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +54,23 @@ public class OrderService {
                 (Timestamp) row[3]  //created_at
         )).toList();
    }
+    //필터링 조회(개월수로)
+    public List<OrderlistResDTO> getOrdersByUserIdAndDate(int userId, Timestamp fromDate) {
+        List<Object[]> rawResults = pickupRepository.findByUserIdAndDate(userId, fromDate);
+
+        // Object[]를 DTO로 변환
+        return rawResults.stream()
+                .map(result -> new OrderlistResDTO(
+                        (int) result[1],   //pickup_id
+                        (String) result[0],    //shop_name
+                        (PickupStatus) result[2],  //status
+                        (Timestamp) result[3]  //created_at
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+
 
     // 조회하기(상세)
     public OrderResDTO getOrderDetail(int userId, int pickupId) {
@@ -96,11 +110,6 @@ public class OrderService {
             throw new IllegalArgumentException("No matching pickup found for pickupId: " + pickupId + " and userId: " + userId);
         }
     }
-
-    public List<PaymentDTO> getPaymentDetail(int pickupId, int userId) {
-        return paymentRepository.findPaymentDetail(pickupId, userId);
-    }
-
 
 
 }
