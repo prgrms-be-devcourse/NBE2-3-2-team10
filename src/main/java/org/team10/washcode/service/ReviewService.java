@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.entity.Review;
-import org.team10.washcode.repository.ReviewRepository;
+import org.team10.washcode.repository.db.ReviewRepository;
 
 import java.util.ArrayList;
 import java.util.List;

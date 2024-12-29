@@ -8,7 +8,10 @@ import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.*;
+import org.team10.washcode.repository.db.PaymentRepository;
+import org.team10.washcode.repository.db.PickupItemRepository;
+import org.team10.washcode.repository.db.PickupRepository;
+import org.team10.washcode.repository.db.ReviewRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;

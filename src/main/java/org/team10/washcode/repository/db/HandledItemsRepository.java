@@ -1,4 +1,4 @@
-package org.team10.washcode.repository;
+package org.team10.washcode.repository.db;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import org.team10.washcode.entity.HandledItems;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface HandledItemsRepository extends JpaRepository<HandledItems, Long> {
