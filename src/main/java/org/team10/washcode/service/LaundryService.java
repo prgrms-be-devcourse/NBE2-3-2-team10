@@ -2,6 +2,7 @@ package org.team10.washcode.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.RequestDTO.laundry.ShopAddReqDTO;
 import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
@@ -112,6 +113,14 @@ public class LaundryService {
         return to;
     }
 
+    //카테고리로 세탁소 정보 찾기
+     public List<LaundryShop> findLaundryShopsByCategory(LaundryCategory category) {
+        // HandledItems에서 카테고리에 맞는 세탁소 ID 리스트 가져오기
+        List<Integer> shopIds = handledItemsRepository.findLaundryShopIdsByCategory(category);
+
+        // 세탁소 정보 가져오기
+        return laundryShopRepository.findByIdIn(shopIds);
+    }
 
     //세탁소 저장하기
     public int registerLaundryShop(ShopAddReqDTO to, int id) {
