@@ -11,7 +11,7 @@ import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.entity.LaundryShop;
-import org.team10.washcode.repository.HandledItemsRepository;
+import org.team10.washcode.repository.db.HandledItemsRepository;
 import org.team10.washcode.service.HandledItemsService;
 import org.team10.washcode.service.LaundryService;
 
