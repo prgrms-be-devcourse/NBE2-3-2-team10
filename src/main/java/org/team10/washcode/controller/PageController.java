@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
@@ -149,10 +150,19 @@ public class PageController {
             return "error";
         }
 
-
         model.addAttribute("laundry", to);
         model.addAttribute("laundryId", id);
         return "Customer/laundryshop-detail";
+    }
+
+    @RequestMapping("/laundryshop-by-category/{category}")
+    public String laundryshopByCategory(@PathVariable("category")String category, Model model) {
+        LaundryCategory laundryCategory = LaundryCategory.valueOf(category.toUpperCase());
+        String categoryName = laundryCategory.getDescription();
+
+        model.addAttribute("category", category);
+        model.addAttribute("categoryName", categoryName);
+        return "Customer/laundryshop-by-category";
     }
 
     @RequestMapping("/shop-mypage")

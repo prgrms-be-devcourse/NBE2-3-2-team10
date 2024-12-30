@@ -3,30 +3,35 @@ package org.team10.washcode.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.team10.washcode.Enum.UserRole;
-
-
+import org.team10.washcode.entity.redis.Token;
+import org.team10.washcode.repository.redis.TokenRepository;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 
-@RequiredArgsConstructor
 @Component
 public class JwtProvider {
-    private final SecretKey SECRETKEY;
 
     // 토큰(Access,Refresh) 만료시간(ms)
-    private final long ACCESS_EXPIRATION_TIME = 600000; // 10분
-    private final long REFRESH_EXPIRATION_TIME = 86400000; // 1일
+    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
+    private long ACCESS_EXPIRATION_TIME; // 10분
+
+    @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
+    private long REFRESH_EXPIRATION_TIME; // 1일
+
+    private final SecretKey SECRETKEY;
+    private final TokenRepository tokenRepository;
 
     // 인증키 랜덤값 생성
-    public JwtProvider() {
+    @Autowired
+    public JwtProvider(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
         this.SECRETKEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
+
     // Access 토큰 생성
     public String generateAccessToken(int id, UserRole role){
         Claims claims = Jwts.claims().setSubject(String.valueOf(id));
@@ -47,12 +52,26 @@ public class JwtProvider {
         claims.put("role",role);
         Date now = new Date();
 
-        return Jwts.builder()
+        // RefreshToken(RT) 생성
+        String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime()+REFRESH_EXPIRATION_TIME))
                 .signWith(SECRETKEY, SignatureAlgorithm.HS256)
                 .compact();
+
+        try {
+            // RT 캡슐화
+            Token token = new Token(id, refreshToken, REFRESH_EXPIRATION_TIME);
+
+            // RT를 Redis에 저장
+            tokenRepository.save(token);
+
+            return refreshToken;
+        } catch (Exception e) {
+            System.out.println("[Redis] RefreshToken save failed: " + e.getMessage());
+            return null;
+        }
     }
 
     // JWT 검증(변조 및 만료여부 확인)
@@ -87,16 +106,6 @@ public class JwtProvider {
         return null;
     }
 
-    // 헤더에 Access 토큰 넣기
-    public void setHeaderAccessToken(HttpServletResponse response, String token){
-        response.setHeader("Authorization", "bearer "+ token);
-    }
-
-    // 헤더에 Refresh 토큰 넣기
-    public void setHeaderRefreshToken(HttpServletResponse response, String token){
-        response.setHeader("RefreshToken", "bearer "+token);
-    }
-
     // 토큰에서 id 반환
     public int getId(String token){
         return Integer.parseInt(Jwts.parserBuilder()
@@ -114,6 +123,6 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("role",String.class));
+                .get("role", String.class));
     }
 }

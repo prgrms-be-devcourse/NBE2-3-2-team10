@@ -5,18 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team10.washcode.Enum.PickupStatus;
-import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
-import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.*;
+import org.team10.washcode.repository.db.PaymentRepository;
+import org.team10.washcode.repository.db.PickupItemRepository;
+import org.team10.washcode.repository.db.PickupRepository;
+import org.team10.washcode.repository.db.ReviewRepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+
 
     public void saveOrder(Pickup pickup, PickupItem pickupItem) {
         // Pickup 저장
@@ -55,6 +59,23 @@ public class OrderService {
                 (Timestamp) row[3]  //created_at
         )).toList();
    }
+    //필터링 조회(개월수로)
+    public List<OrderlistResDTO> getOrdersByUserIdAndDate(int userId, Timestamp fromDate) {
+        List<Object[]> rawResults = pickupRepository.findByUserIdAndDate(userId, fromDate);
+
+        // Object[]를 DTO로 변환
+        return rawResults.stream()
+                .map(result -> new OrderlistResDTO(
+                        (int) result[1],   //pickup_id
+                        (String) result[0],    //shop_name
+                        (PickupStatus) result[2],  //status
+                        (Timestamp) result[3]  //created_at
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+
 
     // 조회하기(상세)
     public OrderResDTO getOrderDetail(int userId, int pickupId) {
@@ -69,14 +90,14 @@ public class OrderService {
             orderResDTO.setPhone((String) obj[1]);
             orderResDTO.setShop_name((String) obj[2]);
             orderResDTO.setContent((String) obj[5]);
-            //orderResDTO.setStatus(PickupStatus.valueOf((String) obj[4]));  // 상태는 Enum으로 변환
+            orderResDTO.setName((String) obj[15]);
+
             orderResDTO.setStatus((PickupStatus) obj[4]);
             orderResDTO.setCreated_at((Timestamp) obj[6]);
             orderResDTO.setUpdate_at((Timestamp) obj[7]);
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
-//pi_id[3], pi_it=id[8],quantity[9],category[12]
-            // OrderItem 추가
+
             OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
                     (String) obj[11], // item_name
                     (Integer) obj[9], // quantity
@@ -94,7 +115,6 @@ public class OrderService {
             throw new IllegalArgumentException("No matching pickup found for pickupId: " + pickupId + " and userId: " + userId);
         }
     }
-
 
 
 }
