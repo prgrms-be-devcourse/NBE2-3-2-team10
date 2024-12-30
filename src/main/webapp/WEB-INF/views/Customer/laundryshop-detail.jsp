@@ -43,14 +43,13 @@
                     uniqueItems.forEach(item => {
                         const itemElement = document.createElement('div');
                         const category = getCategoryEnum(item.category);
-                        itemElement.innerHTML = `<img src="https://source.unsplash.com/random/50x50?jacket" alt="\${category}" width="50" height="50">`;
+                        const src = getCategorySrc(item.category)
+                        itemElement.innerHTML = `<img src="\${src}" alt="\${category}" width="50" height="50">`;
                         laundryItemsContainer.appendChild(itemElement);
                     });
 
                     const obtn = document.getElementById('obtn');
-                    <%--obtn.innerHTML = `<button className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg"--%>
-                    <%--                   onClick="window.location.href='/api/orders/create?id=\${data.id}&laundryShopId=${laundryId}'">세탁 신청--%>
-                    <%--                  </button>`--%>
+
                     obtn.addEventListener('click', function() {
                         window.location.href = `/api/orders/create?id=\${data.id}&laundryShopId=${laundryId}`;
                     });
@@ -70,6 +69,19 @@
                 "COTTON_LAUNDRY" : "면 세탁물",
                 "STORAGE_SERVICE" : "보관 서비스",
                 "BEDDING" : "침구"
+            };
+            return categoryMap[category] || "";
+        }
+
+        function getCategorySrc(category) {
+            const categoryMap = {
+                "SHOES" : "https://img.icons8.com/ios-filled/50/00bcd4/shoes.png",
+                "PADDING" : "https://img.icons8.com/ios-filled/50/00bcd4/jacket.png",
+                "PREMIUM_FABRIC" : "https://img.icons8.com/ios-filled/50/00bcd4/guarantee.png",
+                "CARRIER_SANITATION" : "https://img.icons8.com/ios-filled/50/00bcd4/carry-on-bag.png",
+                "COTTON_LAUNDRY" : "https://img.icons8.com/ios-filled/50/00bcd4/clothes.png",
+                "STORAGE_SERVICE" : "https://img.icons8.com/ios-filled/50/00bcd4/box.png",
+                "BEDDING" : "https://img.icons8.com/ios-filled/50/00bcd4/bed.png"
             };
             return categoryMap[category] || "";
         }
