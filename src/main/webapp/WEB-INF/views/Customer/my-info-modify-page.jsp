@@ -20,7 +20,11 @@
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md">
     <header class="flex items-center p-4 border-b">
-        <button class="text-xl">&larr;</button>
+        <button class="text-gray-500" onclick="window.history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
         <h1 class="flex-grow text-center font-bold">내 정보 수정</h1>
     </header>
     <main class="p-4">

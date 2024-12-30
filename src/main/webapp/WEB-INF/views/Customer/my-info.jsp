@@ -19,7 +19,11 @@
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
     <div class="flex items-center p-4 border-b">
-        <button class="text-xl">&larr;</button>
+        <button class="text-gray-500" onclick="window.history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
         <h1 class="flex-grow text-center text-xl font-bold">내 정보</h1>
         <button class="text-blue-500" onclick="location.href='/myInfoModify'" >수정</button>
     </div>
@@ -28,11 +32,11 @@
             <h2 class="text-lg font-bold mb-2">기본 정보</h2>
             <div class="flex justify-between items-center mb-2">
                 <span>Email</span>
-                <span id = "email">ks06891@naver.com</span>
+                <span id = "email">로그인을 진행해주세요</span>
             </div>
             <div class="flex justify-between items-center mb-2">
                 <span>이름</span>
-                <span id = "name">통장잔고원</span>
+                <span id = "name">홍길동</span>
             </div>
             <div class="flex justify-between items-center mb-2">
                 <span>전화번호</span>
