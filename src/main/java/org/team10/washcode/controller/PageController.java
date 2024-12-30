@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.RequestDTO.user.KakaoUserDataDTO;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.entity.HandledItems;
 import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
@@ -131,6 +132,12 @@ public class PageController {
 
     @RequestMapping("/orderHistory")
     public String orderHistory() { return "Customer/order-history"; }
+
+    @RequestMapping("/orderHistory/{pickup_id}")
+    public String orderHistoryDetail(@PathVariable("pickup_id")int pickup_id, Model model){
+        model.addAttribute("pickupId",pickup_id);
+        return "Customer/order-history-detail";
+    }
 
     @RequestMapping("/myInfo")
     public String myInfo() { return "Customer/my-info"; }

@@ -2,6 +2,7 @@
 <%@ page import="org.team10.washcode.ResponseDTO.order.OrderResDTO" %>
 <%@ page import="java.util.List" %>
 <%
+    int pickupId = (int) request.getAttribute("pickupId");
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -10,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이용내역</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -24,47 +26,32 @@
     </div>
     <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow mb-4">
-            <%
-                OrderResDTO order = (OrderResDTO) request.getAttribute("order");
-                if (order != null) {
-            %>
             <div class="flex justify-between items-center">
-                <h2 class="font-bold"><%= order.getShop_name() %></h2>
-                <span class="text-blue-500"><%= order.getStatus() %></span>
+                <h2 class="font-bold" id="shop_name"></h2>
+                <span class="text-blue-500" id="status"></span>
             </div>
-            <%
-                List<OrderResDTO.OrderItem> orderItems = order.getOrder_items();
-                if (orderItems != null) {
-                    for (OrderResDTO.OrderItem item : orderItems) {
-            %>
-            <p><%= item.getItem_name() %> <%= item.getQuantity() %>개</p>
-            <%
-                    }
-                }
-            %>
-            <p class="text-gray-500">주문일자 : <%= order.getCreated_at() %></p>
-            <%
-                } // order != null 닫힘
-            %>
+
+            <p id="order-detail"> </p>
+            <p class="text-gray-500" id="created_at">주문일자 : </p>
             <div class="border-t border-gray-200 mt-2 pt-2">
                 <h2 class="font-bold">결제금액</h2>
-                <p>주문 금액 : <%= order.getAmount() %>원</p>
-                <p>결제 방법 : <%= order.getMethod() %></p>
+                <p id="amount">주문 금액 : 원</p>
+                <p id="method">결제 방법 : </p>
             </div>
 
             <div class="border-t border-gray-200 mt-2 pt-2">
                 <h2 class="font-bold">배달 주소</h2>
-                <p><%= order.getAddress() %></p>
-                <p>전화번호 : <%= order.getPhone() %></p>
+                <p id="address"></p>
+                <p id="phone">전화번호 : </p>
             </div>
             <div class="border-t border-gray-200 mt-2 pt-2">
                 <h2 class="font-bold">요청사항</h2>
-                <p><%= (order.getContent() != null && !order.getContent().trim().isEmpty()) ? order.getContent() : "요청사항 없음." %></p>
+                <p id="content"></p>
             </div>
             <div class="flex justify-between mt-4" style="text-align: right;">
-<%--                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>--%>
-                <form id="deleteForm" action="/api/orders/cancel/${userId}/${pickupId}" method="post">
-                <button type="submit" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>
+                <%--                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>--%>
+                <form id="deleteForm" action="" method="post">
+                    <button type="submit" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>
                 </form>
             </div>
         </div>
@@ -86,5 +73,44 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+    const url = "http://localhost:8080";
+    const token = sessionStorage.getItem("accessToken");
+
+    function getOrderDetail() {
+        axios.get(url + '/api/test/<%=pickupId%>', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            let orderDetailHtml ='';
+
+            document.getElementById("shop_name").innerHTML = res.data.shop_name;
+            document.getElementById("status").innerHTML = res.data.status;
+
+            $.each(res.data.order_items,function(i,row) {
+                orderDetailHtml += '<p>'+ row.item_name +' '+ row.quantity + '개</p>';
+            });
+            $("#order-detail").append(orderDetailHtml);
+
+            document.getElementById("created_at").innerHTML = '주문일자 : ' + res.data.created_at;
+            document.getElementById("amount").innerHTML = '주문 금액 : ' + res.data.amount +'원';
+            document.getElementById("method").innerHTML = '결제 방법 : ' + res.data.method;
+            document.getElementById("address").innerHTML = res.data.address;
+            document.getElementById("phone").innerHTML = '전화번호 : ' + res.data.phone;
+            document.getElementById("phone").innerHTML =
+                (res.data.content!=null&&res.data.content.trim() !== "") ? res.data.content : '요청사항 없음.';
+        });
+    }
+
+
+
+    window.onload = () => {
+        getOrderDetail();
+    };
+</script>
+
 </body>
 </html>

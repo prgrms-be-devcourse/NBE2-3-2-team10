@@ -15,6 +15,7 @@ public enum PickupStatus {
     CANCELLED("주문 취소"),
     DELIVERED("도착 완료");
 
+    @Getter
     private final String desc;
 
     // 생성자

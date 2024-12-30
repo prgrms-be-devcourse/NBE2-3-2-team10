@@ -99,7 +99,7 @@ public class OrderController {
 
     }
 
-
+    /*
     @GetMapping("/history/{userId}")
     public String getOrderByUserId(@PathVariable int userId,Model model){
         List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
@@ -120,7 +120,7 @@ public class OrderController {
         model.addAttribute("order",orderDetails);
         //return ResponseEntity.ok(orderDetails);
         return "Customer/order-history-detail";
-    }
+    }*/
 
 
     @PostMapping("/cancel/{userId}/{pickupId}")
@@ -155,6 +155,8 @@ public class OrderController {
 //        model.addAttribute("filter", filter);
 //        return "Customer/payment-history";
 //    }
+
+/*
     @GetMapping("/payment/{userId}")
     public String getPaymentHistory(@PathVariable int userId,
                                     @RequestParam(value = "filter", required = false) Integer filter,
@@ -188,5 +190,5 @@ public class OrderController {
         model.addAttribute("order",orderDetails);
         return "Customer/payment-history-detail";
     }
-
+*/
 }

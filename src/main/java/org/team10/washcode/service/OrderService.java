@@ -2,6 +2,7 @@ package org.team10.washcode.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team10.washcode.Enum.PickupStatus;
@@ -14,7 +15,6 @@ import org.team10.washcode.repository.db.PickupRepository;
 import org.team10.washcode.repository.db.ReviewRepository;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class OrderService {
     public Payment savePayment(Payment payment) {
         return paymentRepository.save(payment); // JPA로 저장
     }
-
+    /*
     // 조회하기
    public List<OrderlistResDTO> getOrdersByUserId(int userId) {
         List<Object[]> result = pickupRepository.findOrderListByUserId(userId);
@@ -55,10 +55,10 @@ public class OrderService {
         return result.stream().map(row->new OrderlistResDTO(
                 (int) row[1],   //pickup_id
                 (String) row[0],    //shop_name
-                (PickupStatus) row[2],  //status
+                ((PickupStatus) row[2]).getDesc(),  //status
                 (Timestamp) row[3]  //created_at
         )).toList();
-   }
+   }*/
     //필터링 조회(개월수로)
     public List<OrderlistResDTO> getOrdersByUserIdAndDate(int userId, Timestamp fromDate) {
         List<Object[]> rawResults = pickupRepository.findByUserIdAndDate(userId, fromDate);
@@ -68,7 +68,7 @@ public class OrderService {
                 .map(result -> new OrderlistResDTO(
                         (int) result[1],   //pickup_id
                         (String) result[0],    //shop_name
-                        (PickupStatus) result[2],  //status
+                        ((PickupStatus) result[2]).getDesc(),  //status
                         (Timestamp) result[3]  //created_at
                 ))
                 .collect(Collectors.toList());
@@ -76,10 +76,10 @@ public class OrderService {
 
 
 
-
+/*
     // 조회하기(상세)
     public OrderResDTO getOrderDetail(int userId, int pickupId) {
-        List<Object[]> result = pickupRepository.findOrderDetails(userId, pickupId);
+        List<Object[]> result = pickupRepository.findOrderDetails(userId,pickupId);
         OrderResDTO orderResDTO = new OrderResDTO();
 
         // 주문 아이템 리스트가 null일 경우 빈 리스트로 초기화
@@ -92,7 +92,7 @@ public class OrderService {
             orderResDTO.setContent((String) obj[5]);
             orderResDTO.setName((String) obj[15]);
 
-            orderResDTO.setStatus((PickupStatus) obj[4]);
+            orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
             orderResDTO.setCreated_at((Timestamp) obj[6]);
             orderResDTO.setUpdate_at((Timestamp) obj[7]);
             orderResDTO.setMethod((String) obj[14]);
@@ -107,7 +107,8 @@ public class OrderService {
         }
 
         return orderResDTO;
-    }
+    }*/
+
     @Transactional
     public void cancelOrder(int pickupId, int userId) {
         int updatedRows = pickupRepository.cancleOrder(pickupId, userId);
@@ -116,5 +117,51 @@ public class OrderService {
         }
     }
 
+    // 추가 내역 (RestController)
+    // 유저 ID 로 주문내역 조회
+    public ResponseEntity<?> getOrders(int id){
+        List<Object[]> result = pickupRepository.findOrderListByUserId(id);
+
+        List<OrderlistResDTO> orderlistResDTOS = result.stream().map(row->new OrderlistResDTO(
+                (int) row[1],   //pickup_id
+                (String) row[0],    //shop_name
+                ((PickupStatus) row[2]).getDesc(),  //status
+                (Timestamp) row[3]  //created_at
+        )).toList();
+
+        return ResponseEntity.ok().body(orderlistResDTOS);
+    }
+
+    // 유저 ID 및 주문 ID로 주문 상세 내역 조회
+    public ResponseEntity<?> getOrdersDetail(int id, int pickupId){
+        List<Object[]> result = pickupRepository.findOrderDetails(id, pickupId);
+        OrderResDTO orderResDTO = new OrderResDTO();
+
+        // 주문 아이템 리스트가 null일 경우 빈 리스트로 초기화
+        orderResDTO.setOrder_items(new ArrayList<>());
+
+        for (Object[] obj : result) {
+            orderResDTO.setAddress((String) obj[0]);
+            orderResDTO.setPhone((String) obj[1]);
+            orderResDTO.setShop_name((String) obj[2]);
+            orderResDTO.setContent((String) obj[5]);
+            orderResDTO.setName((String) obj[15]);
+
+            orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
+            orderResDTO.setCreated_at((Timestamp) obj[6]);
+            orderResDTO.setUpdate_at((Timestamp) obj[7]);
+            orderResDTO.setMethod((String) obj[14]);
+            orderResDTO.setAmount((Integer)obj[13]);
+
+            OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
+                    (String) obj[11], // item_name
+                    (Integer) obj[9], // quantity
+                    (Integer) obj[10] // totalPrice
+            );
+            orderResDTO.getOrder_items().add(orderItem);
+        }
+
+        return ResponseEntity.ok().body(orderResDTO);
+    }
 
 }
