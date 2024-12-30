@@ -17,6 +17,7 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
+
 </head>
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
