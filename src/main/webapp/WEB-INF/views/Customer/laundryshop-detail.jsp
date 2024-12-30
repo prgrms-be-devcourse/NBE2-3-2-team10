@@ -16,6 +16,8 @@
         }
     </style>
     <script>
+        const token = sessionStorage.getItem("accessToken");
+
         window.onload = () => {
             checkAccessToken();
         };
