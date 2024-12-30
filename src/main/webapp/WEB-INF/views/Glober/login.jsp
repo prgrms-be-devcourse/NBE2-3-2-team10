@@ -57,7 +57,20 @@
             .then(res => {
                 sessionStorage.setItem("accessToken", res.data.accessToken); // 세션 스토리지에 저장
                 alert("환영합니다");
-                location.href = "/main";
+
+                axios.get(url + '/api/user/role', {
+                    headers: {
+                        Authorization: 'Bearer ' + res.data.accessToken
+                    }
+                }).then(res => {
+                    if(res.data.role==="USER"){
+                        console.log(res.data.role)
+                        location.href = "/main";
+                    }else if(res.data.role==="SHOP"){
+                        location.href = "/shop-main";
+                    }
+
+                })
             })
             .catch (error => {
                 alert(error.response.data);
@@ -71,6 +84,7 @@
                 }
             }).then(res => {
                 sessionStorage.setItem("accessToken", res.data.accessToken);
+
                 location.href = "/main";
             })
         }
