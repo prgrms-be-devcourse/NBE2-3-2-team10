@@ -207,19 +207,14 @@
         function updateUserInfo() {
             const regex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]{8,30}$/;
 
-            if (!document.getElementById('password').value) {
-                alert('비밀번호를 입력해주세요.');
-                return;
-            }
-
-            if (!regex.test(document.getElementById('password').value)) {
-                alert("비밀번호는 8~30자 사이의 영어, 숫자, 특수문자 조합이어야 합니다.");
-                return true;
-            }
-
             if (document.getElementById('password').value !== document.getElementById('password2').value) {
                 alert("비밀번호가 일치하지 않습니다.");
                 return;
+            }
+
+            if (document.getElementById('password').value && !regex.test(document.getElementById('password').value)) {
+                alert("비밀번호는 8~30자 사이의 영어, 숫자, 특수문자 조합이어야 합니다.");
+                return true;
             }
 
             if (detailAddressInput.style.display === "block" && !detailAddressInput.value) {
