@@ -11,6 +11,7 @@ import org.team10.washcode.service.*;
 import org.springframework.ui.Model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -30,14 +31,16 @@ public class OrderController {
 
 
     @GetMapping("/main")
-    public String main(Model model) {
+    public String main() {
         return "Customer/main";
     }
 
     @GetMapping("/create")
-    public String order(@RequestParam("id") int userId,
-                        @RequestParam("laundryShopId") Long laundryShopId,
-                        Model model) {
+    public String order(
+            @RequestParam("id") int userId,
+//            @AuthenticationPrincipal int userId,
+            @RequestParam("laundryShopId") Long laundryShopId,
+            Model model) {
         // User, LaundryShop 조회
         User user = userService.getUserById(userId);
         LaundryShop laundryShop = laundryService.getLaundryById(laundryShopId);
@@ -109,7 +112,6 @@ public class OrderController {
 
 
     @GetMapping("/history/{userId}/{pickupId}")
-    //public ResponseEntity<OrderResDTO> getOrderDetails(
     public String getOrderDetails(
             @PathVariable int userId,
             @PathVariable int pickupId,
@@ -130,4 +132,61 @@ public class OrderController {
 //        return ResponseEntity.ok("Pickup status updated to CANCELLED successfully.");
         return "redirect:/api/orders/main";
     }
+
+    //결제내역 조회
+//    @GetMapping("/payment/{userId}")
+//    public String Payment(@PathVariable int userId,
+//                          @RequestParam(value = "filter", required = false) int filter,
+//                          Model model) {
+////        List<OrderlistResDTO> orderList = orderService.getOrdersByUserId(userId);
+//        List<OrderlistResDTO> orderList;
+//
+//        if (filter != null) {
+//            // 현재 시간 기준으로 filter개월 전 날짜 계산
+//            Timestamp fromDate = Timestamp.valueOf(LocalDateTime.now().minusMonths(filter));
+//            orderList = orderService.getOrdersByUserIdAndDate(userId, fromDate);
+//        } else {
+//            // 필터가 없는 경우 전체 데이터 조회
+//            orderList = orderService.getOrdersByUserId(userId);
+//        }
+//
+//        model.addAttribute("orders", orderList);
+//        model.addAttribute("userId",userId);
+//        model.addAttribute("filter", filter);
+//        return "Customer/payment-history";
+//    }
+    @GetMapping("/payment/{userId}")
+    public String getPaymentHistory(@PathVariable int userId,
+                                    @RequestParam(value = "filter", required = false) Integer filter,
+                                    Model model) {
+        List<OrderlistResDTO> orderList;
+
+        if (filter != null) {
+            // 현재 시간 기준으로 filter개월 전 날짜 계산
+            Timestamp fromDate = Timestamp.valueOf(LocalDateTime.now().minusMonths(filter));
+            orderList = orderService.getOrdersByUserIdAndDate(userId, fromDate);
+        } else {
+            // 필터가 없는 경우 전체 데이터 조회
+            orderList = orderService.getOrdersByUserId(userId);
+        }
+
+        model.addAttribute("orders", orderList);
+        model.addAttribute("userId", userId);
+        model.addAttribute("filter", filter); // 현재 선택된 필터 값 전달
+        return "Customer/payment-history";
+    }
+
+
+
+    //결제내역 상세조회
+    @GetMapping("/payment/{userId}/{pickupId}")
+    public String PaymentHistory(
+            @PathVariable int userId,
+            @PathVariable int pickupId,
+            Model model) {
+        OrderResDTO orderDetails = orderService.getOrderDetail(userId, pickupId);
+        model.addAttribute("order",orderDetails);
+        return "Customer/payment-history-detail";
+    }
+
 }

@@ -28,7 +28,7 @@
       <svg class="w-8 h-8 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-6 4h6m-6 0a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2V9a2 2 0 00-2-2H8z"></path>
       </svg>
-      <div class="text-sm mt-1">워시팡 내역</div>
+      <a href="/api/orders/payment/{id}" class="text-sm mt-1">워시팡 내역</a>
     </button>
     <button class="text-center focus:outline-none" onclick="location.href='/myInfo'">
       <svg class="w-8 h-8 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
