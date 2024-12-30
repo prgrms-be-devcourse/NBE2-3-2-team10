@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>세탁소 명</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -15,7 +16,25 @@
         }
     </style>
     <script>
-        window.onload = function() {
+        window.onload = () => {
+            checkAccessToken();
+        };
+
+        function checkAccessToken() {
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+                getLaundryShopDetail();
+            }).catch(error => {
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
+            });
+        }
+
+        function getLaundryShopDetail() {
             const token = sessionStorage.getItem("accessToken")
 
             // 페이지 로드가 완료된 후 fetch를 사용하여 데이터 받아오기
@@ -58,7 +77,7 @@
                 .catch(error => {
                     console.error('데이터를 가져오는 중 오류 발생:', error);
                 });
-        };
+        }
 
         function getCategoryEnum(category) {
             const categoryMap = {

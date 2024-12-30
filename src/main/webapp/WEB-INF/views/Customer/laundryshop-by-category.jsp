@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>패딩 페이지</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -15,7 +16,24 @@
         }
     </style>
     <script type="text/javascript">
+        function getUserAddress() {
+            axios.get(url + '/api/user/address', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                const string = res.data.split(' ');
+                document.getElementById('myAddress').innerHTML = string[0] + ' ' + string[1] + ' ' + string[2] + " " + "...";
+                //+ '<img src="./main/arrowDown.svg" class="h-[9px] w-[5px]"/>';
+
+            }).catch(error => {
+                alert(error.response.data);
+            });
+        }
+
         window.onload = function () {
+            getUserAddress();
+
             fetch(`/api/laundry/category/${category}`)
                 .then(response => response.json())
                 .then(data => {

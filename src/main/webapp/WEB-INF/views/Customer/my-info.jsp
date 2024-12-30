@@ -82,7 +82,8 @@
             }).then(res => {
                 sessionStorage.setItem("accessToken", res.data.accessToken);
             }).catch(error => {
-                alert(error.response.data);
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
             });
         }
 

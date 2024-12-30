@@ -140,12 +140,10 @@
                     Authorization: 'Bearer ' + token
                 }
             }).then(res => {
-                if (res.data === false) {
-                    alert("로그인이 필요합니다.");
-                    location.href = '/';
-                }
+                sessionStorage.setItem("accessToken", res.data.accessToken);
             }).catch(error => {
-                alert(error.response.data);
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
             });
         }
 

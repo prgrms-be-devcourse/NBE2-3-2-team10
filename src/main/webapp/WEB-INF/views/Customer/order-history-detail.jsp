@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이용내역</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -86,5 +87,27 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
+
+<script>
+    const token = sessionStorage.getItem("accessToken");
+
+    function checkAccessToken() {
+        axios.post(url + '/api/user/check-login', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            sessionStorage.setItem("accessToken", res.data.accessToken);
+        }).catch(error => {
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            location.href = '/';
+        });
+    }
+
+    window.onload = () => {
+        checkAccessToken();
+    }
+</script>
+
 </body>
 </html>

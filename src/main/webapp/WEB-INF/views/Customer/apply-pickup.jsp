@@ -15,6 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이용신청</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -22,6 +23,22 @@
         }
     </style>
     <script>
+        const token = sessionStorage.getItem("accessToken");
+
+        function checkAccessToken() {
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+                getLaundryShopDetail();
+            }).catch(error => {
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
+            });
+        }
+
         // 카테고리와 수량 요소 선택
         const itemSelect = document.getElementById('item_id');
         const quantityInput = document.getElementById('quantity');
@@ -49,6 +66,10 @@
 
         // 페이지 로드 시 초기 계산
         document.addEventListener('DOMContentLoaded', calculateTotalPrice);
+
+        window.onload = () => {
+            checkAccessToken();
+        };
     </script>
 </head>
 <body class="bg-gray-100">

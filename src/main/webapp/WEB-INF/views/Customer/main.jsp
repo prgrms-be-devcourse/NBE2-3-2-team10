@@ -35,7 +35,7 @@
     </div>
 
     <!-- Categories -->
-    <div class="border border-[#E1D9D9] p-1 w-[423px] h-[201px] bg-[#FFFFFF] rounded-[28px] shadow-md text-[10pt]">
+    <div class="border border-[#E1D9D9] p-1 w-[423px] h-[201px] bg-[#FFFFFF] rounded-lg shadow-md text-[10pt]">
         <div class="mt-2 grid grid-cols-4 ">
             <div class="flex flex-col items-center" onclick="window.location.href='/laundryshop-by-category/SHOES'">
                 <img src = "./main/category/shoes.svg" class = "h-[54px] w-[63px]"/>
