@@ -236,7 +236,7 @@
                 phone: phoneField ? phoneField : phone
             };
 
-            alert(formData.address + " " + formData.password + " " + formData.phone)
+            // alert(formData.address + " " + formData.password + " " + formData.phone)
 
             axios.put(url + '/api/user', formData, {
                 headers: {
