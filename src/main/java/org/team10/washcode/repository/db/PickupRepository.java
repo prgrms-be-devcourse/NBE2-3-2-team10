@@ -49,7 +49,8 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("SELECT ls.shop_name, p.id, p.status, p.created_at " +
             "FROM LaundryShop ls " +
             "JOIN Pickup p ON ls.id = p.laundryshop.id " +
-            "WHERE p.user.id = :userId")
+            "WHERE p.user.id = :userId " +
+            "ORDER BY p.created_at DESC" )
     List<Object[]> findOrderListByUserId(@Param("userId") int userId);
 
 
@@ -114,5 +115,6 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
                                                  @Param("year") int year,
                                                  @Param("month") int month);
 
-
+    @Query("SELECT MAX(p.id) AS pickup_id FROM Pickup p")
+    int findIdByMax();
 }

@@ -134,9 +134,15 @@ public class PageController {
     public String orderHistory() { return "Customer/order-history"; }
 
     @RequestMapping("/orderHistory/{pickup_id}")
-    public String orderHistoryDetail(@PathVariable("pickup_id")int pickup_id, Model model){
+    public String orderHistoryDetail(@PathVariable("pickup_id") int pickup_id, Model model){
         model.addAttribute("pickupId",pickup_id);
         return "Customer/order-history-detail";
+    }
+
+    @RequestMapping("/order/{laundry_id}")
+    public String order(@PathVariable("laundry_id") int laundry_id, Model model){
+        model.addAttribute("laundryId",laundry_id);
+        return "Customer/apply-pickup";
     }
 
     @RequestMapping("/myInfo")

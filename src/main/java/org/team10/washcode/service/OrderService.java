@@ -5,33 +5,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.Enum.PickupStatus;
+import org.team10.washcode.RequestDTO.order.OrderReqDTO;
+import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
+import org.team10.washcode.ResponseDTO.laundry.ItemInfoResDTO;
+import org.team10.washcode.ResponseDTO.order.OrderInfoResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.db.PaymentRepository;
-import org.team10.washcode.repository.db.PickupItemRepository;
-import org.team10.washcode.repository.db.PickupRepository;
-import org.team10.washcode.repository.db.ReviewRepository;
+import org.team10.washcode.repository.db.*;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    @Autowired
-    private PickupRepository pickupRepository;
-    @Autowired
-    private PickupItemRepository pickupItemRepository;
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final PickupRepository pickupRepository;
+    private final UserRepository userRepository;
+    private final LaundryShopRepository laundryShopRepository;
+    private final HandledItemsRepository handledItemsRepository;
+    private final PickupItemRepository pickupItemRepository;
+    private final PaymentRepository paymentRepository;
+    private final ReviewRepository reviewRepository;
 
 
     public void saveOrder(Pickup pickup, PickupItem pickupItem) {
@@ -58,7 +62,7 @@ public class OrderService {
                 ((PickupStatus) row[2]).getDesc(),  //status
                 (Timestamp) row[3]  //created_at
         )).toList();
-   }*/
+   }*//*
     //필터링 조회(개월수로)
     public List<OrderlistResDTO> getOrdersByUserIdAndDate(int userId, Timestamp fromDate) {
         List<Object[]> rawResults = pickupRepository.findByUserIdAndDate(userId, fromDate);
@@ -72,7 +76,7 @@ public class OrderService {
                         (Timestamp) result[3]  //created_at
                 ))
                 .collect(Collectors.toList());
-    }
+    }*/
 
 
 
@@ -117,6 +121,60 @@ public class OrderService {
         }
     }
 
+
+    public ResponseEntity<?> getInfo(int id, int laundryId){
+        OrderInfoResDTO orderInfoResDTO = new OrderInfoResDTO();
+        orderInfoResDTO.setName(userRepository.findNameById(id).get());
+        orderInfoResDTO.setAddress(userRepository.findAddressById(id).get());
+        orderInfoResDTO.setAddress(userRepository.findAddressById(id).get());
+        orderInfoResDTO.setShop_name(laundryShopRepository.findNameById(laundryId).get());
+
+        List<ItemInfoResDTO> handledItems = handledItemsRepository.findHandledItemsByLaundryId(laundryId);
+
+        orderInfoResDTO.setCategory(handledItems);
+
+        return ResponseEntity.ok().body(orderInfoResDTO);
+    }
+
+    public ResponseEntity<?> createOrder(int id, OrderReqDTO orderReqDTO){
+        try {
+            // 주문 저장
+            Pickup pickup = new Pickup();
+            pickup.setUser(userRepository.findById(id).orElseThrow());
+            pickup.setLaundryshop(laundryShopRepository.findById(orderReqDTO.getLaundryshop_id()).orElseThrow());
+            pickup.setContent(orderReqDTO.getContent());
+            pickup.setStatus(PickupStatus.REQUESTED);
+            pickup.setCreated_at(new Timestamp(System.currentTimeMillis()));
+
+            pickupRepository.save(pickup);
+
+            // 주문 목록 저장 ( 현재는 1개만 )
+            PickupItem pickupItem = new PickupItem();
+            pickupItem.setPickup(pickup);
+            pickupItem.setQuantity(orderReqDTO.getQuantity());
+
+            HandledItems handledItem = handledItemsRepository.findById(orderReqDTO.getItem_id()).orElseThrow();
+            pickupItem.setHandledItems(handledItem);
+            pickupItem.setTotalPrice(handledItem.getPrice() * orderReqDTO.getQuantity());
+
+            pickupItemRepository.save(pickupItem);
+
+            // 결제 정보 저장
+            Payment payment = new Payment();
+            payment.setPickup(pickup);
+            payment.setPayment_datetime(new Timestamp(System.currentTimeMillis()));
+            payment.setAmount(handledItem.getPrice() * orderReqDTO.getQuantity()); // 총 금액
+            payment.setMethod(orderReqDTO.getPaymentMethod()); // 결제 방법
+
+            paymentRepository.save(payment);
+
+            return ResponseEntity.ok().body(pickupRepository.findIdByMax());
+        } catch (Exception e) {
+            System.out.println("[Error] " + e.getMessage());
+            return ResponseEntity.status(500).body("DB 에러");
+        }
+    }
+
     // 추가 내역 (RestController)
     // 유저 ID 로 주문내역 조회
     public ResponseEntity<?> getOrders(int id){
@@ -126,7 +184,7 @@ public class OrderService {
                 (int) row[1],   //pickup_id
                 (String) row[0],    //shop_name
                 ((PickupStatus) row[2]).getDesc(),  //status
-                (Timestamp) row[3]  //created_at
+                new SimpleDateFormat("yyyy년 MM월 dd일").format((Timestamp) row[3])  //created_at
         )).toList();
 
         return ResponseEntity.ok().body(orderlistResDTOS);
@@ -148,8 +206,8 @@ public class OrderService {
             orderResDTO.setName((String) obj[15]);
 
             orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
-            orderResDTO.setCreated_at((Timestamp) obj[6]);
-            orderResDTO.setUpdate_at((Timestamp) obj[7]);
+            orderResDTO.setCreated_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[6]));
+            orderResDTO.setUpdate_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
 

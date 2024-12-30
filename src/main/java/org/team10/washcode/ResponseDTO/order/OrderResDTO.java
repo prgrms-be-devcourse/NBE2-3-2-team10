@@ -19,8 +19,8 @@ public class OrderResDTO {
     private String shop_name;
     private String content;
     private String status;
-    private Timestamp created_at;   //요청 생성
-    private Timestamp update_at;
+    private String created_at;   //요청 생성
+    private String update_at;
 
     //결제 방법
     private String method;

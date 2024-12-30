@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.service.OrderService;
 
 @RestController
@@ -12,6 +13,16 @@ public class OrderRController {
 
     @Autowired
     private OrderService orderService;
+
+    @GetMapping("/info/{laundry_id}")
+    public ResponseEntity<?> getInfo(@AuthenticationPrincipal int id, @PathVariable("laundry_id") int laundryId){
+        return orderService.getInfo(id,laundryId);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> creatOrder(@AuthenticationPrincipal int id, @RequestBody OrderReqDTO orderReqDTO){
+        return orderService.createOrder(id, orderReqDTO);
+    }
 
     @GetMapping
     public ResponseEntity<?> getOrders(@AuthenticationPrincipal int id){

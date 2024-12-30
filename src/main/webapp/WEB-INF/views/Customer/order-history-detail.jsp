@@ -73,7 +73,6 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
-
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
     const url = "http://localhost:8080";
@@ -91,7 +90,7 @@
             document.getElementById("status").innerHTML = res.data.status;
 
             $.each(res.data.order_items,function(i,row) {
-                orderDetailHtml += '<p>'+ row.item_name +' '+ row.quantity + '개</p>';
+                orderDetailHtml += '<p>'+ row.item_name + ' ' + row.quantity + '개</p>';
             });
             $("#order-detail").append(orderDetailHtml);
 
@@ -100,12 +99,10 @@
             document.getElementById("method").innerHTML = '결제 방법 : ' + res.data.method;
             document.getElementById("address").innerHTML = res.data.address;
             document.getElementById("phone").innerHTML = '전화번호 : ' + res.data.phone;
-            document.getElementById("phone").innerHTML =
+            document.getElementById("content").innerHTML =
                 (res.data.content!=null&&res.data.content.trim() !== "") ? res.data.content : '요청사항 없음.';
         });
     }
-
-
 
     window.onload = () => {
         getOrderDetail();
