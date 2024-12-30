@@ -31,13 +31,12 @@
                         result += `<div class="bg-white p-4 rounded-lg shadow shop-item" data-id="\${shop.id}">
                                         <div class="flex justify-between items-center">
                                             <div>
-                                                <h2 class="text-lg font-bold">\${shop.shop_name} <span class="text-yellow-500">★BEST</span></h2>
+                                                <h2 class="text-lg font-bold">\${shop.shop_name}</h2>
                                                 <p class="text-gray-500">\${shop.address}</p>
                                             </div>
                                             <img src="https://source.unsplash.com/random/100x100?blanket" alt="Product" class="w-16 h-16 object-cover rounded-lg">
                                         </div>
                                         <div class="mt-2">
-                                            <span class="text-green-500 font-bold">25%</span>
                                             <span class="text-xl font-bold">\${cheapestItem.price.toLocaleString()}원</span>
                                             <span class="text-gray-500">/\${cheapestItem.item_name}</span>
                                         </div>
