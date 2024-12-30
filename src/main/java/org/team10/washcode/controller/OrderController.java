@@ -1,20 +1,12 @@
 package org.team10.washcode.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.Enum.PickupStatus;
-import org.team10.washcode.RequestDTO.order.OrderItemReqDTO;
-import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.LaundryShopRepository;
-import org.team10.washcode.repository.PickupItemRepository;
-import org.team10.washcode.repository.PickupRepository;
-import org.team10.washcode.repository.UserRepository;
 import org.team10.washcode.service.*;
 import org.springframework.ui.Model;
 

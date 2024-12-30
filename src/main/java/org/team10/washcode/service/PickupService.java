@@ -9,7 +9,10 @@ import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
 import org.team10.washcode.entity.*;
-import org.team10.washcode.repository.*;
+import org.team10.washcode.repository.db.PaymentRepository;
+import org.team10.washcode.repository.db.PickupItemRepository;
+import org.team10.washcode.repository.db.PickupRepository;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
