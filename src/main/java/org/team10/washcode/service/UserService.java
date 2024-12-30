@@ -5,43 +5,38 @@ package org.team10.washcode.service;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.team10.washcode.Enum.UserRole;
 import org.team10.washcode.RequestDTO.user.LoginReqDTO;
 import org.team10.washcode.RequestDTO.user.RegisterReqDTO;
 import org.team10.washcode.RequestDTO.user.UserUpdateReqDTO;
 import org.team10.washcode.ResponseDTO.user.UserProfileResDTO;
 import org.team10.washcode.entity.User;
+import org.team10.washcode.entity.redis.Token;
 import org.team10.washcode.jwt.JwtProvider;
-import org.team10.washcode.repository.UserRepository;
+import org.team10.washcode.repository.db.UserRepository;
+import org.team10.washcode.repository.redis.TokenRepository;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-
-    @Value("${ACCESS_TOKEN_EXPIRATION_TIME}")
-    private int ACCESS_TOKEN_EXPIRATION_TIME;
 
     @Value("${REFRESH_TOKEN_EXPIRATION_TIME}")
     private int REFRESH_TOKEN_EXPIRATION_TIME;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JwtProvider jwtProvider;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
     public ResponseCookie getRefreshToken(String refreshToken) {
         return ResponseCookie
@@ -219,16 +214,41 @@ public class UserService {
             }
         }
 
+        User user = null;
+
         try {
             // AccessToken 유효성 확인
-            if (accessToken!=null&&jwtProvider.validateToken(accessToken)){
+            if (accessToken != null && jwtProvider.validateToken(accessToken)){
                 return ResponseEntity.ok().body("accessToken 정상");
                 // RefreshToken 유효성 확인 후 AccessToken 재발급
-            } else if (!jwtProvider.validateToken(accessToken) && refreshToken!=null && jwtProvider.validateToken(refreshToken)){
-                String newAccessToken = jwtProvider.generateAccessToken(jwtProvider.getId(refreshToken),jwtProvider.getRole(refreshToken));
-                Map<String,String> responseAccessToken = new HashMap<>();
-                responseAccessToken.put("accessToken",newAccessToken);
-                return ResponseEntity.ok().body(responseAccessToken);
+            } else if (refreshToken != null && !jwtProvider.validateToken(accessToken) && jwtProvider.validateToken(refreshToken)){
+                // RefreshToken 유효성 확인 후, UserId 가져오기
+                int userId = jwtProvider.getId(refreshToken);
+
+                // Redis에서 RefreshToken 가져오기
+                // 없으면 람다로 에러 발생
+                Token token = tokenRepository.findById(userId).orElseThrow(() -> new RuntimeException(userId + "번 유저 Redis에 RefreshToken이 없습니다."));
+
+                if (token.getToken().equals(refreshToken)) {
+                    UserRole role = jwtProvider.getRole(refreshToken);
+
+                    // RefreshToken 재발급
+                    // RTR 방식 (Refresh Token Rotation) -> AccessToken 발급 시, 새로운 RefreshToken도 같이 발급
+                    refreshToken = jwtProvider.generateRefreshToken(userId, role);
+                    ResponseCookie refreshCookie = getRefreshToken(refreshToken);
+
+                    // AccessToken 반환
+                    String newAccessToken = jwtProvider.generateAccessToken(userId, role);
+                    Map<String,String> responseAccessToken = new HashMap<>();
+                    responseAccessToken.put("accessToken", newAccessToken);
+
+                    return ResponseEntity
+                            .ok()
+                            .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                            .body(responseAccessToken);
+                } else {
+                    throw new IllegalArgumentException(userId + "번 유저 Redis에 있는 RefreshToken과 다름, 탈취 위험있음");
+                }
             // 모든 토큰 유효성 검사 실패
             } else {
                 return ResponseEntity.status(400).body("token Expired");

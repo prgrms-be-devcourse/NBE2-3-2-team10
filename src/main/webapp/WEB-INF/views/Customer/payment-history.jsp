@@ -1,3 +1,5 @@
+<%@ page import="org.team10.washcode.ResponseDTO.order.OrderlistResDTO" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
 %>
@@ -30,37 +32,46 @@
 
     <!-- 필터 섹션 -->
     <div class="flex justify-around text-blue-500 py-2 border-b">
-        <span class="cursor-pointer font-medium">1개월</span>
-        <span class="cursor-pointer font-medium">3개월</span>
-        <span class="cursor-pointer font-medium">6개월</span>
+        <!-- 1개월 필터 -->
+        <a href="/api/orders/payment/<%= request.getAttribute("userId") %>?filter=1"
+           class="cursor-pointer font-medium <%= "1".equals(request.getAttribute("filter")) ? "text-blue-700 font-bold" : "" %>">
+            1개월
+        </a>
+        <!-- 3개월 필터 -->
+        <a href="/api/orders/payment/<%= request.getAttribute("userId") %>?filter=3"
+           class="cursor-pointer font-medium <%= "3".equals(request.getAttribute("filter")) ? "text-blue-700 font-bold" : "" %>">
+            3개월
+        </a>
+        <!-- 6개월 필터 -->
+        <a href="/api/orders/payment/<%= request.getAttribute("userId") %>?filter=6"
+           class="cursor-pointer font-medium <%= "6".equals(request.getAttribute("filter")) ? "text-blue-700 font-bold" : "" %>">
+            6개월
+        </a>
     </div>
 
     <!-- 거래 내역 리스트 -->
+    <%
+        List<OrderlistResDTO> orders =(List<OrderlistResDTO>) request.getAttribute("orders");
+        if (orders != null) {
+            for (OrderlistResDTO order : orders) {
+    %>
     <div class="p-4">
         <div class="bg-gray-50 p-4 rounded-lg shadow mb-4">
             <div class="flex justify-between items-center">
-                <span class="text-gray-700">2024년 12월 13일 (금)</span>
-                <span class="text-blue-500 font-medium">99,999원</span>
+                <span class="text-gray-700"><%=order.getCreated_at()%></span>
+<%--                <span class="text-blue-500 font-medium">99,999원</span>--%>
             </div>
-            <p class="text-gray-500 mt-1">세탁짱 강남점</p>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg shadow mb-4">
-            <div class="flex justify-between items-center">
-                <span class="text-gray-700">2024년 12월 14일 (토)</span>
-                <span class="text-blue-500 font-medium">130,000원</span>
-            </div>
-            <p class="text-gray-500 mt-1">워시팡 서비스</p>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg shadow mb-4">
-            <div class="flex justify-between items-center">
-                <span class="text-gray-700">2024년 12월 15일 (일)</span>
-                <span class="text-blue-500 font-medium">25,000원</span>
-            </div>
-            <p class="text-gray-500 mt-1">세탁짱 수거배송</p>
+            <p class="text-gray-500 mt-1"><%=order.getShop_name()%></p>
+            <a href="/api/orders/payment/<%= request.getAttribute("userId") %>/<%= order.getPickup_id() %>"
+               class="text-blue-500 mt-2 inline-block">
+                상세보기
+            </a>
         </div>
     </div>
+    <%
+            }
+        }
+    %>
 </div>
 
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">

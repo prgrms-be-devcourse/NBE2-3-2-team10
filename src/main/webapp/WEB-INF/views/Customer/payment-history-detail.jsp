@@ -1,5 +1,8 @@
+<%@ page import="org.team10.washcode.ResponseDTO.order.OrderResDTO" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
+    OrderResDTO order = (OrderResDTO) request.getAttribute("order");
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,6 +17,7 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
+
 </head>
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
@@ -23,49 +27,52 @@
         <div></div>
     </div>
     <div class="p-4">
+        <!-- 사용자 정보 및 결제 금액 -->
         <div class="bg-gray-50 p-4 rounded-lg">
-            <p class="text-gray-700">오현식 님</p>
-            <p class="text-2xl font-bold text-blue-500">130,000원</p>
+            <p class="text-gray-700"><%= order.getName() %> 님</p>
+            <p class="text-2xl font-bold text-blue-500"><%= order.getAmount() %>원</p>
             <p class="text-gray-700">입니다.</p>
         </div>
+
+        <!-- 결제 정보 -->
         <div class="mt-4">
             <div class="flex justify-between py-2 border-b">
                 <span class="text-gray-600">결제일</span>
-                <span class="text-gray-800">12월 13일 (금)</span>
+                <span class="text-gray-800"><%= order.getCreated_at() %></span>
             </div>
             <div class="flex justify-between py-2 border-b">
-                <span class="text-gray-600">이용 서비스</span>
-                <span class="text-gray-800">단건 서비스</span>
+                <span class="text-gray-600">결제 방법</span>
+                <span class="text-gray-800"><%=order.getMethod()%></span>
             </div>
             <div class="flex justify-between py-2 border-b">
                 <span class="text-gray-600">이용 업체</span>
-                <span class="text-gray-800">세탁짱 강남점</span>
+                <span class="text-gray-800"><%= order.getShop_name() %></span>
             </div>
         </div>
+
+        <!-- 세부 항목 -->
         <div class="mt-4">
             <h2 class="text-gray-700 font-bold">세부 항목</h2>
+            <%
+                List<OrderResDTO.OrderItem> items = order.getOrder_items();
+                for (OrderResDTO.OrderItem item : items) {
+            %>
             <div class="flex justify-between py-2 border-b">
-                <span class="text-gray-600">일반 이불</span>
-                <span class="text-gray-800">1</span>
-                <span class="text-gray-800">25,000원</span>
+                <span class="text-gray-600"><%= item.getItem_name() %></span>
+                <span class="text-gray-800"><%= item.getQuantity() %></span>
+                <span class="text-gray-800"><%= item.getTotalPrice() %>원</span>
             </div>
-            <div class="flex justify-between py-2 border-b">
-                <span class="text-gray-600">패딩</span>
-                <span class="text-gray-800">1</span>
-                <span class="text-gray-800">25,000원</span>
-            </div>
-            <div class="flex justify-between py-2 border-b">
-                <span class="text-gray-600">수거배송</span>
-                <span class="text-gray-800">1</span>
-                <span class="text-gray-800">25,000원</span>
-            </div>
+            <%
+                }
+            %>
         </div>
+
+        <!-- 총 결제 금액 -->
         <div class="flex justify-between py-4 mt-4 border-t">
             <span class="text-gray-700 font-bold">총 결제금액</span>
-            <span class="text-2xl font-bold text-blue-500">130,000원</span>
+            <span class="text-2xl font-bold text-blue-500"><%= order.getAmount() %>원</span>
         </div>
     </div>
-
 </div>
 
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
@@ -82,5 +89,6 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
+
 </body>
 </html>
