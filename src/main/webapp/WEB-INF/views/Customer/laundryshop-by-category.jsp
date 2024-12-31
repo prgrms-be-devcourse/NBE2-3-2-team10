@@ -79,7 +79,7 @@
         <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full" onclick="window.location.href='/laundryshop-by-category/STORAGE_SERVICE'">보관서비스</button>
     </div>
     <div class="p-4">
-        <img src="https://source.unsplash.com/random/800x400?jacket" alt="Jacket" class="w-full h-48 object-cover rounded-lg">
+        <img src="/images/${category}.jpg" alt="Jacket" class="w-full h-48 object-cover rounded-lg">
     </div>
     <div class="p-4 space-y-4" id="laundryList">
 

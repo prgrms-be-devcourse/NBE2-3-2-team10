@@ -2,14 +2,19 @@ package org.team10.washcode.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.team10.washcode.Enum.PickupStatus;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
 import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
+import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.service.PickupService;
+import org.team10.washcode.service.ReviewService;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +25,19 @@ import java.util.Map;
 public class PickupController {
 
     private final PickupService pickupService;
+    private final ReviewService reviewService;
 
-    @GetMapping("/pickupId/{id}")
-    public ResponseEntity<PickupResDTO> getPickupDetail(@PathVariable Long id) {
-        PickupResDTO pickupDetail = pickupService.getPickupDetail(id);
+    @GetMapping("/pickupId")
+    public ResponseEntity<PickupResDTO> getPickupDetail(@RequestParam("id") Long pickupId) {
+        PickupResDTO pickupDetail = pickupService.getPickupDetail(pickupId);
+
         return ResponseEntity.ok(pickupDetail);
     }
 
-    @GetMapping("/pickupList/userId/{id}")
-    public ResponseEntity<List<PickupDetailResDTO>> getPickupList(@PathVariable Long id) {
-        List<PickupDetailResDTO> pickupList = pickupService.getPickupList(id);
+    @GetMapping("/pickupList/userId")
+    public ResponseEntity<List<PickupDetailResDTO>> getPickupList(@AuthenticationPrincipal int id) {
+        List<PickupDetailResDTO> pickupList = pickupService.getPickupList((long) id);
+
         return ResponseEntity.ok(pickupList);
     }
 
@@ -42,19 +50,47 @@ public class PickupController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/pickedUpList/userId/{id}")
-    public ResponseEntity<List<PickupResDTO>> getPickedUpListByUserId(@PathVariable Long id) {
-        List<PickupResDTO> pickedUpList = pickupService.getPickedupListAndUpdateStatus(id);
+    @GetMapping("/pickedUpList/userId")
+    public ResponseEntity<List<PickupResDTO>> getPickedUpListByUserId(@AuthenticationPrincipal int id) {
+        List<PickupResDTO> pickedUpList = pickupService.getPickedupListAndUpdateStatus((long) id);
+
         return ResponseEntity.ok(pickedUpList);
     }
 
+    @GetMapping("/pickupDelivery/userId")
+    public ResponseEntity<List<PickupDeliveryResDTO>> getDeliveryPickupListByUserId(@AuthenticationPrincipal int id) {
+        List<PickupDeliveryResDTO> pickupList = pickupService.getPickupDeliveryList((long) id);
+
+        return ResponseEntity.ok(pickupList);
+    }
+
+    @GetMapping("/sales-summary/page")
+    public ResponseEntity<List<PickupSalesSummeryDTO>> getSalesSummeryPage(@AuthenticationPrincipal int id) {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+
+        List<PickupSalesSummeryDTO> pickupList = pickupService.getPickupSalesSummery((long) id, currentYear, currentMonth);
+
+        return ResponseEntity.ok(pickupList);
+    }
+
     @GetMapping("/sales-summary")
-    public List<PickupSalesSummeryDTO> getSalesSummary(
+    public ResponseEntity<List<PickupSalesSummeryDTO>> getSalesSummary(
+            @AuthenticationPrincipal int id,
             @RequestParam("year") int year,
             @RequestParam("month") int month
     ) {
-        Long userId = 1L;
-        System.out.println(pickupService.getPickupSalesSummery(userId, year, month));
-        return pickupService.getPickupSalesSummery(userId, year, month);
+        System.out.println(pickupService.getPickupSalesSummery((long) id, year, month));
+        List<PickupSalesSummeryDTO> pickupList = pickupService.getPickupSalesSummery((long) id, year, month);
+
+        return ResponseEntity.ok(pickupList);
+    }
+
+    @GetMapping("/shopReview")
+    public ResponseEntity<List<ReviewResDTO>> getReview(@AuthenticationPrincipal int id) {
+        List<ReviewResDTO> reviewList = reviewService.getReviewList(1);
+
+        return ResponseEntity.ok(reviewList);
     }
 }
