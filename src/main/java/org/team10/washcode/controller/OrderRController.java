@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
 import org.team10.washcode.service.OrderService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/test")
 public class OrderRController {
@@ -34,8 +36,8 @@ public class OrderRController {
         return orderService.getOrdersDetail(id,pickupId);
     }
 
-    @PutMapping
-    public ResponseEntity<?> cancelOrders(@AuthenticationPrincipal int id, @PathVariable("pickup_id") int pickupId){
-        return orderService.getOrders(id);
+    @PostMapping("/cancel")
+    public ResponseEntity<?> cancelOrder(@AuthenticationPrincipal int id, @RequestBody Map<String, Integer> pickupId){
+        return orderService.cancelOrder(id,pickupId.get("pickup_id"));
     }
 }

@@ -26,9 +26,9 @@
     </div>
     <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow mb-4">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center" id="top">
                 <h2 class="font-bold" id="shop_name"></h2>
-                <span class="text-blue-500" id="status"></span>
+
             </div>
 
             <p id="order-detail"> </p>
@@ -48,11 +48,8 @@
                 <h2 class="font-bold">요청사항</h2>
                 <p id="content"></p>
             </div>
-            <div class="flex justify-between mt-4" style="text-align: right;">
-                <%--                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>--%>
-                <form id="deleteForm" action="" method="post">
-                    <button type="submit" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>
-                </form>
+            <div class="flex justify-between mt-4" id="cancel" style="text-align: right;">
+
             </div>
         </div>
     </div>
@@ -84,23 +81,57 @@
                 Authorization: 'Bearer ' + token
             }
         }).then(res => {
-            let orderDetailHtml ='';
-
+            let orderDetailHtml = '';
+            let cancelHtml = '';
+            let topHtml = '';
             document.getElementById("shop_name").innerHTML = res.data.shop_name;
-            document.getElementById("status").innerHTML = res.data.status;
+            //document.getElementById("status").innerHTML = res.data.status;
+            if(res.data.status === '주문 취소' || res.data.status === '픽업 취소') {
+                topHtml += '<span class="text-red-500" id="status">' + res.data.status + '</span>';
+            } else {
+                topHtml += '<span class="text-blue-500" id="status">' + res.data.status + '</span>';
+            }
+            $("#top").append(topHtml);
 
-            $.each(res.data.order_items,function(i,row) {
-                orderDetailHtml += '<p>'+ row.item_name + ' ' + row.quantity + '개</p>';
+
+            $.each(res.data.order_items, function (i, row) {
+                orderDetailHtml += '<p>' + row.item_name + ' ' + row.quantity + '개</p>';
             });
             $("#order-detail").append(orderDetailHtml);
 
+            if (res.data.status === '픽업 신청' || res.data.status === '결제 대기') {
+                cancelHtml += '<button type="submit" onClick="cancelOrder()" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>';
+            }
+            $("#cancel").append(cancelHtml);
+
+
             document.getElementById("created_at").innerHTML = '주문일자 : ' + res.data.created_at;
-            document.getElementById("amount").innerHTML = '주문 금액 : ' + res.data.amount +'원';
+            document.getElementById("amount").innerHTML = '주문 금액 : ' + res.data.amount + '원';
             document.getElementById("method").innerHTML = '결제 방법 : ' + res.data.method;
             document.getElementById("address").innerHTML = res.data.address;
             document.getElementById("phone").innerHTML = '전화번호 : ' + res.data.phone;
             document.getElementById("content").innerHTML =
-                (res.data.content!=null&&res.data.content.trim() !== "") ? res.data.content : '요청사항 없음.';
+                (res.data.content != null && res.data.content.trim() !== "") ? res.data.content : '요청사항 없음.';
+        }).catch (error => {
+            alert(error.response.data);
+            location.href = "/orderHistory";
+        });
+
+    }
+
+    function cancelOrder() {
+        axios.post(url + '/api/test/cancel', {
+            pickup_id : <%=pickupId%>
+        }, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            alert(res.response.data);
+            location.href = "/orderHistory";
+        }).catch (error => {
+            alert(error.response.data);
+            location.href = "/orderHistory";
         });
     }
 

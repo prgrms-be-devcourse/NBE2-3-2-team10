@@ -114,10 +114,12 @@ public class OrderService {
     }*/
 
     @Transactional
-    public void cancelOrder(int pickupId, int userId) {
+    public ResponseEntity<?> cancelOrder(int userId, int pickupId) {
         int updatedRows = pickupRepository.cancleOrder(pickupId, userId);
         if (updatedRows == 0) {
-            throw new IllegalArgumentException("No matching pickup found for pickupId: " + pickupId + " and userId: " + userId);
+            return ResponseEntity.status(500).body("No matching pickup found for pickupId: "+ pickupId + " and userId: " + userId);
+        }else {
+            return ResponseEntity.ok().body("취소완료");
         }
     }
 
@@ -207,7 +209,9 @@ public class OrderService {
 
             orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
             orderResDTO.setCreated_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[6]));
-            orderResDTO.setUpdate_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
+            if(obj[7] != null){
+                orderResDTO.setUpdate_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
+            }
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
 
