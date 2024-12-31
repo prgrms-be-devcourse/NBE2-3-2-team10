@@ -93,8 +93,11 @@ public class LaundryService {
 
     //user_id로 세탁소 정보 찾기
     public LaundryDetailResDTO getLaundryShopByUserId(int id) {
-        LaundryShop laundryShop = laundryShopRepository.findByUserId(id)
-                .orElseThrow(() -> new RuntimeException("LaundryShop not found"));
+        LaundryShop laundryShop = laundryShopRepository.findByUserId(id).orElse(null);
+
+        if(laundryShop == null) {
+            return null;
+        }
 
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
