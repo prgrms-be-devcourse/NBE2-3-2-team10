@@ -26,7 +26,7 @@
 <body class="bg-gray-100">
 <!-- 상단 배너 -->
 <div class="background-banner flex items-center justify-center">
-    <h1 class="text-white text-3xl font-bold">워시팡 사장님 페이지</h1>
+    <h1 class="text-black text-3xl font-bold">워시팡 사장님 페이지</h1>
 </div>
 
 <!-- 메뉴 카드 -->
