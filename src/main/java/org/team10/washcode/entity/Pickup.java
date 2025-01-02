@@ -3,6 +3,7 @@ package org.team10.washcode.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.team10.washcode.Enum.PickupStatus;
 
@@ -30,6 +31,7 @@ public class Pickup {
 
     private String content;         //요청내용
     @CreationTimestamp
-    private Timestamp created_at;   //요청생성  
+    private Timestamp created_at;   //요청생성
+    @UpdateTimestamp
     private Timestamp update_at;    //요청 갱신
 }
