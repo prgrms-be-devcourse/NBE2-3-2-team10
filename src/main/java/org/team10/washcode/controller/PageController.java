@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
+import org.team10.washcode.entity.HandledItems;
+import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.service.*;
 import org.team10.washcode.service.KakaoService;
 
@@ -71,7 +75,6 @@ public class PageController {
     @RequestMapping("/modify-shop-info")
     public String modifyShopInfo(Model model) { return "Shop/modify-shop-info"; }
 
-
     @RequestMapping("/main")
     public String main() { return "Customer/main"; }
 
@@ -82,9 +85,15 @@ public class PageController {
     public String orderHistory() { return "Customer/order-history"; }
 
     @RequestMapping("/orderHistory/{pickup_id}")
-    public String orderHistoryDetail(@PathVariable("pickup_id")int pickup_id, Model model){
+    public String orderHistoryDetail(@PathVariable("pickup_id") int pickup_id, Model model){
         model.addAttribute("pickupId",pickup_id);
         return "Customer/order-history-detail";
+    }
+
+    @RequestMapping("/order/{laundry_id}")
+    public String order(@PathVariable("laundry_id") int laundry_id, Model model){
+        model.addAttribute("laundryId",laundry_id);
+        return "Customer/apply-pickup";
     }
 
     @RequestMapping("/myInfo")
@@ -101,10 +110,9 @@ public class PageController {
     @RequestMapping("/laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
         LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
-        if(to == null) {
-            return "error";
-        }
-
+        
+        if(to == null) { return "error"; }
+        
         model.addAttribute("laundry", to);
         model.addAttribute("laundryId", id);
         return "Customer/laundryshop-detail";

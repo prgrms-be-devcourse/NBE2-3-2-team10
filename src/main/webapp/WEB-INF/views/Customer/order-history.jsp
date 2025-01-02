@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="ko">
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,17 +17,16 @@
         }
     </style>
 </head>
+  
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
     <div class="p-4 border-b">
         <h1 class="text-xl font-bold">이용내역</h1>
     </div>
-    <form action="/api/orders/history" method="get">
-        <input type="hidden" name="userId" value="<%= request.getAttribute("userId") %>" />
-        <div class="p-4" id="order-list" >
-        </div>
-    </form>
+    <div class="p-4" id="order-list" >
+    </div>
 </div>
+  
 <!-- Footer -->
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
     <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
@@ -42,28 +42,28 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
+  
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
     const url = "http://localhost:8080";
     const token = sessionStorage.getItem("accessToken");
-
-    function formatDate(isoString) {
-        // ISO 형식 문자열을 Date 객체로 변환
-        const date = new Date(isoString);
-
-        // 원하는 형식으로 변환
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-
-        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+  
+    function checkAccessToken() {
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+                getOrderlist();
+            }).catch(error => {
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
+            });
     }
-
+  
     function getOrderlist() {
-        axios.get(url + '/api/test', {
+        axios.get(url + '/api/orders', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
@@ -71,13 +71,20 @@
             let orderHtml ='';
 
             $.each(res.data,function(i,row) {
-                orderHtml += '' +
-                    '<div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">'+
-                    '<div class="flex justify-between items-center">'+
-                    '<h2 class="font-bold">' + row.shop_name + '</h2>'+
-                    '<span class="text-blue-500">' + row.status + '</span>'+
-                    '</div>'+
-                    '<p class="text-gray-500">주문 일자 : '+ formatDate(row.created_at) +'</p>'+
+                    if(row.status === '주문 취소' || row.status === '픽업 취소'){
+                        orderHtml += '<div class="bg-neutral-50 p-4 rounded-lg shadow mb-4 cursor-pointer">' +
+                            '<div class="flex justify-between items-center">'+
+                            '<h2 class="font-bold">' + row.shop_name + '</h2>'+
+                            '<span class="text-red-400">' + row.status + '</span>'+
+                            '</div>';
+                    }else {
+                        orderHtml += '<div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">' +
+                        '<div class="flex justify-between items-center">' +
+                        '<h2 class="font-bold">' + row.shop_name + '</h2>' +
+                        '<span class="text-blue-500">' + row.status + '</span>' +
+                        '</div>';
+                    }
+                    orderHtml += '<p class="text-gray-500">주문 일자 : ' + row.created_at + '</p>' +
                     <%-- 주문 상세보기 버튼 추가 --%>
                     '<a href="/orderHistory/'+ row.pickup_id +'"'+
                     'class="text-blue-500 mt-2 inline-block">상세보기'+
@@ -89,7 +96,7 @@
     }
 
     window.onload = () => {
-        getOrderlist();
+        checkAccessToken();   
     };
 </script>
 </body>

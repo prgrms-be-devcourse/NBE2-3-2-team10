@@ -2,6 +2,8 @@ package org.team10.washcode.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
 
@@ -27,5 +29,6 @@ public class LaundryShop {
     private Double latitude;
     private Double longitude;
 
+    @CreationTimestamp
     private Timestamp created_at;
 }

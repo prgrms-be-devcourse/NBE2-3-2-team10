@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum PickupStatus {
-    NONE("None"),
+    NONE("픽업 취소"),
     REQUESTED("픽업 신청"),
     PICKED_UP("픽업 완료"),
     PAYMENT_PENDING("결제 대기"),
