@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>워시팡 사장님 페이지</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -80,17 +81,16 @@
     const token = sessionStorage.getItem("accessToken");
 
     function checkAccessToken() {
-        axios.post(url + '/api/user/check-login', {
+        axios.post(url + '/check-login', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
         }).then(res => {
-            if (res.data === false) {
-                alert("로그인이 필요합니다.");
-                location.href = '/';
-            }
+            sessionStorage.setItem("accessToken", res.data.accessToken);
+            getShopRole();
         }).catch(error => {
-            alert(error.response.data);
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            location.href = '/';
         });
     }
 
@@ -109,7 +109,6 @@
 
     window.onload = () => {
         checkAccessToken();
-        getShopRole();
     };
 </script>
 </body>
