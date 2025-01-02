@@ -33,14 +33,14 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("SELECT DISTINCT p FROM Pickup p " +
             "JOIN FETCH p.user u " +
             "JOIN FETCH p.laundryshop l " +
-            "WHERE p.laundryshop.id = (SELECT l.id FROM LaundryShop l WHERE l.user.id = :userId)" +
+            "WHERE p.laundryshop.user.id = :userId " +
             "AND p.status = :status")
     List<Pickup> findAllByUserIdWithFetchJoinAndStatus(@Param("userId") long userId,
                                                        @Param("status") PickupStatus status);
 
     @Query("SELECT DISTINCT p FROM Pickup p " +
             "JOIN FETCH p.user u " +
-            "WHERE p.laundryshop.id = (SELECT l.id FROM LaundryShop l WHERE l.user.id = :userId)" +
+            "WHERE p.laundryshop.user.id = :userId " +
             "AND p.status IN :statuses " +
             "ORDER BY p.update_at DESC")
     List<Pickup> findAllByUserIdAndStatuses(@Param("userId") long userId,
