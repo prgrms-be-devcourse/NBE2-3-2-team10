@@ -11,6 +11,7 @@ import org.team10.washcode.ResponseDTO.order.OrderInfoResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
+import org.team10.washcode.entity.redis.KakaoPayPgToken;
 import org.team10.washcode.repository.db.*;
 import org.team10.washcode.repository.redis.KakaoPayPgTokenRepository;
 
@@ -105,7 +106,7 @@ public class OrderService {
                 (int) row[1],   //pickup_id
                 (String) row[0],    //shop_name
                 ((PickupStatus) row[2]).getDesc(),  //status
-                (Timestamp) row[3]  //created_at
+                new SimpleDateFormat("yyyy년 MM월 dd일").format((Timestamp) row[3])  //created_at
         )).toList();
 
         return ResponseEntity.ok().body(orderlistResDTOS);
@@ -127,8 +128,10 @@ public class OrderService {
             orderResDTO.setName((String) obj[15]);
 
             orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
-            orderResDTO.setCreated_at((Timestamp) obj[6]);
-            orderResDTO.setUpdate_at((Timestamp) obj[7]);
+            orderResDTO.setCreated_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[6]));
+            if(obj[7] != null){
+                orderResDTO.setUpdate_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
+            }
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
             orderResDTO.setPaymentId((Integer) obj[17]);
