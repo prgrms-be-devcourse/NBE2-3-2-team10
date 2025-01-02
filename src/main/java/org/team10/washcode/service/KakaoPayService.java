@@ -3,7 +3,6 @@ package org.team10.washcode.service;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.team10.washcode.ResponseDTO.order.KakaoPayApproveRes;
 import org.team10.washcode.entity.Payment;
 import org.team10.washcode.entity.redis.KakaoPayPgToken;
 import org.team10.washcode.entity.redis.KakaoPaymentInfo;
-import org.team10.washcode.jwt.JwtProvider;
 import org.team10.washcode.repository.db.PaymentRepository;
 import org.team10.washcode.repository.redis.KakaoPayPgTokenRepository;
 import org.team10.washcode.repository.redis.KakaoPaymentInfoRepository;
@@ -32,22 +30,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoPayService {
 
-//    @Value("${kakaopay.key.client-id}")
-    private String cid = "TC0ONETIME";
+    private static String cid = "TC0ONETIME";
 
     @Value("${kakaopay.key.client-secret}")
     private String clientSecret;
-
-    @Value("${kakaopay.key.secret}")
-    private String secret;
 
     @Value("${kakaopay.key.secret-dev}")
     private String secretDev;
 
     private final KakaoPaymentInfoRepository kakaopaymentInfoRepository;
     private final PaymentRepository paymentRepository;
-    private final UserService userService;
-    private final JwtProvider jwtProvider;
     private final KakaoPayPgTokenRepository kakaoPayPgTokenRepository;
 
     @Getter @Setter

@@ -45,11 +45,11 @@
   
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
-    const url = "http://localhost:8080";
+    const url = "http://localhost:8080/api";
     const token = sessionStorage.getItem("accessToken");
   
     function checkAccessToken() {
-            axios.post(url + '/api/user/check-login', {
+            axios.post(url + '/user/check-login', {
                 headers: {
                     Authorization: 'Bearer ' + token
                 }
@@ -63,7 +63,7 @@
     }
   
     function getOrderlist() {
-        axios.get(url + '/api/orders', {
+        axios.get(url + '/orders', {
             headers: {
                 Authorization: 'Bearer ' + token
             }

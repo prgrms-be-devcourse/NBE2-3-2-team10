@@ -93,8 +93,8 @@
             document.getElementById("payment").style.marginRight = "10px"
         }
     }
-  
-     // 카카오페이 결제 통신 Axios
+
+    // 카카오페이 결제 통신 Axios
     function kakaoPay() {
         // https://velog.io/@ryuneng2/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%8E%98%EC%9D%B4-API-%EC%97%B0%EB%8F%99-%ED%8C%9D%EC%97%85%EC%B0%BD%EB%9D%84%EC%9A%B0%EA%B8%B0-%EA%B2%B0%EC%A0%9C%EC%8A%B9%EC%9D%B8-%EA%B5%AC%ED%98%84
         // 참조
@@ -119,18 +119,18 @@
                 Authorization: 'Bearer ' + token
             }
         }).then((response) => {
-                // 성공 시, 카카오페이 결제 URL로 이동
-                const parsedData = JSON.parse(response.headers['readykakaopayres']);
+            // 성공 시, 카카오페이 결제 URL로 이동
+            const parsedData = JSON.parse(response.headers['readykakaopayres']);
 
-                if(!isMobile()) {
-                    window.location.href = parsedData.next_redirect_pc_url;
-                } else {
-                    window.location.href = parsedData.next_redirect_mobile_url;
-                }
-            }).catch((error) => {
-                // 에러 처리
-                console.error('결제 준비 중 오류:', error);
-            });
+            if(!isMobile()) {
+                window.location.href = parsedData.next_redirect_pc_url;
+            } else {
+                window.location.href = parsedData.next_redirect_mobile_url;
+            }
+        }).catch((error) => {
+            // 에러 처리
+            console.error('결제 준비 중 오류:', error);
+        });
     }
 
     function getOrderDetail() {
@@ -154,6 +154,7 @@
 
             $.each(res.data.order_items, function (i, row) {
                 orderDetailHtml += '<p>' + row.item_name + ' ' + row.quantity + '개</p>';
+                orderItems.push({name: row.item_name});
             });
             $("#order-detail").append(orderDetailHtml);
             

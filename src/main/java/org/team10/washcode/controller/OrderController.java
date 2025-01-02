@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.team10.washcode.RequestDTO.order.KakaoPayReqDTO;
 import org.team10.washcode.RequestDTO.order.OrderReqDTO;
+import org.team10.washcode.service.KakaoPayService;
 import org.team10.washcode.service.OrderService;
 
 import java.util.Map;
@@ -15,6 +17,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private KakaoPayService kakaoPayService;
 
     @GetMapping("/info/{laundry_id}")
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal int id, @PathVariable("laundry_id") int laundryId){
@@ -39,6 +44,11 @@ public class OrderController {
     @PostMapping("/cancel")
     public ResponseEntity<?> cancelOrder(@AuthenticationPrincipal int id, @RequestBody Map<String, Integer> pickupId){
         return orderService.cancelOrder(id,pickupId.get("pickup_id"));
+    }
+
+    @PostMapping("/kakaopay/ready")
+    public ResponseEntity<?> kakaoPayReady(@AuthenticationPrincipal int id, @RequestBody KakaoPayReqDTO kakaoPayReqDTO) {
+        return kakaoPayService.payReady(id, kakaoPayReqDTO);
     }
 
     /* 혜원님 추가 작성한 기능
