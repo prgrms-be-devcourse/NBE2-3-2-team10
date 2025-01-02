@@ -17,7 +17,12 @@ public interface LaundryShopRepository extends JpaRepository<LaundryShop, Long> 
     Optional<LaundryShop> findById(Long id);
 
 
-    @Query("SELECT L FROM LaundryShop L WHERE L.shop_name like %:shop_name%")
+    @Query("SELECT L FROM LaundryShop L " +
+            "WHERE L.shop_name LIKE %:shop_name% OR L.address LIKE %:shop_name% " +
+            "ORDER BY CASE " +
+            "  WHEN L.address LIKE %:shop_name% THEN 0 " +  // address가 일치하면 우선순위 0
+            "  ELSE 1 " +
+            "END, L.shop_name")
     List<LaundryShop> findByShop_NameContaining(@Param("shop_name") String shop_name);
 
     List<LaundryShop> findByIdIn(List<Integer> ids);

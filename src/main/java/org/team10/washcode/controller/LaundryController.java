@@ -54,7 +54,6 @@ public class LaundryController {
     public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
         System.out.println(to.getUser_name());
 
-
         int laundry_id = laundryService.registerLaundryShop(to, id);
 
         // 성공 응답 반환
@@ -73,7 +72,6 @@ public class LaundryController {
     @PutMapping("/")
     public ResponseEntity<?> modifyLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
         System.out.println(to.getUser_name());
-
 
         int laundry_id = laundryService.registerLaundryShop(to, id);
 
