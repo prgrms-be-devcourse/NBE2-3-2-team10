@@ -162,7 +162,7 @@
     const token = sessionStorage.getItem("accessToken");
 
     function getOrderInfo() {
-        axios.get(url + '/api/test/info/<%=laundry_id%>', {
+        axios.get(url + '/api/orders/info/<%=laundry_id%>', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
@@ -191,7 +191,7 @@
         const selectCategory = document.getElementById('category');
         const selectMethod = document.getElementById('method');
 
-        axios.post(url + '/api/test',{
+        axios.post(url + '/api/orders',{
             laundryshop_id : <%=laundry_id%>,
             content : document.getElementById('content').value,
             item_id : selectCategory.options[selectCategory.selectedIndex].value,

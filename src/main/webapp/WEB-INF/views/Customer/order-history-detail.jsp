@@ -76,7 +76,7 @@
     const token = sessionStorage.getItem("accessToken");
 
     function getOrderDetail() {
-        axios.get(url + '/api/test/<%=pickupId%>', {
+        axios.get(url + '/api/orders/<%=pickupId%>', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
@@ -120,7 +120,7 @@
     }
 
     function cancelOrder() {
-        axios.post(url + '/api/test/cancel', {
+        axios.post(url + '/api/orders/cancel', {
             pickup_id : <%=pickupId%>
         }, {
             headers: {

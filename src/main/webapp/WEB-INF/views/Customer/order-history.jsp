@@ -45,7 +45,7 @@
     const token = sessionStorage.getItem("accessToken");
 
     function getOrderlist() {
-        axios.get(url + '/api/test', {
+        axios.get(url + '/api/orders', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
