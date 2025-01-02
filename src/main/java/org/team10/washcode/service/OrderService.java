@@ -12,9 +12,11 @@ import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
 import org.team10.washcode.repository.db.*;
+import org.team10.washcode.repository.redis.KakaoPayPgTokenRepository;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +24,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+  
     private final PickupRepository pickupRepository;
     private final UserRepository userRepository;
     private final LaundryShopRepository laundryShopRepository;
     private final HandledItemsRepository handledItemsRepository;
     private final PickupItemRepository pickupItemRepository;
     private final PaymentRepository paymentRepository;
+    private final KakaoPayPgTokenRepository kakaoPayPgTokenRepository;
 
     @Transactional
     public ResponseEntity<?> cancelOrder(int userId, int pickupId) {
@@ -38,7 +42,6 @@ public class OrderService {
             return ResponseEntity.ok().body("취소완료");
         }
     }
-
 
     public ResponseEntity<?> getInfo(int id, int laundryId){
         OrderInfoResDTO orderInfoResDTO = new OrderInfoResDTO();
@@ -102,7 +105,7 @@ public class OrderService {
                 (int) row[1],   //pickup_id
                 (String) row[0],    //shop_name
                 ((PickupStatus) row[2]).getDesc(),  //status
-                new SimpleDateFormat("yyyy년 MM월 dd일").format((Timestamp) row[3])  //created_at
+                (Timestamp) row[3]  //created_at
         )).toList();
 
         return ResponseEntity.ok().body(orderlistResDTOS);
@@ -124,12 +127,11 @@ public class OrderService {
             orderResDTO.setName((String) obj[15]);
 
             orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
-            orderResDTO.setCreated_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[6]));
-            if(obj[7] != null){
-                orderResDTO.setUpdate_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
-            }
+            orderResDTO.setCreated_at((Timestamp) obj[6]);
+            orderResDTO.setUpdate_at((Timestamp) obj[7]);
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
+            orderResDTO.setPaymentId((Integer) obj[17]);
 
             OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
                     (String) obj[11], // item_name
@@ -142,7 +144,22 @@ public class OrderService {
         return ResponseEntity.ok().body(orderResDTO);
     }
 
-    /* 혜원님 추가 긴으
+    // 결제 대기 -> 결제 완료 바꾸는 메소드
+    @Transactional
+    public void updatePaymentStatusComplete(String pgToken) {
+        KakaoPayPgToken kakaoPayPgToken = kakaoPayPgTokenRepository.findById("pgToken:" + pgToken)
+                .orElseThrow(() -> new IllegalArgumentException("No matching pgToken found for [pgToken:" + pgToken + "]"));
+        kakaoPayPgTokenRepository.deleteById("pgToken:" + pgToken);
+
+        int paymentId = kakaoPayPgToken.getPartnerOrderId();
+
+        Pickup pickup = paymentRepository.findPickUpById(paymentId)
+                .orElseThrow(() -> new IllegalArgumentException("No matching payment found for paymentId: " + paymentId));
+
+        pickup.setStatus(PickupStatus.PAYMENT_COMPLETED);
+    }
+
+    /* 혜원님 추가 기능
     //필터링 조회(개월수로)
     public List<OrderlistResDTO> getOrdersByUserIdAndDate(int userId, Timestamp fromDate) {
         List<Object[]> rawResults = pickupRepository.findByUserIdAndDate(userId, fromDate);
@@ -157,5 +174,4 @@ public class OrderService {
                 ))
                 .collect(Collectors.toList());
     }*/
-
 }

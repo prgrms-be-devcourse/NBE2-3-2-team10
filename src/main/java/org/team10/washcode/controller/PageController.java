@@ -23,6 +23,8 @@ public class PageController {
 
     private final KakaoService kakaoService;
     private final LaundryService laundryService;
+    private final OrderService orderService;
+    private final KakaoPayService kakaoPayService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -73,7 +75,6 @@ public class PageController {
     @RequestMapping("/modify-shop-info")
     public String modifyShopInfo(Model model) { return "Shop/modify-shop-info"; }
 
-
     @RequestMapping("/main")
     public String main() { return "Customer/main"; }
 
@@ -109,10 +110,9 @@ public class PageController {
     @RequestMapping("/laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
         LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
-        if(to == null) {
-            return "error";
-        }
-
+        
+        if(to == null) { return "error"; }
+        
         model.addAttribute("laundry", to);
         model.addAttribute("laundryId", id);
         return "Customer/laundryshop-detail";
@@ -131,5 +131,12 @@ public class PageController {
     @RequestMapping("/shop-mypage")
     public String shopMyPage() {
         return "Shop/shop-my-page";
+    }
+
+    @RequestMapping("/order/completed")
+    public String orderCompleted(@RequestParam("pg_token") String token, Model model) {
+        kakaoPayService.payCompleted(token ,model);
+        orderService.updatePaymentStatusComplete(token);
+        return "Customer/order-complete";
     }
 }

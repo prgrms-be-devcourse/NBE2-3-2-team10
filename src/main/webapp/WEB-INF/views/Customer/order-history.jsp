@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="ko">
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
         }
     </style>
 </head>
+  
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
     <div class="p-4 border-b">
@@ -24,6 +26,7 @@
     <div class="p-4" id="order-list" >
     </div>
 </div>
+  
 <!-- Footer -->
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
     <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
@@ -39,11 +42,26 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
+  
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
     const url = "http://localhost:8080";
     const token = sessionStorage.getItem("accessToken");
-
+  
+    function checkAccessToken() {
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+                getOrderlist();
+            }).catch(error => {
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
+            });
+    }
+  
     function getOrderlist() {
         axios.get(url + '/api/orders', {
             headers: {
@@ -78,7 +96,7 @@
     }
 
     window.onload = () => {
-        getOrderlist();
+        checkAccessToken();   
     };
 </script>
 </body>

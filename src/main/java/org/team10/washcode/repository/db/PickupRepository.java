@@ -81,7 +81,8 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
 
             "pay.method AS method, " +
             "u.name AS name, " +
-            "pay.payment_datetime AS paymentDateTime " +
+            "pay.payment_datetime AS paymentDateTime, " +
+            "pay.id AS paymentId " +
 
             "FROM User u " +
             "JOIN Pickup p ON u.id = p.user.id " +

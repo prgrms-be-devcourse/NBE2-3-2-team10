@@ -13,3 +13,4 @@ public class OrderInfoResDTO {
     private String shop_name;
     private List<ItemInfoResDTO> category;
 }
+
