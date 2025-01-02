@@ -51,6 +51,11 @@ public class OrderController {
         return kakaoPayService.payReady(id, kakaoPayReqDTO);
     }
 
+    @PostMapping("/kakaopay/approve")
+    public ResponseEntity<?> kakaoPayApprove(@AuthenticationPrincipal int id, @RequestBody Map<String, String> request) {
+        return kakaoPayService.payCompleted(id, request.get("token"));
+    }
+
     /* 혜원님 추가 작성한 기능
     결제내역 조회
     @GetMapping("/payment/{userId}")

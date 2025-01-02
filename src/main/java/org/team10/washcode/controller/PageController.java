@@ -135,8 +135,12 @@ public class PageController {
 
     @RequestMapping("/order/completed")
     public String orderCompleted(@RequestParam("pg_token") String token, Model model) {
-        kakaoPayService.payCompleted(token ,model);
-        orderService.updatePaymentStatusComplete(token);
+        model.addAttribute("pg_token", token);
+        return "Customer/order-wait";
+    }
+
+    @RequestMapping("/order/success")
+    public String orderSuccess() {
         return "Customer/order-complete";
     }
 }

@@ -41,6 +41,7 @@ public class KakaoPayService {
     private final KakaoPaymentInfoRepository kakaopaymentInfoRepository;
     private final PaymentRepository paymentRepository;
     private final KakaoPayPgTokenRepository kakaoPayPgTokenRepository;
+    private final OrderService orderService;
 
     @Getter @Setter
     public static class ReadyKakakoPayRes {
@@ -67,8 +68,8 @@ public class KakaoPayService {
         body.put("partner_order_id", String.valueOf(kakaoPayReqDTO.getPaymentId())); // String으로 변환
         body.put("partner_user_id", String.valueOf(userId)); // String으로 변환
         body.put("item_name", kakaoPayReqDTO.getName());
-        body.put("quantity", kakaoPayReqDTO.getQuantity()); // 숫자 값 그대로 사용
-        body.put("total_amount", kakaoPayReqDTO.getTotalPrice()); // 숫자 값 그대로 사용
+        body.put("quantity", kakaoPayReqDTO.getQuantity());
+        body.put("total_amount", kakaoPayReqDTO.getTotalPrice());
         body.put("tax_free_amount", 0); // 숫자 값 그대로 사용
         body.put("approval_url", "http://localhost:8080/order/completed");
         body.put("cancel_url", "http://localhost:8080/order/cancel");
@@ -118,15 +119,12 @@ public class KakaoPayService {
     }
 
     @Transactional
-    public ResponseEntity<?> payCompleted(String token , Model model) {
+    public ResponseEntity<?> payCompleted(int userId, String token) {
         System.out.println(token);
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "SECRET_KEY " + secretDev);
-
-        // RT로 새로운 AccessToken 발급
-        int userId = 1;
 
         // Redis에서 tid, partner_order_id 가져오기
         KakaoPaymentInfo payInfo = kakaopaymentInfoRepository.findById(cid + ":" + userId)
@@ -160,8 +158,6 @@ public class KakaoPayService {
         // Redis에 pgToken 저장
         try {
             KakaoPayPgToken pgToken = new KakaoPayPgToken("pgToken:" + token, partnerOrderId);
-            System.out.println("pgToken:" + token);
-            System.out.println(pgToken.getPartnerOrderId());
             kakaoPayPgTokenRepository.save(pgToken);
         } catch (Exception e) {
             System.out.println("Redis에 pgToken 저장 중 오류 발생: " + e.getMessage());
@@ -172,10 +168,29 @@ public class KakaoPayService {
                 .orElseThrow(() -> new RuntimeException("해당 ID로 Payment를 찾을 수 없습니다: " + partnerOrderId));
         payment.setKakaoPayData(kakaoPayApproveRes);
 
-        // model에 담기
-        model.addAttribute("aid", kakaoPayApproveRes.getAid());
-        model.addAttribute("approvedAt", kakaoPayApproveRes.getApprovedAt());
+        // KakaoPayApproveRes 객체에서 aid와 approvedAt 값 추출
+        String aid = kakaoPayApproveRes.getAid();
+        String approvedAt = kakaoPayApproveRes.getApprovedAt();
 
-        return new ResponseEntity<>("/order/completed", HttpStatus.OK);
+        // 결제 완료로 상태 변경
+        orderService.updatePaymentStatusComplete(token);
+
+        // Map에 값을 담기
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("aid", aid);
+        responseMap.put("approvedAt", approvedAt);
+
+        // Map을 JSON 형태로 보냄
+        String jsonResponse = null;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            jsonResponse = objectMapper.writeValueAsString(responseMap);
+            return ResponseEntity.ok().body(jsonResponse);
+        } catch (JsonProcessingException e) {
+            System.out.println("JSON 변환 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.badRequest().body("결제 완료 처리 중 오류 발생");
+        }
+
+
     }
 }

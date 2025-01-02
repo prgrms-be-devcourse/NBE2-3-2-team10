@@ -62,7 +62,6 @@
             background-color: #4AC7D5;
             color: #ffffff;
         }
-
     </style>
 </head>
 <body>
@@ -74,11 +73,11 @@
     </div>
     <div class="message">결제에 성공하였습니다</div>
     <div class="details">
-        <span>주문번호: ${aid}</span>
-        <span>결제일시: ${approvedAt}</span>
+        <!-- URL 파라미터로 전달된 aid와 approvedAt을 표시 -->
+        <span>주문번호: ${param.aid}</span>
+        <span>결제일시: ${param.approvedAt}</span>
     </div>
     <a href="/orderHistory" class="back-button">돌아가기</a>
 </div>
 </body>
 </html>
-

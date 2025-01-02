@@ -87,25 +87,24 @@
             }
         }).then(res => {
             sessionStorage.setItem("accessToken", res.data.accessToken);
-            getShopRole();
         }).catch(error => {
             alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
             location.href = '/';
         });
     }
 
-    function getShopRole() {
-        axios.get(url + '/role', {
-            headers: {
-                Authorization: 'Bearer ' + token
-            }
-        }).then(function (response) {
-            document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
-            document.getElementById('name').innerHTML = response.data.name + " 님";
-        }).catch(function (error) {
-            console.error(error);
-        });
-    }
+    // function getShopRole() {
+    //     axios.get(url + '/role', {
+    //         headers: {
+    //             Authorization: 'Bearer ' + token
+    //         }
+    //     }).then(function (response) {
+    //         document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
+    //         document.getElementById('name').innerHTML = response.data.name + " 님";
+    //     }).catch(function (error) {
+    //         console.error(error);
+    //     });
+    // }
 
     window.onload = () => {
         checkAccessToken();
