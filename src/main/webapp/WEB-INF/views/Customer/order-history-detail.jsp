@@ -27,29 +27,34 @@
     <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow mb-4">
             <div class="flex justify-between items-center">
-                <h2 class="font-bold" id="shop_name"></h2>
+                <h2 class="font-bold mb-[10px]" id="shop_name"></h2>
                 <span class="text-blue-500" id="status"></span>
             </div>
 
             <p id="order-detail"> </p>
             <p class="text-gray-500" id="created_at">주문일자 : </p>
             <div class="border-t border-gray-200 mt-2 pt-2">
-                <h2 class="font-bold">결제금액</h2>
+                <h2 class="font-bold mb-[10px]">결제금액</h2>
                 <p id="amount">주문 금액 : 원</p>
                 <p id="method">결제 방법 : </p>
             </div>
 
             <div class="border-t border-gray-200 mt-2 pt-2">
-                <h2 class="font-bold">배달 주소</h2>
+                <h2 class="font-bold mb-[10px]">배달 주소</h2>
                 <p id="address"></p>
                 <p id="phone">전화번호 : </p>
             </div>
-            <div class="border-t border-gray-200 mt-2 pt-2">
-                <h2 class="font-bold">요청사항</h2>
-                <p id="content"></p>
+            <div class="border-t border-gray-200 mt-2 pt-2 mb-[10px]">
+                <h2 class="font-bold mb-[10px]">요청사항</h2>
+                <p id="content" style="color: gray">없음.</p>
             </div>
-            <div class="flex justify-between mt-4" style="text-align: right;">
+            <div class="flex border-t border-gray-200 pt-2" style="text-align: right; margin-top: 70px">
                 <%--                <button class="bg-blue-100 text-blue-500 font-medium py-2 px-4 rounded-lg">수정</button>--%>
+                <button id="payment" style="display: none;" onclick="kakaoPay()">
+<%--                   <img src="https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/img.png"--%>
+<%--                        class = "w-[100px] h-[40px] rounded-lg"/>--%>
+                    <p class = "bg-blue-500 text-white font-medium py-2 px-4 rounded-lg">결제하기</p>
+                </button>
                 <form id="deleteForm" action="" method="post">
                     <button type="submit" class="bg-red-100 text-red-500 font-medium py-2 px-4 rounded-lg">주문취소</button>
                 </form>
@@ -79,6 +84,72 @@
     const url = "http://localhost:8080";
     const token = sessionStorage.getItem("accessToken");
 
+    let totalPrice = 0;
+    let orderItems = [];
+    let paymentId = null;
+
+    function formatDate(isoString) {
+        // ISO 형식 문자열을 Date 객체로 변환
+        const date = new Date(isoString);
+
+        // 원하는 형식으로 변환
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+    }
+
+    // KakaoPay 버튼 보이게 하는 함수
+    function showPaymentButton(orderStatus, paymentMethod) {
+        if (orderStatus === '결제 대기' && paymentMethod === '카카오페이') {
+            document.getElementById("payment").style.display = "block";
+            document.getElementById("payment").style.marginRight = "10px"
+        }
+    }
+
+    // 카카오페이 결제 통신 Axios
+    function kakaoPay() {
+        // https://velog.io/@ryuneng2/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%8E%98%EC%9D%B4-API-%EC%97%B0%EB%8F%99-%ED%8C%9D%EC%97%85%EC%B0%BD%EB%9D%84%EC%9A%B0%EA%B8%B0-%EA%B2%B0%EC%A0%9C%EC%8A%B9%EC%9D%B8-%EA%B5%AC%ED%98%84
+        // 참조
+        let orderItem = "";
+        const orderItemsSize = orderItems.length;
+
+        if (orderItemsSize > 1) {
+            orderItem = orderItems[0].name + " 외 " + (orderItems.length - 1) + "건";
+        } else {
+            orderItem = orderItems[0].name;
+        }
+
+        const kakaoPayReqDTO = {
+            name: orderItem,             // 카카오페이에 보낼 대표 상품명
+            totalPrice: totalPrice,      // 총 결제금액
+            quantity : orderItemsSize,   // 상품 수량 (목록 수량인듯)
+            paymentId : paymentId        // 결제 ID
+        };
+
+        axios.post('/api/orders/kakaopay/ready', kakaoPayReqDTO, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then((response) => {
+                // 성공 시, 카카오페이 결제 URL로 이동
+                const parsedData = JSON.parse(response.headers['readykakaopayres']);
+
+                if(!isMobile()) {
+                    window.location.href = parsedData.next_redirect_pc_url;
+                } else {
+                    window.location.href = parsedData.next_redirect_mobile_url;
+                }
+            }).catch((error) => {
+                // 에러 처리
+                console.error('결제 준비 중 오류:', error);
+            });
+    }
+
     function getOrderDetail() {
         axios.get(url + '/api/test/<%=pickupId%>', {
             headers: {
@@ -92,20 +163,35 @@
 
             $.each(res.data.order_items,function(i,row) {
                 orderDetailHtml += '<p>'+ row.item_name +' '+ row.quantity + '개</p>';
+                orderItems.push({
+                    name: row.item_name
+                });
             });
             $("#order-detail").append(orderDetailHtml);
 
-            document.getElementById("created_at").innerHTML = '주문일자 : ' + res.data.created_at;
-            document.getElementById("amount").innerHTML = '주문 금액 : ' + res.data.amount +'원';
+            showPaymentButton(res.data.status, res.data.method)
+
+            totalPrice = res.data.amount;
+            paymentId = res.data.paymentId;
+
+            document.getElementById("created_at").innerHTML = '주문일자 : ' + formatDate(res.data.created_at);
+            document.getElementById("amount").innerHTML = '주문 금액 : ' + totalPrice +'원';
             document.getElementById("method").innerHTML = '결제 방법 : ' + res.data.method;
             document.getElementById("address").innerHTML = res.data.address;
             document.getElementById("phone").innerHTML = '전화번호 : ' + res.data.phone;
             document.getElementById("phone").innerHTML =
-                (res.data.content!=null&&res.data.content.trim() !== "") ? res.data.content : '요청사항 없음.';
+                (res.data.content != null && res.data.content.trim() !== "") ? res.data.content : '요청사항 없음.';
         });
     }
 
+    function isMobile() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
+        // 모바일 기기 식별
+        const mobileDevices = /android|iphone|ipad|ipod|blackberry|windows phone|opera mini|iemobile|mobile/i;
+
+        return mobileDevices.test(userAgent);
+    }
 
     window.onload = () => {
         getOrderDetail();

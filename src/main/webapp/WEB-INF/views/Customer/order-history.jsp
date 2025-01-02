@@ -47,6 +47,21 @@
     const url = "http://localhost:8080";
     const token = sessionStorage.getItem("accessToken");
 
+    function formatDate(isoString) {
+        // ISO 형식 문자열을 Date 객체로 변환
+        const date = new Date(isoString);
+
+        // 원하는 형식으로 변환
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+    }
+
     function getOrderlist() {
         axios.get(url + '/api/test', {
             headers: {
@@ -62,7 +77,7 @@
                     '<h2 class="font-bold">' + row.shop_name + '</h2>'+
                     '<span class="text-blue-500">' + row.status + '</span>'+
                     '</div>'+
-                    '<p class="text-gray-500">주문 일자 : '+ row.created_at +'</p>'+
+                    '<p class="text-gray-500">주문 일자 : '+ formatDate(row.created_at) +'</p>'+
                     <%-- 주문 상세보기 버튼 추가 --%>
                     '<a href="/orderHistory/'+ row.pickup_id +'"'+
                     'class="text-blue-500 mt-2 inline-block">상세보기'+

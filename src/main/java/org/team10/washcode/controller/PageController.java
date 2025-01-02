@@ -19,6 +19,8 @@ public class PageController {
 
     private final KakaoService kakaoService;
     private final LaundryService laundryService;
+    private final OrderService orderService;
+    private final KakaoPayService kakaoPayService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -121,5 +123,12 @@ public class PageController {
     @RequestMapping("/shop-mypage")
     public String shopMyPage() {
         return "Shop/shop-my-page";
+    }
+
+    @RequestMapping("/order/completed")
+    public String orderCompleted(@RequestParam("pg_token") String token, Model model) {
+        kakaoPayService.payCompleted(token ,model);
+        orderService.updatePaymentStatusComplete(token);
+        return "Customer/order-complete";
     }
 }

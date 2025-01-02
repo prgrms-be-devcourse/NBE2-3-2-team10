@@ -23,6 +23,7 @@ public class OrderResDTO {
     private Timestamp update_at;
 
     //결제 방법
+    private int paymentId;
     private String method;
     private int amount;
     private Timestamp payment_datetime;

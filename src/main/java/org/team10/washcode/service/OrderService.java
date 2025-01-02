@@ -9,10 +9,12 @@ import org.team10.washcode.Enum.PickupStatus;
 import org.team10.washcode.ResponseDTO.order.OrderResDTO;
 import org.team10.washcode.ResponseDTO.order.OrderlistResDTO;
 import org.team10.washcode.entity.*;
+import org.team10.washcode.entity.redis.KakaoPayPgToken;
 import org.team10.washcode.repository.db.PaymentRepository;
 import org.team10.washcode.repository.db.PickupItemRepository;
 import org.team10.washcode.repository.db.PickupRepository;
 import org.team10.washcode.repository.db.ReviewRepository;
+import org.team10.washcode.repository.redis.KakaoPayPgTokenRepository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private KakaoPayPgTokenRepository kakaoPayPgTokenRepository;
 
 
     public void saveOrder(Pickup pickup, PickupItem pickupItem) {
@@ -152,6 +156,7 @@ public class OrderService {
             orderResDTO.setUpdate_at((Timestamp) obj[7]);
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
+            orderResDTO.setPaymentId((Integer) obj[17]);
 
             OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
                     (String) obj[11], // item_name
@@ -162,6 +167,21 @@ public class OrderService {
         }
 
         return ResponseEntity.ok().body(orderResDTO);
+    }
+
+    // 결제 대기 -> 결제 완료 바꾸는 메소드
+    @Transactional
+    public void updatePaymentStatusComplete(String pgToken) {
+        KakaoPayPgToken kakaoPayPgToken = kakaoPayPgTokenRepository.findById("pgToken:" + pgToken)
+                .orElseThrow(() -> new IllegalArgumentException("No matching pgToken found for [pgToken:" + pgToken + "]"));
+        kakaoPayPgTokenRepository.deleteById("pgToken:" + pgToken);
+
+        int paymentId = kakaoPayPgToken.getPartnerOrderId();
+
+        Pickup pickup = paymentRepository.findPickUpById(paymentId)
+                .orElseThrow(() -> new IllegalArgumentException("No matching payment found for paymentId: " + paymentId));
+
+        pickup.setStatus(PickupStatus.PAYMENT_COMPLETED);
     }
 
 }
