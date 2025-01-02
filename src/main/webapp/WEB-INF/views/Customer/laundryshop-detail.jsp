@@ -51,7 +51,7 @@
                     const obtn = document.getElementById('obtn');
 
                     obtn.addEventListener('click', function() {
-                        window.location.href = `/api/orders/create?id=\${data.id}&laundryShopId=${laundryId}`;
+                        window.location.href = `/order/${laundryId}`;
                     });
 
                 })
@@ -91,7 +91,7 @@
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
     <div class="flex items-center justify-between p-4">
-        <button class="text-gray-500" onclick="history.back()">
+        <button class="text-gray-500" onclick="location.href='/main'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>

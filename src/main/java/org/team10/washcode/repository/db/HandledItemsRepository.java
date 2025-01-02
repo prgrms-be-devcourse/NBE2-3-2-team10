@@ -5,9 +5,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.team10.washcode.Enum.LaundryCategory;
+import org.team10.washcode.ResponseDTO.laundry.HandledItemsResDTO;
+import org.team10.washcode.ResponseDTO.laundry.ItemInfoResDTO;
 import org.team10.washcode.entity.HandledItems;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HandledItemsRepository extends JpaRepository<HandledItems, Long> {
@@ -23,4 +26,9 @@ public interface HandledItemsRepository extends JpaRepository<HandledItems, Long
     //카테고리별로 세탁소 id 조회
     @Query("SELECT h.laundryshop.id FROM HandledItems h WHERE h.category = :category")
     List<Integer> findLaundryShopIdsByCategory(LaundryCategory category);
+
+    @Query("SELECT new org.team10.washcode.ResponseDTO.laundry.ItemInfoResDTO(h.id, h.item_name, h.category,h.price) FROM HandledItems h WHERE h.laundryshop.id = :laundryId")
+    List<ItemInfoResDTO> findHandledItemsByLaundryId(@Param("laundryId") int laundryId);
+
+    Optional<HandledItems> findById(@Param("itemId") int itemId);
 }

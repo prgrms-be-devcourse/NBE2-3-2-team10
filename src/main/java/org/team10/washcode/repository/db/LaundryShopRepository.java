@@ -14,7 +14,8 @@ import java.util.List;
 @Repository
 public interface LaundryShopRepository extends JpaRepository<LaundryShop, Long> {
 
-    Optional<LaundryShop> findById(Long id);
+    @Query("SELECT L.shop_name FROM LaundryShop L WHERE L.id = :id")
+    Optional<String> findNameById(int id);
 
 
     @Query("SELECT L FROM LaundryShop L WHERE L.shop_name like %:shop_name%")
@@ -23,5 +24,7 @@ public interface LaundryShopRepository extends JpaRepository<LaundryShop, Long> 
     List<LaundryShop> findByIdIn(List<Integer> ids);
 
     Optional<LaundryShop> findByUserId(int userId);
+
+    Optional<LaundryShop> findById(int id);
 
 }

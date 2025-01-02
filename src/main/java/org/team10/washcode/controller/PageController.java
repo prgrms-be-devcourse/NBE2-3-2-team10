@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
+import org.team10.washcode.entity.HandledItems;
+import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.service.*;
 import org.team10.washcode.service.KakaoService;
 
@@ -78,6 +82,18 @@ public class PageController {
 
     @RequestMapping("/orderHistory")
     public String orderHistory() { return "Customer/order-history"; }
+
+    @RequestMapping("/orderHistory/{pickup_id}")
+    public String orderHistoryDetail(@PathVariable("pickup_id") int pickup_id, Model model){
+        model.addAttribute("pickupId",pickup_id);
+        return "Customer/order-history-detail";
+    }
+
+    @RequestMapping("/order/{laundry_id}")
+    public String order(@PathVariable("laundry_id") int laundry_id, Model model){
+        model.addAttribute("laundryId",laundry_id);
+        return "Customer/apply-pickup";
+    }
 
     @RequestMapping("/myInfo")
     public String myInfo() { return "Customer/my-info"; }

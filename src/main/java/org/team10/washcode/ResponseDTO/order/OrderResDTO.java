@@ -18,9 +18,9 @@ public class OrderResDTO {
 
     private String shop_name;
     private String content;
-    private PickupStatus status;
-    private Timestamp created_at;   //요청 생성
-    private Timestamp update_at;
+    private String status;
+    private String created_at;   //요청 생성
+    private String update_at;
 
     //결제 방법
     private String method;
@@ -46,7 +46,7 @@ public class OrderResDTO {
         }
     }
     public String getStatus() {
-        return status != null ? status.name() : null;
+        return status != null ? status : null;
     }
 
     // getOrder_items() 메서드 구현
