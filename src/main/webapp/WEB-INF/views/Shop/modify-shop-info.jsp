@@ -327,7 +327,6 @@
                 return false
             }
 
-
             // 주소-좌표 변환 객체를 생성합니다
             var geocoder = new kakao.maps.services.Geocoder();
             const token = sessionStorage.getItem("accessToken");
@@ -367,6 +366,8 @@
                             sendData_register(laundry_id);
 
                             alert("등록이 완료되었습니다!");
+                            window.location.href="/shop-main";
+
                         } else {
                             const errorData = await response1.json();
                             alert(`오류 발생: ${errorData.message || '서버 에러'}`);
@@ -464,7 +465,9 @@
                                 // 가격표 데이터 전송
                                 sendData_modify(laundry_id);
 
-                                alert("등록이 완료되었습니다!");
+                                alert("수정이 완료되었습니다!");
+                                window.location.href="/shop-main";
+
                             } else {
                                 const errorData = await response1.json();
                                 alert(`오류 발생: ${errorData.message || '서버 에러'}`);
