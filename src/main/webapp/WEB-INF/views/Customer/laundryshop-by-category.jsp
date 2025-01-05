@@ -63,6 +63,7 @@
         }
 
         window.onload = function () {
+            changeSvg();
             checkAccessToken();
 
             fetch(`/api/laundry/category/${category}`)
@@ -123,6 +124,34 @@
                 // 버튼에 'selected' 클래스 추가
                 const selectedButton = document.getElementById(buttonId);
                 selectedButton.classList.add("selected");
+            }
+
+            function changeSvg() {
+                const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+                const path = window.location.pathname;
+                // alert(currentPath);
+
+                const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
+                const orderArray = ["/orderHistory"];
+                const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
+
+                if (homeArray.includes(path)) {
+                    document.getElementById('home').src = svgUrl + "/Home_2.svg";
+                } else {
+                    document.getElementById('home').src = svgUrl + "/Home.svg";
+                }
+
+                if (orderArray.includes(path)) {
+                    document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+                } else {
+                    document.getElementById('bag').src = svgUrl + "/Bag.svg";
+                }
+
+                if (starArray.includes(path)) {
+                    document.getElementById('star').src = svgUrl + "/Star_2.svg";
+                } else {
+                    document.getElementById('star').src = svgUrl + "/Star.svg";
+                }
             }
         });
     </script>
@@ -189,39 +218,5 @@
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
-
-<script>
-    function changeSvg() {
-        const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
-        const path = window.location.pathname;
-        // alert(currentPath);
-
-        const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
-        const orderArray = ["/orderHistory"];
-        const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
-
-        if (homeArray.includes(path)) {
-            document.getElementById('home').src = svgUrl + "/Home_2.svg";
-        } else {
-            document.getElementById('home').src = svgUrl + "/Home.svg";
-        }
-
-        if (orderArray.includes(path)) {
-            document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
-        } else {
-            document.getElementById('bag').src = svgUrl + "/Bag.svg";
-        }
-
-        if (starArray.includes(path)) {
-            document.getElementById('star').src = svgUrl + "/Star_2.svg";
-        } else {
-            document.getElementById('star').src = svgUrl + "/Star.svg";
-        }
-    }
-
-    window.onload = () => {
-        changeSvg();
-    }
-</script>
 </body>
 </html>

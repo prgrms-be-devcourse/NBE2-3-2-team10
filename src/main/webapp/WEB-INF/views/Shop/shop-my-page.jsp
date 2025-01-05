@@ -67,10 +67,10 @@
         <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
-    <%--    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >--%>
-    <%--        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>--%>
-    <%--        <span class="text-black text-[10pt] mt-1">주문내역</span>--%>
-    <%--    </button>--%>
+        <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >
+            <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">주문내역</span>
+        </button>
     <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop/mypage'">
         <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">내 정보</span>
