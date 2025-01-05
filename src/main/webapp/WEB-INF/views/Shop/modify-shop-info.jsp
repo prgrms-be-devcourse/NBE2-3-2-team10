@@ -223,66 +223,83 @@
                     },
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-
-                    // 기존 데이터가 있으면 폼 필드에 채우기
-                    if (data) {
-                        document.getElementById("phone").value = data.phone || "";
-                        document.getElementById("address").value = data.address || "";
-                        document.getElementById("shop_name").value = data.shop_name || "";
-                        document.getElementById("non_operating_days").value = data.non_operating_days || "";
-                        document.getElementById("user_name").value = data.user_name;
-                        document.getElementById("business_number").value = data.business_number;
-
-                        btn.innerHTML = `
-                        <button class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="mbtn">
-                            정보 수정
-                        </button>`
-
-                        // 상품 정보 테이블 채우기
-                        const productTableBody = document.getElementById("productTableBody");
-                        productTableBody.innerHTML = ""; // 기존 행 삭제
-                        data.handledItems.forEach(item => {
-                            const newRow = document.createElement("tr");
-                            newRow.innerHTML = `
-                        <td class="border p-2">
-                            <input
-                                    type="text"
-                                    placeholder="상품 이름"
-                                    class="w-full px-2 py-1 border rounded"
-                                    name="item_name"
-                                    value="\${item.item_name}"
-                            />
-                        </td>
-                        <td class="border p-2">
-                            <select class="w-full px-2 py-1 border rounded" name="category">
-                                <option \${item.category === "SHOES" ? "selected" : ""}>신발</option>
-                                <option \${item.category === "PADDING" ? "selected" : ""}>패딩</option>
-                                <option \${item.category === "PREMIUM_FABRIC" ? "selected" : ""}>프리미엄 패브릭</option>
-                                <option \${item.category === "CARRIER_SANITATION" ? "selected" : ""}>캐리어 소독</option>
-                                <option \${item.category === "COTTON_LAUNDRY" ? "selected" : ""}>면 세탁물</option>
-                                <option \${item.category === "BEDDING" ? "selected" : ""}>침구</option>
-                                <option \${item.category === "STORAGE_SERVICE" ? "selected" : ""}>보관서비스</option>
-                            </select>
-                        </td>
-                        <td class="border p-2">
-                            <input
-                                    type="number"
-                                    placeholder="숫자만 입력"
-                                    class="w-full px-2 py-1 border rounded"
-                                    name="price"
-                                    value="\${item.price}"
-                            />
-                        </td>
-                        <td class="border p-2 text-center">
-                            <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">-</button>
-                        </td>
-                    `;
-                            productTableBody.appendChild(newRow);
-                        });
-                    }
+                // 응답 상태 코드 확인
+                if (!response.ok) {
+                    console.warn(`HTTP error! status: ${response.status}`);
+                    return;
                 }
+
+                // 응답 데이터 확인
+                const text = await response.text(); // 원본 응답 확인
+                if (!text.trim()) {
+                    console.warn("Empty response received (expected behavior)");
+                    return; // 빈 응답 처리
+                }
+
+                // JSON 파싱
+                const data = JSON.parse(text);
+                if (!data) {
+                    console.warn("Null or undefined data received.");
+                    return;
+                }
+
+                // 기존 데이터가 있으면 폼 필드에 채우기
+                if (data) {
+                    document.getElementById("phone").value = data.phone || "";
+                    document.getElementById("address").value = data.address || "";
+                    document.getElementById("shop_name").value = data.shop_name || "";
+                    document.getElementById("non_operating_days").value = data.non_operating_days || "";
+                    document.getElementById("user_name").value = data.user_name;
+                    document.getElementById("business_number").value = data.business_number;
+
+                    btn.innerHTML = `
+                <button class="w-full py-3 mb-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600" id="mbtn">
+                    정보 수정
+                </button>`;
+
+                    // 상품 정보 테이블 채우기
+                    const productTableBody = document.getElementById("productTableBody");
+                    productTableBody.innerHTML = ""; // 기존 행 삭제
+                    data.handledItems.forEach(item => {
+                        const newRow = document.createElement("tr");
+                        newRow.innerHTML = `
+                    <td class="border p-2">
+                        <input
+                            type="text"
+                            placeholder="상품 이름"
+                            class="w-full px-2 py-1 border rounded"
+                            name="item_name"
+                            value="\${item.item_name}"
+                        />
+                    </td>
+                    <td class="border p-2">
+                        <select class="w-full px-2 py-1 border rounded" name="category">
+                            <option \${item.category === "SHOES" ? "selected" : ""}>신발</option>
+                            <option \${item.category === "PADDING" ? "selected" : ""}>패딩</option>
+                            <option \${item.category === "PREMIUM_FABRIC" ? "selected" : ""}>프리미엄 패브릭</option>
+                            <option \${item.category === "CARRIER_SANITATION" ? "selected" : ""}>캐리어 소독</option>
+                            <option \${item.category === "COTTON_LAUNDRY" ? "selected" : ""}>면 세탁물</option>
+                            <option \${item.category === "BEDDING" ? "selected" : ""}>침구</option>
+                            <option \${item.category === "STORAGE_SERVICE" ? "selected" : ""}>보관서비스</option>
+                        </select>
+                    </td>
+                    <td class="border p-2">
+                        <input
+                            type="number"
+                            placeholder="숫자만 입력"
+                            class="w-full px-2 py-1 border rounded"
+                            name="price"
+                            value="\${item.price}"
+                        />
+                    </td>
+                    <td class="border p-2 text-center">
+                        <button class="px-2 py-1 bg-red-400 text-white rounded deleteRowBtn" onclick="this.closest('tr').remove()">-</button>
+                    </td>
+                `;
+                        productTableBody.appendChild(newRow);
+                    });
+                }
+
             } catch (error) {
                 console.error("Error fetching laundry info:", error);
             }
@@ -331,7 +348,6 @@
                 return false
             }
 
-
             // 주소-좌표 변환 객체를 생성합니다
             var geocoder = new kakao.maps.services.Geocoder();
             const token = sessionStorage.getItem("accessToken");
@@ -371,6 +387,8 @@
                             sendData_register(laundry_id);
 
                             alert("등록이 완료되었습니다!");
+                            window.location.href="/shop-main";
+
                         } else {
                             const errorData = await response1.json();
                             alert(`오류 발생: ${errorData.message || '서버 에러'}`);
@@ -468,7 +486,9 @@
                                 // 가격표 데이터 전송
                                 sendData_modify(laundry_id);
 
-                                alert("등록이 완료되었습니다!");
+                                alert("수정이 완료되었습니다!");
+                                window.location.href="/shop-main";
+
                             } else {
                                 const errorData = await response1.json();
                                 alert(`오류 발생: ${errorData.message || '서버 에러'}`);

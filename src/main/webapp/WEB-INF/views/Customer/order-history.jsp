@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="ko">
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,38 +17,14 @@
         }
     </style>
 </head>
+  
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
     <div class="p-4 border-b">
         <h1 class="text-xl font-bold">이용내역</h1>
     </div>
-    <form action="/api/orders/history" method="get">
-        <input type="hidden" name="userId" value="<%= request.getAttribute("userId") %>" />
-        <div class="p-4">
-            <%-- orders 리스트를 반복문을 통해 출력 --%>
-            <%
-                List<OrderlistResDTO> orders = (List<OrderlistResDTO>) request.getAttribute("orders");
-                if (orders != null) {
-                    for (OrderlistResDTO order : orders) {
-            %>
-            <div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold"><%= order.getShopName() %></h2>
-                    <span class="text-blue-500"><%= order.getStatus().getDesc() %></span>
-                </div>
-                <p class="text-gray-500">주문 생성일 : <%= order.getCreatedAt() %></p>
-                <%-- 주문 상세보기 버튼 추가 --%>
-                <a href="/api/orders/history/<%= request.getAttribute("userId") %>/<%= order.getPickup_id() %>"
-                   class="text-blue-500 mt-2 inline-block">
-                    상세보기
-                </a>
-            </div>
-            <%
-                    }
-                }
-            %>
-        </div>
-    </form>
+    <div class="p-4" id="order-list" >
+    </div>
 </div>
 
 <!-- Footer -->
@@ -66,11 +43,12 @@
     </button>
 </footer>
 
-    <script>
-        const token = sessionStorage.getItem("accessToken");
-        const url = "http://localhost:8080";
-
-        function changeSvg() {
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+    const url = "http://localhost:8080/api";
+    const token = sessionStorage.getItem("accessToken");
+  
+    function changeSvg() {
             const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
             const path = window.location.pathname;
             // alert(currentPath);
@@ -98,23 +76,58 @@
             }
         }
 
-        function checkAccessToken() {
-            axios.post(url + '/api/user/check-login', {
-                headers: {
-                    Authorization: 'Bearer ' + token
-                }
-            }).then(res => {
-                sessionStorage.setItem("accessToken", res.data.accessToken);
-            }).catch(error => {
-                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-                location.href = '/';
-            });
-        }
+  
+    function checkAccessToken() {
+        axios.post(url + '/user/check-login', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            sessionStorage.setItem("accessToken", res.data.accessToken);
+            getOrderlist();
+        }).catch(error => {
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            location.href = '/';
+        });
+    }
+  
+    function getOrderlist() {
+        axios.get(url + '/orders', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            let orderHtml ='';
 
-        window.onload = () => {
-            changeSvg();
-            checkAccessToken();
-        }
-    </script>
+            $.each(res.data,function(i,row) {
+                    if(row.status === '주문 취소' || row.status === '픽업 취소'){
+                        orderHtml += '<div class="bg-neutral-50 p-4 rounded-lg shadow mb-4 cursor-pointer">' +
+                            '<div class="flex justify-between items-center">'+
+                            '<h2 class="font-bold">' + row.shop_name + '</h2>'+
+                            '<span class="text-red-400">' + row.status + '</span>'+
+                            '</div>';
+                    }else {
+                        orderHtml += '<div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">' +
+                        '<div class="flex justify-between items-center">' +
+                        '<h2 class="font-bold">' + row.shop_name + '</h2>' +
+                        '<span class="text-blue-500">' + row.status + '</span>' +
+                        '</div>';
+                    }
+                    orderHtml += '<p class="text-gray-500">주문 일자 : ' + row.created_at + '</p>' +
+                    <%-- 주문 상세보기 버튼 추가 --%>
+                    '<a href="/orderHistory/'+ row.pickup_id +'"'+
+                    'class="text-blue-500 mt-2 inline-block">상세보기'+
+                    '</a>'+
+                    '</div>';
+            });
+            $("#order-list").append(orderHtml);
+        });
+    }
+
+    window.onload = () => {
+        changeSvg();
+        checkAccessToken();
+    }
+</script>
 </body>
 </html>

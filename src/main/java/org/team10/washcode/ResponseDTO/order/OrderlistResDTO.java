@@ -18,13 +18,13 @@ public class OrderlistResDTO {
     @JsonProperty("shop_name")
     private String shop_name;
     @JsonProperty("status")
-    private PickupStatus status;
+    private String status;
     @JsonProperty("created_at")
-    private Timestamp created_at;   //요청 생성
+    private String created_at;   //요청 생성
     @JsonProperty("updated_at")
-    private Timestamp update_at;    //요청 갱신
+    private String update_at;    //요청 갱신
 
-    public OrderlistResDTO(int pickup_id, String shop_name, PickupStatus status, Timestamp created_at) {
+    public OrderlistResDTO(int pickup_id, String shop_name, String status, String created_at) {
         this.pickup_id = pickup_id;
         this.shop_name = shop_name;
         this.status = status;
@@ -34,7 +34,7 @@ public class OrderlistResDTO {
     public String getShopName() {
         return shop_name;
     }
-    public Timestamp getCreatedAt() {
+    public String getCreatedAt() {
         return created_at;
     }
 }

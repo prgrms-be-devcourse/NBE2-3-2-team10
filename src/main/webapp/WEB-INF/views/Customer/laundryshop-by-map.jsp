@@ -60,22 +60,22 @@
             };
 
             var map = new kakao.maps.Map(container, options);
+            var locPosition
 
             if (navigator.geolocation) {
-
                 // GeoLocation을 이용해서 접속 위치를 얻어옵니다
                 navigator.geolocation.getCurrentPosition(function (position) {
 
                     lat = position.coords.latitude, // 위도
                     lon = position.coords.longitude; // 경도
 
-                    var locPosition = new kakao.maps.LatLng(lat, lon);
+                    locPosition = new kakao.maps.LatLng(lat, lon);
+
                     mylocation(locPosition);
                     map.setCenter(locPosition);
 
                     // 초기 데이터 로드: 모든 세탁소를 로드
                     loadLaundryShops();
-
                 });
 
             } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
@@ -91,9 +91,11 @@
             let markers = [];
 
             // 검색 입력 필드에서 변화가 있을 때마다 호출
-            document.getElementById('searchLaundry').addEventListener('input', function (event) {
-                const searchTerm = event.target.value;  // 검색어 가져오기
-                loadLaundryShops(searchTerm);  // 검색어를 API에 전달
+            document.getElementById('searchLaundry').addEventListener('keydown', function (event) {
+                if(event.key === 'Enter') {
+                    const searchTerm = event.target.value;  // 검색어 가져오기
+                    loadLaundryShops(searchTerm);  // 검색어를 API에 전달
+                }
             });
 
             // 세탁소 데이터를 가져와서 지도에 마커 표시
@@ -105,16 +107,45 @@
 
                         clearMarkers();
 
+                        var bounds = new kakao.maps.LatLngBounds();
+                        let index = 0;
+
                         let result = '';
                         data.forEach(shop => {
                             var position = new kakao.maps.LatLng(shop.latitude, shop.longitude);
                             var message = `<div style="padding:5px;">\${shop.shop_name}</div>`;
                             displayMarker(position, message);
 
+
                             result += `<li class="border-b pb-2 shop-item" data-id="\${shop.id}">
                                        \${shop.shop_name}
                                        </li>`;
+
+                            if(index === 0){
+                                bounds.extend(position);
+                            }
+
+                            index++;
+
                         });
+
+                        if (searchTerm !== '') {
+                            if (data.length === 0) {
+                                // 검색 결과가 없을 경우 사용자 위치로 지도 설정
+                                map.setCenter(locPosition);
+                                map.setLevel(5); // 사용자 위치를 확대
+                            } else {
+                                // 검색 결과가 있을 경우 검색 결과에 맞게 지도 경계 설정
+                                map.setBounds(bounds);
+                                map.setLevel(7);
+                            }
+                        } else {
+                            // 검색어가 비어 있을 경우 사용자 위치로 지도 설정
+                            map.setCenter(locPosition);
+                            map.setLevel(5);
+                        }
+
+
                         document.getElementById('laundryList').innerHTML = result;
 
                         document.querySelectorAll('.shop-item').forEach(item => {
@@ -141,6 +172,7 @@
                     map: map,
                     position: locPosition
                 });
+
 
                 // 마커에 클릭이벤트를 등록합니다
                 kakao.maps.event.addListener(marker, 'click', function () {

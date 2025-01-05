@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.team10.washcode.Enum.LaundryCategory;
 import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
+import org.team10.washcode.ResponseDTO.order.OrderResDTO;
+import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
+import org.team10.washcode.entity.HandledItems;
+import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
 import org.team10.washcode.service.*;
 import org.team10.washcode.service.KakaoService;
 
@@ -19,6 +23,8 @@ public class PageController {
 
     private final KakaoService kakaoService;
     private final LaundryService laundryService;
+    private final OrderService orderService;
+    private final KakaoPayService kakaoPayService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -69,7 +75,6 @@ public class PageController {
     @RequestMapping("/modify-shop-info")
     public String modifyShopInfo(Model model) { return "Shop/modify-shop-info"; }
 
-
     @RequestMapping("/main")
     public String main() { return "Customer/main"; }
 
@@ -78,6 +83,18 @@ public class PageController {
 
     @RequestMapping("/orderHistory")
     public String orderHistory() { return "Customer/order-history"; }
+
+    @RequestMapping("/orderHistory/{pickup_id}")
+    public String orderHistoryDetail(@PathVariable("pickup_id") int pickup_id, Model model){
+        model.addAttribute("pickupId",pickup_id);
+        return "Customer/order-history-detail";
+    }
+
+    @RequestMapping("/order/{laundry_id}")
+    public String order(@PathVariable("laundry_id") int laundry_id, Model model){
+        model.addAttribute("laundryId",laundry_id);
+        return "Customer/apply-pickup";
+    }
 
     @RequestMapping("/myInfo")
     public String myInfo() { return "Customer/my-info"; }
@@ -93,10 +110,9 @@ public class PageController {
     @RequestMapping("/laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
         LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
-        if(to == null) {
-            return "error";
-        }
-
+        
+        if(to == null) { return "error"; }
+        
         model.addAttribute("laundry", to);
         model.addAttribute("laundryId", id);
         return "Customer/laundryshop-detail";
@@ -112,6 +128,17 @@ public class PageController {
         return "Customer/laundryshop-by-category";
     }
 
+    @RequestMapping("/order/completed")
+    public String orderCompleted(@RequestParam("pg_token") String token, Model model) {
+        model.addAttribute("pg_token", token);
+        return "Customer/order-wait";
+    }
+
+    @RequestMapping("/order/success")
+    public String orderSuccess() {
+        return "Customer/order-complete";
+    }
+  
     @RequestMapping("/shop/mypage")
     public String shopMyPage() {
         return "Shop/shop-my-page";

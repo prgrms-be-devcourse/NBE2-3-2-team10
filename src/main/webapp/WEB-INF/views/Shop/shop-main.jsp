@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>워시팡 사장님 페이지</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -25,7 +26,7 @@
 <body class="bg-gray-100">
 <!-- 상단 배너 -->
 <div class="background-banner flex items-center justify-center">
-    <h1 class="text-white text-3xl font-bold">워시팡 사장님 페이지</h1>
+    <h1 class="text-black text-3xl font-bold">워시팡 사장님 페이지</h1>
 </div>
 
 <!-- 메뉴 카드 -->
@@ -81,32 +82,30 @@
     const token = sessionStorage.getItem("accessToken");
 
     function checkAccessToken() {
-        axios.post(url + '/api/user/check-login', {
+        axios.post(url + '/check-login', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
         }).then(res => {
-            if (res.data === false) {
-                alert("로그인이 필요합니다.");
-                location.href = '/';
-            }
+            sessionStorage.setItem("accessToken", res.data.accessToken);
         }).catch(error => {
-            alert(error.response.data);
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            location.href = '/';
         });
     }
 
-    function getShopRole() {
-        axios.get(url + '/role', {
-            headers: {
-                Authorization: 'Bearer ' + token
-            }
-        }).then(function (response) {
-            document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
-            document.getElementById('name').innerHTML = response.data.name + " 님";
-        }).catch(function (error) {
-            console.error(error);
-        });
-    }
+    // function getShopRole() {
+    //     axios.get(url + '/role', {
+    //         headers: {
+    //             Authorization: 'Bearer ' + token
+    //         }
+    //     }).then(function (response) {
+    //         document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
+    //         document.getElementById('name').innerHTML = response.data.name + " 님";
+    //     }).catch(function (error) {
+    //         console.error(error);
+    //     });
+    // }
 
     function changeSvg() {
         const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
@@ -132,7 +131,6 @@
     window.onload = () => {
         changeSvg();
         checkAccessToken();
-        getShopRole();
     };
 </script>
 </body>

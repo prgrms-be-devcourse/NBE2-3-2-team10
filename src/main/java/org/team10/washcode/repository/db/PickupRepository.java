@@ -33,15 +33,16 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("SELECT DISTINCT p FROM Pickup p " +
             "JOIN FETCH p.user u " +
             "JOIN FETCH p.laundryshop l " +
-            "WHERE p.user.id = :userId " +
+            "WHERE p.laundryshop.user.id = :userId " +
             "AND p.status = :status")
     List<Pickup> findAllByUserIdWithFetchJoinAndStatus(@Param("userId") long userId,
                                                        @Param("status") PickupStatus status);
 
     @Query("SELECT DISTINCT p FROM Pickup p " +
             "JOIN FETCH p.user u " +
-            "WHERE p.user.id = :userId " +
-            "AND p.status IN :statuses")
+            "WHERE p.laundryshop.user.id = :userId " +
+            "AND p.status IN :statuses " +
+            "ORDER BY p.update_at DESC")
     List<Pickup> findAllByUserIdAndStatuses(@Param("userId") long userId,
                                             @Param("statuses") List<PickupStatus> statuses);
 
@@ -49,7 +50,8 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("SELECT ls.shop_name, p.id, p.status, p.created_at " +
             "FROM LaundryShop ls " +
             "JOIN Pickup p ON ls.id = p.laundryshop.id " +
-            "WHERE p.user.id = :userId")
+            "WHERE p.user.id = :userId " +
+            "ORDER BY p.created_at DESC" )
     List<Object[]> findOrderListByUserId(@Param("userId") int userId);
 
 
@@ -80,7 +82,8 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
 
             "pay.method AS method, " +
             "u.name AS name, " +
-            "pay.payment_datetime AS paymentDateTime " +
+            "pay.payment_datetime AS paymentDateTime, " +
+            "pay.id AS paymentId " +
 
             "FROM User u " +
             "JOIN Pickup p ON u.id = p.user.id " +
@@ -114,5 +117,6 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
                                                  @Param("year") int year,
                                                  @Param("month") int month);
 
-
+    @Query("SELECT MAX(p.id) AS pickup_id FROM Pickup p")
+    int findIdByMax();
 }
