@@ -17,6 +17,7 @@
     </style>
     <script>
         const token = sessionStorage.getItem("accessToken");
+        const url = "http://localhost:8080";
 
         window.onload = () => {
             changeSvg();
@@ -68,6 +69,7 @@
         function getLaundryShopDetail() {
             const token = sessionStorage.getItem("accessToken")
 
+            // 페이지 로드가 완료된 후 fetch를 사용하여 데이터 받아오기
             // 페이지 로드가 완료된 후 fetch를 사용하여 데이터 받아오기
             fetch(`/api/laundry/${laundryId}`, {
                 method: "GET",
