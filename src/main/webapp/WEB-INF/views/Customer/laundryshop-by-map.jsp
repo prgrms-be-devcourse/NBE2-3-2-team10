@@ -18,7 +18,37 @@
 
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=ffeefd8246bf28331ea26a9ff648525c&libraries=services"></script>
     <script>
-        window.onload = function () {
+        function changeSvg() {
+            const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+            const path = window.location.pathname;
+            // alert(currentPath);
+
+            const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
+            const orderArray = ["/orderHistory"];
+            const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
+
+            if (homeArray.includes(path)) {
+                document.getElementById('home').src = svgUrl + "/Home_2.svg";
+            } else {
+                document.getElementById('home').src = svgUrl + "/Home.svg";
+            }
+
+            if (orderArray.includes(path)) {
+                document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+            } else {
+                document.getElementById('bag').src = svgUrl + "/Bag.svg";
+            }
+
+            if (starArray.includes(path)) {
+                document.getElementById('star').src = svgUrl + "/Star_2.svg";
+            } else {
+                document.getElementById('star').src = svgUrl + "/Star.svg";
+            }
+        }
+
+        window.onload = () => {
+            changeSvg();
+
             var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
             var lat;
             var lon;
@@ -178,15 +208,15 @@
 
     <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
         <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
-            <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+            <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
             <span class="text-black text-[10pt] mt-1">홈</span>
         </button>
         <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
-            <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
+            <img id = "bag" src = "./footer/Bag.svg" class = "h-6 w-6"/>
             <span class="text-black text-[10pt] mt-1">주문내역</span>
         </button>
         <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
-            <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+            <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
             <span class="text-black text-[10pt] mt-1">내 정보</span>
         </button>
     </footer>

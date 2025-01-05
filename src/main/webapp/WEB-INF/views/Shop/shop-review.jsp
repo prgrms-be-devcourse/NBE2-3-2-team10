@@ -59,17 +59,45 @@
 <!-- 하단 네비게이션 -->
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
     <button class="flex flex-col items-center text-blue-500" onclick="location.href='/shop-main'">
-        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
-    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >
-        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
-        <span class="text-black text-[10pt] mt-1">주문내역</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop-mypage'">
-        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+    <%--    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >--%>
+    <%--        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>--%>
+    <%--        <span class="text-black text-[10pt] mt-1">주문내역</span>--%>
+    <%--    </button>--%>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop/mypage'">
+        <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
+
+    <script>
+        function changeSvg() {
+            const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+            const path = window.location.pathname;
+            // alert(path);
+
+            const homeArray = ["/shop-main", "/pickup-check", "/pickup-delivery", "/shop-review"];
+            const starArray = ["/shop/mypage", "/shop/myInfoModify", "/shop/myInfo", "/shop/mypage"];
+
+            if (homeArray.includes(path)) {
+                document.getElementById('home').src = svgUrl + "/Home_2.svg";
+            } else {
+                document.getElementById('home').src = svgUrl + "/Home.svg";
+            }
+
+            if (starArray.includes(path)) {
+                document.getElementById('star').src = svgUrl + "/Star_2.svg";
+            } else {
+                document.getElementById('star').src = svgUrl + "/Star.svg";
+            }
+        }
+
+        window.onload = () => {
+            changeSvg();
+        }
+    </script>
+
 </body>
 </html>

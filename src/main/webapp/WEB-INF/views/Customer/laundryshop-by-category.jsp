@@ -47,6 +47,7 @@
     </style>
     <script type="text/javascript">
         const token = sessionStorage.getItem("accessToken");
+        const url = 'http://localhost:8080';
 
         function checkAccessToken() {
             axios.post(url + '/api/user/check-login', {
@@ -129,7 +130,7 @@
 <body class="bg-gray-100">
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
     <div class="flex items-center justify-between p-4">
-        <button class="text-gray-500" onclick="window.history.back()">
+        <button class="text-gray-500" onclick="window.location.href='/main'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
@@ -173,5 +174,54 @@
         </button>
     </footer>
 </div>
+
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
+        <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
+        <img id = "bag" src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
+        <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
+    </button>
+</footer>
+
+<script>
+    function changeSvg() {
+        const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+        const path = window.location.pathname;
+        // alert(currentPath);
+
+        const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
+        const orderArray = ["/orderHistory"];
+        const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
+
+        if (homeArray.includes(path)) {
+            document.getElementById('home').src = svgUrl + "/Home_2.svg";
+        } else {
+            document.getElementById('home').src = svgUrl + "/Home.svg";
+        }
+
+        if (orderArray.includes(path)) {
+            document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+        } else {
+            document.getElementById('bag').src = svgUrl + "/Bag.svg";
+        }
+
+        if (starArray.includes(path)) {
+            document.getElementById('star').src = svgUrl + "/Star_2.svg";
+        } else {
+            document.getElementById('star').src = svgUrl + "/Star.svg";
+        }
+    }
+
+    window.onload = () => {
+        changeSvg();
+    }
+</script>
 </body>
 </html>

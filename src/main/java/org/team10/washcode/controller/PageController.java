@@ -112,8 +112,14 @@ public class PageController {
         return "Customer/laundryshop-by-category";
     }
 
-    @RequestMapping("/shop-mypage")
+    @RequestMapping("/shop/mypage")
     public String shopMyPage() {
         return "Shop/shop-my-page";
     }
+
+    @RequestMapping("/shop/myInfoModify")
+    public String shopInfoModify() { return "Shop/my-info-modify-page"; }
+
+    @RequestMapping("/shop/myInfo")
+    public String shopInfo() { return "Shop/my-info"; }
 }

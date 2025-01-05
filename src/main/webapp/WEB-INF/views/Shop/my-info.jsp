@@ -25,7 +25,7 @@
             </svg>
         </button>
         <h1 class="flex-grow text-center text-xl font-bold">내 정보</h1>
-        <button class="text-blue-500" onclick="location.href='/myInfoModify'" >수정</button>
+        <button class="text-blue-500" onclick="location.href='/shop/myInfoModify'" >수정</button>
     </div>
     <div class="p-4">
         <div class="mb-6">
@@ -56,16 +56,17 @@
 </div>
 
 <!-- Footer -->
+<!-- 하단 네비게이션 -->
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
-    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/main'">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/shop-main'">
         <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
-    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
-        <img id = "bag" src = "./footer/Bag.svg" class = "h-6 w-6"/>
-        <span class="text-black text-[10pt] mt-1">주문내역</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">
+    <%--    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >--%>
+    <%--        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>--%>
+    <%--        <span class="text-black text-[10pt] mt-1">주문내역</span>--%>
+    <%--    </button>--%>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop/mypage'">
         <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
@@ -74,6 +75,27 @@
     <script>
         const url = "http://localhost:8080"
         const token = sessionStorage.getItem("accessToken");
+
+        function changeSvg() {
+            const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+            const path = window.location.pathname;
+            // alert(path);
+
+            const homeArray = ["/shop-main", "/pickup-check", "/pickup-delivery" ];
+            const starArray = ["/shop/mypage", "/shop/myInfoModify", "/shop/myInfo", "/shop/mypage"];
+
+            if (homeArray.includes(path)) {
+                document.getElementById('home').src = svgUrl + "/Home_2.svg";
+            } else {
+                document.getElementById('home').src = svgUrl + "/Home.svg";
+            }
+
+            if (starArray.includes(path)) {
+                document.getElementById('star').src = svgUrl + "/Star_2.svg";
+            } else {
+                document.getElementById('star').src = svgUrl + "/Star.svg";
+            }
+        }
 
         function checkAccessToken() {
             axios.post(url + '/api/user/check-login', {
@@ -102,34 +124,6 @@
             }).catch(function(error) {
                 console.error(error);
             });
-        }
-
-        function changeSvg() {
-            const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
-            const path = window.location.pathname;
-            // alert(currentPath);
-
-            const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
-            const orderArray = ["/orderHistory"];
-            const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
-
-            if (homeArray.includes(path)) {
-                document.getElementById('home').src = svgUrl + "/Home_2.svg";
-            } else {
-                document.getElementById('home').src = svgUrl + "/Home.svg";
-            }
-
-            if (orderArray.includes(path)) {
-                document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
-            } else {
-                document.getElementById('bag').src = svgUrl + "/Bag.svg";
-            }
-
-            if (starArray.includes(path)) {
-                document.getElementById('star').src = svgUrl + "/Star_2.svg";
-            } else {
-                document.getElementById('star').src = svgUrl + "/Star.svg";
-            }
         }
 
         window.onload = () => {
