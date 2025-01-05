@@ -191,10 +191,10 @@
                 Authorization: 'Bearer ' + token
             }
         }).then(res => {
-            alert(res.response.data);
+            alert(res.data);
             location.href = "/orderHistory";
         }).catch (error => {
-            alert(error.response.data);
+            alert(error.data);
             location.href = "/orderHistory";
         });
     }
