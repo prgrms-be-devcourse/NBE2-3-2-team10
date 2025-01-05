@@ -15,8 +15,8 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+<body class="bg-gray-100 flex items-center justify-center w-[100vw] h-[90vh]">
+<div class="bg-white p-8 rounded-lg shadow-lg max-w-sm">
     <div class="flex justify-center mb-6">
         <img src = "./upload/logo.svg" class = "w-[130px]"/>
     </div>
@@ -29,7 +29,7 @@
             <label class="block text-gray-700 mb-2" for="password">비밀번호</label>
             <input type="password" id="password" placeholder="비밀번호를 입력해주세요." class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
-        <button type="submit" onclick="login()" class="w-full bg-gray-300 text-gray-700 py-2 rounded mb-4 hover:bg-gray-400">로그인</button>
+        <button id = "loginButton" type="submit" onclick="login()" class="w-full bg-gray-300 text-gray-700 py-2 rounded mb-4 hover:bg-gray-400">로그인</button>
         <div class="text-center text-gray-500 mb-4">
             <a href="register" class="hover:underline">회원가입</a>
         </div>
@@ -88,6 +88,13 @@
                 location.href = "/main";
             })
         }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 기본 동작 방지
+                login();
+            }
+        });
 
         window.onload = () => {
             const token = sessionStorage.getItem("accessToken");
