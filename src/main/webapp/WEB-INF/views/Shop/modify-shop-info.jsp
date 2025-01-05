@@ -23,7 +23,7 @@
             // alert(path);
 
             const homeArray = ["/shop-main", "/pickup-check", "/pickup-delivery", "shop-review"];
-            const starArray = ["/shop/mypage", "/shop/myInfoModify", "/shop/myInfo", "/shop/mypage"];
+            const starArray = ["/shop/mypage", "/shop/myInfoModify", "/shop/myInfo", "/shop/mypage", "/modify-shop-info"];
 
             if (homeArray.includes(path)) {
                 document.getElementById('home').src = svgUrl + "/Home_2.svg";
@@ -60,6 +60,10 @@
                 }
             }).open();
         }
+
+        window.onload = () => {
+            changeSvg();
+        };
     </script>
 
 </head>

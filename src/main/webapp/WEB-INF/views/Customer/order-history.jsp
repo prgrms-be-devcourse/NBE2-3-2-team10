@@ -34,7 +34,7 @@
         <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
     <button class="flex flex-col items-center text-gray-500" onclick="location.href='/orderHistory'" >
-        <img id = "bag" src = "./footer/Bag.svg" class = "h-6 w-6"/>
+        <img id = "bag" src = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer/Bag_2.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">주문내역</span>
     </button>
     <button class="flex flex-col items-center text-gray-500" onclick="location.href='/mypage'">

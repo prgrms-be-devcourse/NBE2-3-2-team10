@@ -28,7 +28,7 @@
         }
     </style>
 </head>
-<body class="bg-white">
+<body class="bg-gray-100">
 
 <!-- Header -->
 <header class="bg-white shadow p-4 flex justify-between items-center max-w-[448px] overflow-x-auto mx-auto">
