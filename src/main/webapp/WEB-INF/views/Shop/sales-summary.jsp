@@ -84,7 +84,7 @@
     let currentMonthJS = new Date().getMonth() + 1;
     let startYearJS = currentYearJS - 2;
 
-    window.onload = function() {
+    window.onload = () => {
         changeSvg();
         checkAccessToken();
 

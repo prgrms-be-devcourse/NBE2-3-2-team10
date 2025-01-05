@@ -172,6 +172,7 @@ public class PickupService {
                             item.getTotalPrice()
                     ))
                     .collect(Collectors.toList());
+            System.out.println(pickup.getId() + " " + pickup.getStatus() + " " + pickup.getCreated_at() + " " + pickup.getUser().getAddress() + " " + orderItems.size());
 
             return new PickupSalesSummeryDTO(
                     pickup.getId(),

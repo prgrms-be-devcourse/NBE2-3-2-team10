@@ -107,7 +107,7 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("SELECT DISTINCT p FROM Pickup p " +
             "JOIN FETCH p.user u " +
             "JOIN FETCH p.laundryshop l " +
-            "WHERE p.user.id = :userId " +
+            "WHERE p.laundryshop.user.id = :userId " +
             "AND p.status IN :statuses " +
             "AND YEAR(p.created_at) = :year " +
             "AND MONTH(p.created_at) = :month " +
