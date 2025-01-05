@@ -128,11 +128,6 @@ public class PageController {
         return "Customer/laundryshop-by-category";
     }
 
-    @RequestMapping("/shop-mypage")
-    public String shopMyPage() {
-        return "Shop/shop-my-page";
-    }
-
     @RequestMapping("/order/completed")
     public String orderCompleted(@RequestParam("pg_token") String token, Model model) {
         model.addAttribute("pg_token", token);
@@ -143,4 +138,15 @@ public class PageController {
     public String orderSuccess() {
         return "Customer/order-complete";
     }
+  
+    @RequestMapping("/shop/mypage")
+    public String shopMyPage() {
+        return "Shop/shop-my-page";
+    }
+
+    @RequestMapping("/shop/myInfoModify")
+    public String shopInfoModify() { return "Shop/my-info-modify-page"; }
+
+    @RequestMapping("/shop/myInfo")
+    public String shopInfo() { return "Shop/my-info"; }
 }

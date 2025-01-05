@@ -24,16 +24,12 @@
         <div class="text-gray-600 mt-1">깨끗한 하루 되세요!</div>
     </div>
     <div class="flex justify-around mt-4">
-        <button class="text-center focus:outline-none">
-            <svg class="w-8 h-8 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-6 4h6m-6 0a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2V9a2 2 0 00-2-2H8z"></path>
-            </svg>
-            <div class="text-sm mt-1">위시팡 내역</div>
+        <button class="text-center focus:outline-none flex flex-col justify-center items-center">
+            <img src = "./mypage/Union.svg" class = "h-[42px] w-[40px]"/>
+            <a href="/api/orders/payment/{id}" class="text-sm mt-1">워시팡 내역</a>
         </button>
-        <button class="text-center focus:outline-none" onclick="location.href='/myInfo'">
-            <svg class="w-8 h-8 mx-auto text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
+        <button class="text-center focus:outline-none flex flex-col justify-center items-center" onclick="location.href='/shop/myInfo'">
+            <img src = "./mypage/Vector.svg" class = "h-[43px] w-[40px]"/>
             <div class="text-sm mt-1">내정보</div>
         </button>
     </div>
@@ -64,18 +60,19 @@
     </button>
 
 </div>
+
 <!-- Footer -->
 <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
     <button class="flex flex-col items-center text-blue-500" onclick="location.href='/shop-main'">
-        <img src = "./footer/Home.svg" class = "h-6 w-6"/>
+        <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">홈</span>
     </button>
-    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >
-        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>
-        <span class="text-black text-[10pt] mt-1">주문내역</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop-mypage'">
-        <img src = "./footer/Star.svg" class = "h-6 w-6"/>
+    <%--    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/pickup-list'" >--%>
+    <%--        <img src = "./footer/Bag.svg" class = "h-6 w-6"/>--%>
+    <%--        <span class="text-black text-[10pt] mt-1">주문내역</span>--%>
+    <%--    </button>--%>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop/mypage'">
+        <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
         <span class="text-black text-[10pt] mt-1">내 정보</span>
     </button>
 </footer>
@@ -126,7 +123,29 @@
         });
     }
 
+    function changeSvg() {
+        const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+        const path = window.location.pathname;
+        // alert(path);
+
+        const homeArray = ["/shop-main", "/pickup-check", "/pickup-delivery", "shop-review"];
+        const starArray = ["/shop/mypage", "/shop/myInfoModify", "/shop/myInfo", "/shop/mypage"];
+
+        if (homeArray.includes(path)) {
+            document.getElementById('home').src = svgUrl + "/Home_2.svg";
+        } else {
+            document.getElementById('home').src = svgUrl + "/Home.svg";
+        }
+
+        if (starArray.includes(path)) {
+            document.getElementById('star').src = svgUrl + "/Star_2.svg";
+        } else {
+            document.getElementById('star').src = svgUrl + "/Star.svg";
+        }
+    }
+
     window.onload = () => {
+        changeSvg();
         getUserRole();
     };
 </script>
