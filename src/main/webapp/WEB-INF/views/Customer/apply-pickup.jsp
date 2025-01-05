@@ -206,7 +206,21 @@
             location.href= "/orderHistory/" + res.data;
         });
     }
-    
+
+    function checkAccessToken() {
+        axios.post(url + '/api/user/check-login', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            sessionStorage.setItem("accessToken", res.data.accessToken);
+            getOrderInfo();
+        }).catch(error => {
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            location.href = '/';
+        });
+    }
+
     function changeSvg() {
         const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
         const path = window.location.pathname;
@@ -234,22 +248,6 @@
             document.getElementById('star').src = svgUrl + "/Star.svg";
         }
     }
-
-    function checkAccessToken() {
-        axios.post(url + '/api/user/check-login', {
-            headers: {
-                Authorization: 'Bearer ' + token
-            }
-        }).then(res => {
-            sessionStorage.setItem("accessToken", res.data.accessToken);
-            getOrderInfo();
-        }).catch(error => {
-            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-            location.href = '/';
-        });
-    }
-  
-    document.addEventListener('DOMContentLoaded', calculateTotalPrice);
 
     window.onload = () => {
         changeSvg();
