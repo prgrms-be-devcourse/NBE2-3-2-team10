@@ -125,35 +125,35 @@
                 const selectedButton = document.getElementById(buttonId);
                 selectedButton.classList.add("selected");
             }
-
-            function changeSvg() {
-                const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
-                const path = window.location.pathname;
-                // alert(currentPath);
-
-                const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
-                const orderArray = ["/orderHistory"];
-                const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
-
-                if (homeArray.includes(path)) {
-                    document.getElementById('home').src = svgUrl + "/Home_2.svg";
-                } else {
-                    document.getElementById('home').src = svgUrl + "/Home.svg";
-                }
-
-                if (orderArray.includes(path)) {
-                    document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
-                } else {
-                    document.getElementById('bag').src = svgUrl + "/Bag.svg";
-                }
-
-                if (starArray.includes(path)) {
-                    document.getElementById('star').src = svgUrl + "/Star_2.svg";
-                } else {
-                    document.getElementById('star').src = svgUrl + "/Star.svg";
-                }
-            }
         });
+
+        function changeSvg() {
+            const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+            const path = window.location.pathname;
+            // alert(currentPath);
+
+            const homeArray = ["/main", "/laundryshop-by-map", "/laundryshop-by-category"];
+            const orderArray = ["/orderHistory"];
+            const starArray = ["/mypage", "/myInfo", "/myInfoModify"];
+
+            if (homeArray.includes(path)) {
+                document.getElementById('home').src = svgUrl + "/Home_2.svg";
+            } else {
+                document.getElementById('home').src = svgUrl + "/Home.svg";
+            }
+
+            if (orderArray.includes(path)) {
+                document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+            } else {
+                document.getElementById('bag').src = svgUrl + "/Bag.svg";
+            }
+
+            if (starArray.includes(path)) {
+                document.getElementById('star').src = svgUrl + "/Star_2.svg";
+            } else {
+                document.getElementById('star').src = svgUrl + "/Star.svg";
+            }
+        }
     </script>
 </head>
 <body class="bg-gray-100">
