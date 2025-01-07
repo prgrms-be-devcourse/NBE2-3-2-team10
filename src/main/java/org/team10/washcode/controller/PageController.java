@@ -8,23 +8,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.team10.washcode.Enum.LaundryCategory;
-import org.team10.washcode.ResponseDTO.laundry.LaundryDetailResDTO;
-import org.team10.washcode.ResponseDTO.order.OrderResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
-import org.team10.washcode.entity.HandledItems;
-import org.team10.washcode.ResponseDTO.review.ReviewResDTO;
-import org.team10.washcode.service.*;
-import org.team10.washcode.service.KakaoService;
+import org.team10.washcode.global.comm.enums.LaundryCategory;
+import org.team10.washcode.domain.laundryshop.dto.LaundryDetailResDTO;
+import org.team10.washcode.domain.laundryshop.service.LaundryShopService;
+import org.team10.washcode.global.oauth2.client.KakaoClient;
 
 @Controller
 @RequiredArgsConstructor
 public class PageController {
 
-    private final KakaoService kakaoService;
-    private final LaundryService laundryService;
-    private final OrderService orderService;
-    private final KakaoPayService kakaoPayService;
+    private final KakaoClient kakaoClient;
+    private final LaundryShopService laundryShopService;
 
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
@@ -34,7 +28,7 @@ public class PageController {
 
     @RequestMapping("/kakaoLogin")
     public String kakaoLogin(@RequestParam("code") String code, Model model, HttpServletResponse response) {
-        return kakaoService.kakaoLogin(code, model, response);
+        return kakaoClient.kakaoLogin(code, model, response);
     }
 
     @RequestMapping("/")
@@ -109,7 +103,7 @@ public class PageController {
 
     @RequestMapping("/laundryshop-detail/{laundry_id}")
     public String laundryshopDetail(@PathVariable("laundry_id")int id, Model model) {
-        LaundryDetailResDTO to = laundryService.getLaundryShopById(id);
+        LaundryDetailResDTO to = laundryShopService.getLaundryShopById(id);
         
         if(to == null) { return "error"; }
         

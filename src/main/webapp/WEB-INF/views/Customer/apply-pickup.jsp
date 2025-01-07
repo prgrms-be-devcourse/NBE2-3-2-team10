@@ -1,9 +1,9 @@
-<%@ page import="org.team10.washcode.entity.HandledItems" %>
-<%@ page import="org.team10.washcode.RequestDTO.order.OrderItemReqDTO" %>
+<%@ page import="org.team10.washcode.domain.handledItems.entity.HandledItems" %>
+<%@ page import="org.team10.washcode.domain.order.dto.OrderItemReqDTO" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="org.team10.washcode.entity.HandledItems" %>
-<%@ page import="org.team10.washcode.Enum.LaundryCategory" %>
+<%@ page import="org.team10.washcode.domain.handledItems.entity.HandledItems" %>
+<%@ page import="org.team10.washcode.global.comm.enums.LaundryCategory" %>
 <%
     //List<OrderItemReqDTO> handledItems = (List<OrderItemReqDTO>) request.getAttribute("handledItems");
     List<HandledItems> handledItems = (List<HandledItems>) request.getAttribute("handledItems");
