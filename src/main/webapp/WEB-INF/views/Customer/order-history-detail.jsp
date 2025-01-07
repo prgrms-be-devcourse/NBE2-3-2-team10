@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="org.team10.washcode.ResponseDTO.order.OrderResDTO" %>
+<%@ page import="org.team10.washcode.domain.order.dto.OrderResDTO" %>
 <%@ page import="java.util.List" %>
 <%
     int pickupId = (int) request.getAttribute("pickupId");

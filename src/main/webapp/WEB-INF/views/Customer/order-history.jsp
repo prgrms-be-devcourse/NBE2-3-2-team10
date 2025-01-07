@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="org.team10.washcode.ResponseDTO.order.OrderlistResDTO" %>
+<%@ page import="org.team10.washcode.domain.order.dto.OrderlistResDTO" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="ko">

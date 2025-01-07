@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="org.team10.washcode.ResponseDTO.review.ReviewResDTO" %>
+<%@ page import="org.team10.washcode.domain.review.dto.ReviewResDTO" %>
 <%@ page import="java.util.List" %>
 <%
     List<ReviewResDTO> reviewList = (List<ReviewResDTO>) request.getAttribute("reviewList");
