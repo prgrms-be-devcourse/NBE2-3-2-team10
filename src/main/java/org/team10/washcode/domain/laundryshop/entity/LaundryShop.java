@@ -19,16 +19,16 @@ public class LaundryShop {
     @JoinColumn(name = "user_id", referencedColumnName = "id") // 외래 키 설정
     private User user;
 
-    private String shop_name;
-    private String business_number;
-    private String user_name;
+    private String shopName;
+    private String businessNumber;
+    private String userName;
     private String phone;
     private String address;
-    private String non_operating_days;
+    private String nonOperatingDays;
 
     private Double latitude;
     private Double longitude;
 
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 }

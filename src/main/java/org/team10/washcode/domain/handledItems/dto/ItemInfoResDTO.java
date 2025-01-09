@@ -8,14 +8,14 @@ import org.team10.washcode.global.comm.enums.LaundryCategory;
 @Setter
 public class ItemInfoResDTO {
 
-    private int item_id;
-    private String item_name;
+    private int itemId;
+    private String itemName;
     private LaundryCategory category;
     private int price;
 
-    public ItemInfoResDTO(int item_id, String item_name, LaundryCategory category, int price) {
-        this.item_id = item_id;
-        this.item_name = item_name;
+    public ItemInfoResDTO(int itemId, String itemName, LaundryCategory category, int price) {
+        this.itemId = itemId;
+        this.itemName = itemName;
         this.category = category;
         this.price = price;
     }

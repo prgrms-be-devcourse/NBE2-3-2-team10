@@ -51,7 +51,7 @@ public class LaundryShopController {
     //세탁소 정보 저장
     @PostMapping("/")
     public ResponseEntity<?> registerLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
-        System.out.println(to.getUser_name());
+        System.out.println(to.getUserName());
 
         int laundry_id = laundryShopService.registerLaundryShop(to, id);
 
@@ -70,7 +70,7 @@ public class LaundryShopController {
     //세탁소 정보 수정
     @PutMapping("/")
     public ResponseEntity<?> modifyLaundry(@RequestBody ShopAddReqDTO to, @AuthenticationPrincipal int id) {
-        System.out.println(to.getUser_name());
+        System.out.println(to.getUserName());
 
         int laundry_id = laundryShopService.registerLaundryShop(to, id);
 
@@ -80,7 +80,7 @@ public class LaundryShopController {
 
     //가격표 수정
     @PutMapping("/handled-items")
-    public List<HandledItems> setHandledItems_modify(@RequestBody List<HandledItemsResDTO> itemsList) {
+    public List<HandledItems> setHandledItemsModify(@RequestBody List<HandledItemsResDTO> itemsList) {
         System.out.println("Received items list: " + itemsList);
 
         return laundryShopService.setHandledItems(itemsList);

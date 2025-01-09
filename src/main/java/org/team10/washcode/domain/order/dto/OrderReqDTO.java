@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class OrderReqDTO {
     // 수거 주문 (고객)
-    private int laundryshop_id;
+    private int laundryshopId;
     private String content;
 
-    private int item_id;
+    private int itemId;
     private int quantity;
     private String paymentMethod;
 }

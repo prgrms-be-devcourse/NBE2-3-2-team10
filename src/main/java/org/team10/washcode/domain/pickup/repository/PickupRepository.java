@@ -37,24 +37,24 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
             "JOIN FETCH p.user u " +
             "WHERE p.laundryshop.user.id = :userId " +
             "AND p.status IN :statuses " +
-            "ORDER BY p.update_at DESC")
+            "ORDER BY p.updateAt DESC")
     List<Pickup> findAllByUserIdAndStatuses(@Param("userId") long userId,
                                             @Param("statuses") List<PickupStatus> statuses);
 
     //이용내역 조회
-    @Query("SELECT ls.shop_name, p.id, p.status, p.created_at " +
+    @Query("SELECT ls.shopName, p.id, p.status, p.createdAt " +
             "FROM LaundryShop ls " +
             "JOIN Pickup p ON ls.id = p.laundryshop.id " +
             "WHERE p.user.id = :userId " +
-            "ORDER BY p.created_at DESC" )
+            "ORDER BY p.createdAt DESC" )
     List<Object[]> findOrderListByUserId(@Param("userId") int userId);
 
 
     // 필터링된 데이터 가져오기(개월 수)
-    @Query("SELECT ls.shop_name, p.id, p.status, p.created_at " +
+    @Query("SELECT ls.shopName, p.id, p.status, p.createdAt " +
             "FROM LaundryShop ls " +
             "JOIN Pickup p ON ls.id = p.laundryshop.id " +
-            "WHERE p.user.id = :userId AND p.created_at >= :fromDate")
+            "WHERE p.user.id = :userId AND p.createdAt >= :fromDate")
     List<Object[]> findByUserIdAndDate(@Param("userId") int userId, @Param("fromDate") Timestamp fromDate);
 
 
@@ -62,16 +62,16 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
     @Query("SELECT " +
             "u.address AS address, " +
             "u.phone AS phone, " +
-            "ls.shop_name AS shopName, " +
+            "ls.shopName AS shopName, " +
             "p.id AS pickupId, " +
             "p.status AS status, " +
             "p.content AS content, " +
-            "p.created_at AS pickupCreatedAt, " +
-            "p.update_at AS pickupUpdateAt, " +
+            "p.createdAt AS pickupCreatedAt, " +
+            "p.updateAt AS pickupUpdateAt, " +
             "pi.id AS pickupItemId, " +
             "pi.quantity AS quantity, " +
             "pi.totalPrice AS totalPrice, " +
-            "hi.item_name AS itemName, " +
+            "hi.itemName AS itemName, " +
             "hi.category AS category, " +
             "pay.amount AS amount, " +
 
@@ -104,9 +104,9 @@ public interface PickupRepository extends JpaRepository<Pickup, Long> {
             "JOIN FETCH p.laundryshop l " +
             "WHERE p.laundryshop.user.id = :userId " +
             "AND p.status IN :statuses " +
-            "AND YEAR(p.created_at) = :year " +
-            "AND MONTH(p.created_at) = :month " +
-            "ORDER BY p.created_at DESC")
+            "AND YEAR(p.createdAt) = :year " +
+            "AND MONTH(p.createdAt) = :month " +
+            "ORDER BY p.createdAt DESC")
     List<Pickup> findSalesSummeryByUserIdAndDate(@Param("userId") long userId,
                                                  @Param("statuses") List<PickupStatus> statuses,
                                                  @Param("year") int year,

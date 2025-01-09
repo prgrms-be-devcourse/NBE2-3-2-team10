@@ -14,12 +14,12 @@ public class OrderResDTO {
     private String address;
     private String phone;
 
-    private String shop_name;
+    private String shopName;
     private String content;
     private String status;
   
-    private String created_at;   //요청 생성
-    private String update_at;
+    private String createdAt;   //요청 생성
+    private String updateAt;
 
     //결제 방법
     private int paymentId;
@@ -28,19 +28,19 @@ public class OrderResDTO {
     private Timestamp payment_datetime;
 
     private int price;//각 카테고리별 가격
-    List<OrderItem> order_items;
+    List<OrderItem> orderItems;
 
     // OrderItem을 정적 이너 클래스로 정의
     @Setter
     @Getter
     public static class OrderItem {
-        private String item_name;
+        private String itemName;
         private int quantity;
         private int totalPrice;
 
 
-        public OrderItem(String item_name, int quantity, int totalPrice) {
-            this.item_name = item_name;
+        public OrderItem(String itemName, int quantity, int totalPrice) {
+            this.itemName = itemName;
             this.quantity = quantity;
             this.totalPrice = totalPrice;
         }
@@ -50,8 +50,8 @@ public class OrderResDTO {
     }
 
     // getOrder_items() 메서드 구현
-    public List<OrderItem> getOrder_items() {
-        return order_items;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 }
 

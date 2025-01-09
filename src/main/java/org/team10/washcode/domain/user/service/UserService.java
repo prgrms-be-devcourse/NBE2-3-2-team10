@@ -183,7 +183,7 @@ public class UserService {
         try {
             // Access Token 은 Front 에서 삭제 필요
             // Refresh Token 유효시간을 0으로 설정
-            ResponseCookie refresh_cookie = ResponseCookie
+            ResponseCookie refreshCookie = ResponseCookie
                     .from("REFRESHTOKEN", "") // 추후 토큰값 추가
                     .domain("localhost")
                     .path("/")
@@ -193,7 +193,7 @@ public class UserService {
 
             return ResponseEntity
                     .ok()
-                    .header(HttpHeaders.SET_COOKIE, refresh_cookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                     .body("Logout SUCCESS");
         } catch (Exception e) {
             System.out.println("[Error] "+e.getMessage());

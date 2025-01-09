@@ -15,7 +15,7 @@ public class Review {
     private int id;// 리뷰ID(PK)
 
     @ManyToOne
-    @JoinColumn(name = "pickup_id")
+    @JoinColumn(name = "pickupId")
     private Pickup pickup;          // 요청ID(FK, Request
 
     private String content;         // 리뷰내용

@@ -17,7 +17,7 @@ public class HandledItems {
     @JoinColumn(name = "laundryshop_id")
     private LaundryShop laundryshop;
 
-    private String item_name;
+    private String itemName;
 
     @Enumerated(EnumType.STRING)
     private LaundryCategory category;

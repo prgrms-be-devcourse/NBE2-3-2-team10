@@ -197,11 +197,11 @@ public class KakaoClient {
         Optional<User> user = userRepository.findIdByKakaoId(result.getId());
         if (user.isEmpty()) {
             model.addAttribute("kakaoUserData", result);
-            return "Glober/register";
+            return "glober/register";
         }
 
         // 3-2 가입이 되어 있으면 쿠키를 통해 토큰 발행 후, 로그인 진행
         login(user.get(), response, model);
-        return "Glober/kakaoLoginWait";
+        return "glober/kakaoLoginWait";
     }
 }

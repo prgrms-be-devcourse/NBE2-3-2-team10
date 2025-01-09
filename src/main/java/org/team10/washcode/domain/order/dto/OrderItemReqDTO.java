@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class OrderItemReqDTO {
     // 주문 세탁물 항목 (고객)
-    private int item_id;
+    private int itemId;
     private int quantity;
-    private int Totalprice;
+    private int totalPrice;
 }

@@ -19,11 +19,11 @@ public class Pickup {
     private int id;            //요청
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;        //고객
 
     @ManyToOne
-    @JoinColumn(name = "laundryshop_id")
+    @JoinColumn(name = "laundryshopId")
     private LaundryShop laundryshop;     //세탁
 
     @Enumerated(EnumType.STRING)
@@ -31,7 +31,7 @@ public class Pickup {
 
     private String content;         //요청내용
     @CreationTimestamp
-    private Timestamp created_at;   //요청생성
+    private Timestamp createdAt;   //요청생성
     @UpdateTimestamp
-    private Timestamp update_at;    //요청 갱신
+    private Timestamp updateAt;    //요청 갱신
 }

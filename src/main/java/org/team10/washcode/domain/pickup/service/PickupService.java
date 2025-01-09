@@ -4,14 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.team10.washcode.global.comm.enums.PickupStatus;
-import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
+import org.team10.washcode.domain.pickup.dto.PickupDeliveryResDTO;
+import org.team10.washcode.domain.pickup.dto.PickupDetailResDTO;
+import org.team10.washcode.domain.pickup.dto.PickupResDTO;
+import org.team10.washcode.domain.pickup.dto.PickupSalesSummeryDTO;
 import org.team10.washcode.domain.order.entity.db.Payment;
 import org.team10.washcode.domain.pickup.entity.Pickup;
 import org.team10.washcode.domain.pickup.entity.PickupItem;
-import org.team10.washcode.repository.db.PaymentRepository;
+import org.team10.washcode.domain.order.repository.db.PaymentRepository;
 import org.team10.washcode.domain.pickup.repository.PickupItemRepository;
 import org.team10.washcode.domain.pickup.repository.PickupRepository;
 
@@ -34,7 +34,7 @@ public class PickupService {
         List<PickupItem> pickupItems = pickupItemRepository.findByPickupId(pickupId);
         List<PickupResDTO.OrderItemDTO> orderItems = pickupItems.stream()
                 .map(item -> new PickupResDTO.OrderItemDTO(
-                        item.getHandledItems().getItem_name(),
+                        item.getHandledItems().getItemName(),
                         item.getQuantity(),
                         item.getTotalPrice()
                 ))
@@ -43,7 +43,7 @@ public class PickupService {
         return new PickupResDTO(
                 pickup.getId(),
                 pickup.getStatus(),
-                pickup.getCreated_at(),
+                pickup.getCreatedAt(),
                 pickup.getUser().getAddress(),
                 pickup.getContent(),
                 orderItems
@@ -60,7 +60,7 @@ public class PickupService {
 
             List<PickupDetailResDTO.OrderItemDTO> orderItems = pickupItems.stream()
                     .map(item -> new PickupDetailResDTO.OrderItemDTO(
-                            item.getHandledItems().getItem_name(),
+                            item.getHandledItems().getItemName(),
                             item.getQuantity(),
                             item.getTotalPrice()
                     ))
@@ -68,8 +68,8 @@ public class PickupService {
 
             return new PickupDetailResDTO(
                     pickup.getId(),
-                    pickup.getLaundryshop().getShop_name(),
-                    pickup.getCreated_at(),
+                    pickup.getLaundryshop().getShopName(),
+                    pickup.getCreatedAt(),
                     pickup.getUser().getAddress(),
                     pickup.getUser().getPhone(),
                     pickup.getContent(),
@@ -106,7 +106,7 @@ public class PickupService {
             List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
             List<PickupResDTO.OrderItemDTO> orderItems = pickupItems.stream()
                     .map(item -> new PickupResDTO.OrderItemDTO(
-                            item.getHandledItems().getItem_name(),
+                            item.getHandledItems().getItemName(),
                             item.getQuantity(),
                             item.getTotalPrice()
                     ))
@@ -120,7 +120,7 @@ public class PickupService {
             return new PickupResDTO(
                     pickup.getId(),
                     pickup.getStatus(),
-                    pickup.getCreated_at(),
+                    pickup.getCreatedAt(),
                     pickup.getUser().getAddress(),
                     pickup.getContent(),
                     orderItems
@@ -137,7 +137,7 @@ public class PickupService {
 
             List<PickupDeliveryResDTO.OrderItemDTO> orderItems = pickupItems.stream()
                     .map(item -> new PickupDeliveryResDTO.OrderItemDTO(
-                            item.getHandledItems().getItem_name(),
+                            item.getHandledItems().getItemName(),
                             item.getQuantity(),
                             item.getTotalPrice()
                     ))
@@ -145,8 +145,8 @@ public class PickupService {
 
             return new PickupDeliveryResDTO(
                     pickup.getId(),
-                    pickup.getLaundryshop().getShop_name(),
-                    pickup.getCreated_at(),
+                    pickup.getLaundryshop().getShopName(),
+                    pickup.getCreatedAt(),
                     pickup.getUser().getAddress(),
                     pickup.getUser().getPhone(),
                     pickup.getContent(),
@@ -169,17 +169,17 @@ public class PickupService {
             List<PickupItem> pickupItems = pickupItemRepository.findByPickupId((long) pickup.getId());
             List<PickupSalesSummeryDTO.OrderItemDTO> orderItems = pickupItems.stream()
                     .map(item -> new PickupSalesSummeryDTO.OrderItemDTO(
-                            item.getHandledItems().getItem_name(),
+                            item.getHandledItems().getItemName(),
                             item.getQuantity(),
                             item.getTotalPrice()
                     ))
                     .collect(Collectors.toList());
-            System.out.println(pickup.getId() + " " + pickup.getStatus() + " " + pickup.getCreated_at() + " " + pickup.getUser().getAddress() + " " + orderItems.size());
+            System.out.println(pickup.getId() + " " + pickup.getStatus() + " " + pickup.getCreatedAt() + " " + pickup.getUser().getAddress() + " " + orderItems.size());
 
             return new PickupSalesSummeryDTO(
                     pickup.getId(),
                     pickup.getStatus(),
-                    pickup.getCreated_at(),
+                    pickup.getCreatedAt(),
                     pickup.getUser().getAddress(),
                     orderItems
             );

@@ -10,7 +10,7 @@ import java.util.List;
 public class OrderInfoResDTO {
     private String name;
     private String address;
-    private String shop_name;
+    private String shopName;
     private List<ItemInfoResDTO> category;
 }
 

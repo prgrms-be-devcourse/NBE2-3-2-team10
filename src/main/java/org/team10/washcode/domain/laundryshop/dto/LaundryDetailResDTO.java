@@ -9,12 +9,12 @@ import java.util.List;
 @Getter
 public class LaundryDetailResDTO {
     // 세탁소 상세 보기
-    private String shop_name;
+    private String shopName;
     private String phone;
     private String address;
-    private String non_operating_days;
-    private String business_number;
-    private String user_name;
+    private String nonOperatingDays;
+    private String businessNumber;
+    private String userName;
 
     private List<HandledItems> handledItems;
 }

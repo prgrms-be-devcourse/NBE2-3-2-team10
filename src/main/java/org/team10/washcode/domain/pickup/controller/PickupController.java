@@ -6,10 +6,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.team10.washcode.global.comm.enums.PickupStatus;
-import org.team10.washcode.ResponseDTO.pickup.PickupDeliveryResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupDetailResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupResDTO;
-import org.team10.washcode.ResponseDTO.pickup.PickupSalesSummeryDTO;
+import org.team10.washcode.domain.pickup.dto.PickupDeliveryResDTO;
+import org.team10.washcode.domain.pickup.dto.PickupDetailResDTO;
+import org.team10.washcode.domain.pickup.dto.PickupResDTO;
+import org.team10.washcode.domain.pickup.dto.PickupSalesSummeryDTO;
 import org.team10.washcode.domain.review.dto.ReviewResDTO;
 import org.team10.washcode.domain.pickup.service.PickupService;
 import org.team10.washcode.domain.review.service.ReviewService;

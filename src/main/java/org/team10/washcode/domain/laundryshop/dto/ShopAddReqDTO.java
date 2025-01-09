@@ -5,12 +5,12 @@ import lombok.Getter;
 @Getter
 public class ShopAddReqDTO {
     // 세탁소 등록 (업체)
-    private String shop_name;
-    private String business_number;
+    private String shopName;
+    private String businessNumber;
     private String address;
     private String phone;
-    private String non_operating_days;
-    private String user_name;
+    private String nonOperatingDays;
+    private String userName;
 
     private double latitude;
     private double longitude;

@@ -18,7 +18,6 @@ public class HandledItemsService {
                 .orElseThrow(() -> new IllegalArgumentException("아이템을 찾을 수 없습니다. ID: " + id));
     }
 
-
     public List<HandledItems> getAllHandledItems(Long laundryShopId) {
         try {
             return handledItemsRepository.findByLaundryshopId(laundryShopId);

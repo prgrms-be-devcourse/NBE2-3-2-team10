@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ReviewResDTO {
     // 리뷰 조회
-    private int pickup_id;
-    private String user_name;
+    private int pickupId;
+    private String userName;
     private String content;
 }

@@ -17,7 +17,7 @@ public class Payment {
     private int id;     //결제id
 
     @OneToOne
-    @JoinColumn(name = "pickup_id")
+    @JoinColumn(name = "pickupId")
     private Pickup pickup;     //요청 id
 
     @CreationTimestamp

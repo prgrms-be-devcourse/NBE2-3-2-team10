@@ -20,7 +20,7 @@ import org.team10.washcode.domain.pickup.repository.PickupItemRepository;
 import org.team10.washcode.domain.pickup.repository.PickupRepository;
 import org.team10.washcode.domain.user.repository.UserRepository;
 import org.team10.washcode.domain.order.entity.redis.KakaoPayPgToken;
-import org.team10.washcode.repository.db.*;
+import org.team10.washcode.domain.order.repository.db.PaymentRepository;
 import org.team10.washcode.domain.order.repository.redis.KakaoPayPgTokenRepository;
 
 import java.sql.Timestamp;
@@ -57,7 +57,7 @@ public class OrderService {
         orderInfoResDTO.setName(userRepository.findNameById(id).get());
         orderInfoResDTO.setAddress(userRepository.findAddressById(id).get());
         orderInfoResDTO.setAddress(userRepository.findAddressById(id).get());
-        orderInfoResDTO.setShop_name(laundryShopRepository.findNameById(laundryId).get());
+        orderInfoResDTO.setShopName(laundryShopRepository.findNameById(laundryId).get());
 
         List<ItemInfoResDTO> handledItems = handledItemsRepository.findHandledItemsByLaundryId(laundryId);
 
@@ -71,10 +71,10 @@ public class OrderService {
             // 주문 저장
             Pickup pickup = new Pickup();
             pickup.setUser(userRepository.findById(id).orElseThrow());
-            pickup.setLaundryshop(laundryShopRepository.findById(orderReqDTO.getLaundryshop_id()).orElseThrow());
+            pickup.setLaundryshop(laundryShopRepository.findById(orderReqDTO.getLaundryshopId()).orElseThrow());
             pickup.setContent(orderReqDTO.getContent());
             pickup.setStatus(PickupStatus.REQUESTED);
-            pickup.setCreated_at(new Timestamp(System.currentTimeMillis()));
+            pickup.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
             pickupRepository.save(pickup);
 
@@ -83,7 +83,7 @@ public class OrderService {
             pickupItem.setPickup(pickup);
             pickupItem.setQuantity(orderReqDTO.getQuantity());
 
-            HandledItems handledItem = handledItemsRepository.findById(orderReqDTO.getItem_id()).orElseThrow();
+            HandledItems handledItem = handledItemsRepository.findById(orderReqDTO.getItemId()).orElseThrow();
             pickupItem.setHandledItems(handledItem);
             pickupItem.setTotalPrice(handledItem.getPrice() * orderReqDTO.getQuantity());
 
@@ -111,10 +111,10 @@ public class OrderService {
         List<Object[]> result = pickupRepository.findOrderListByUserId(id);
 
         List<OrderlistResDTO> orderlistResDTOS = result.stream().map(row->new OrderlistResDTO(
-                (int) row[1],   //pickup_id
-                (String) row[0],    //shop_name
-                ((PickupStatus) row[2]).getDesc(),  //status
-                new SimpleDateFormat("yyyy년 MM월 dd일").format((Timestamp) row[3])  //created_at
+                (int) row[1],
+                (String) row[0],
+                ((PickupStatus) row[2]).getDesc(),
+                new SimpleDateFormat("yyyy년 MM월 dd일").format((Timestamp) row[3])
         )).toList();
 
         return ResponseEntity.ok().body(orderlistResDTOS);
@@ -125,31 +125,31 @@ public class OrderService {
         List<Object[]> result = pickupRepository.findOrderDetails(id, pickupId);
         OrderResDTO orderResDTO = new OrderResDTO();
 
-        // 주문 아이템 리스트가 null일 경우 빈 리스트로 초기화
-        orderResDTO.setOrder_items(new ArrayList<>());
+
+        orderResDTO.setOrderItems(new ArrayList<>());
 
         for (Object[] obj : result) {
             orderResDTO.setAddress((String) obj[0]);
             orderResDTO.setPhone((String) obj[1]);
-            orderResDTO.setShop_name((String) obj[2]);
+            orderResDTO.setShopName((String) obj[2]);
             orderResDTO.setContent((String) obj[5]);
             orderResDTO.setName((String) obj[15]);
 
             orderResDTO.setStatus(((PickupStatus) obj[4]).getDesc());
-            orderResDTO.setCreated_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[6]));
+            orderResDTO.setCreatedAt(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[6]));
             if(obj[7] != null){
-                orderResDTO.setUpdate_at(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
+                orderResDTO.setUpdateAt(new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format((Timestamp) obj[7]));
             }
             orderResDTO.setMethod((String) obj[14]);
             orderResDTO.setAmount((Integer)obj[13]);
             orderResDTO.setPaymentId((Integer) obj[17]);
 
             OrderResDTO.OrderItem orderItem = new OrderResDTO.OrderItem(
-                    (String) obj[11], // item_name
-                    (Integer) obj[9], // quantity
-                    (Integer) obj[10] // totalPrice
+                    (String) obj[11],
+                    (Integer) obj[9],
+                    (Integer) obj[10]
             );
-            orderResDTO.getOrder_items().add(orderItem);
+            orderResDTO.getOrderItems().add(orderItem);
         }
 
         return ResponseEntity.ok().body(orderResDTO);
@@ -171,14 +171,14 @@ public class OrderService {
     }
 
     /* 혜원님 추가 기능
-    //필터링 조회(개월수로)
+    //결제내역 페이지 - 필터링 조회(개월수로)
     public List<OrderlistResDTO> getOrdersByUserIdAndDate(int userId, Timestamp fromDate) {
         List<Object[]> rawResults = pickupRepository.findByUserIdAndDate(userId, fromDate);
 
         // Object[]를 DTO로 변환
         return rawResults.stream()
                 .map(result -> new OrderlistResDTO(
-                        (int) result[1],   //pickup_id
+                        (int) result[1],   //pickupId
                         (String) result[0],    //shop_name
                         ((PickupStatus) result[2]).getDesc(),  //status
                         (Timestamp) result[3]  //created_at

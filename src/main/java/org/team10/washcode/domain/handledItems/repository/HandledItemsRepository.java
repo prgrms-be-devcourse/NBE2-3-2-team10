@@ -17,7 +17,6 @@ public interface HandledItemsRepository extends JpaRepository<HandledItems, Long
 
     //List<HandledItems> findByLaundryshopId(Long laundryShopId);
 
-
     //세탁소 아이디를 받아서 handledItem 내용 조회(id, laundryshop_id,price, item_name, category)
     @Query("SELECT h FROM HandledItems h WHERE h.laundryshop.id = :laundryshopId")
     List<HandledItems> findByLaundryshopId(@Param("laundryshopId") Long laundryshopId);
@@ -26,7 +25,7 @@ public interface HandledItemsRepository extends JpaRepository<HandledItems, Long
     @Query("SELECT h.laundryshop.id FROM HandledItems h WHERE h.category = :category")
     List<Integer> findLaundryShopIdsByCategory(LaundryCategory category);
 
-    @Query("SELECT new org.team10.washcode.ResponseDTO.laundry.ItemInfoResDTO(h.id, h.item_name, h.category,h.price) FROM HandledItems h WHERE h.laundryshop.id = :laundryId")
+    @Query("SELECT new org.team10.washcode.domain.handledItems.dto.ItemInfoResDTO(h.id, h.itemName, h.category,h.price) FROM HandledItems h WHERE h.laundryshop.id = :laundryId")
     List<ItemInfoResDTO> findHandledItemsByLaundryId(@Param("laundryId") int laundryId);
 
     Optional<HandledItems> findById(@Param("itemId") int itemId);

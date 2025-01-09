@@ -21,8 +21,8 @@ public class ReviewService {
 
         for (Review review : reviewEntities) {
             ReviewResDTO dto = new ReviewResDTO();
-            dto.setPickup_id(review.getPickup().getId());
-            dto.setUser_name(review.getPickup().getUser().getName());
+            dto.setPickupId(review.getPickup().getId());
+            dto.setUserName(review.getPickup().getUser().getName());
             dto.setContent(review.getContent());
             dtos.add(dto);
         }

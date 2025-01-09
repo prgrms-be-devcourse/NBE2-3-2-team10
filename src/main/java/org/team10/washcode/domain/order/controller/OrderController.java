@@ -6,7 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.team10.washcode.domain.order.dto.KakaoPayReqDTO;
 import org.team10.washcode.domain.order.dto.OrderReqDTO;
-import org.team10.washcode.domain.order.service.KakaoPayService;
+import org.team10.washcode.global.oauth2.client.KakaoPayClient;
 import org.team10.washcode.domain.order.service.OrderService;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
-    private KakaoPayService kakaoPayService;
+    private KakaoPayClient kakaoPayClient;
 
     @GetMapping("/info/{laundry_id}")
     public ResponseEntity<?> getInfo(@AuthenticationPrincipal int id, @PathVariable("laundry_id") int laundryId){
@@ -43,17 +43,17 @@ public class OrderController {
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancelOrder(@AuthenticationPrincipal int id, @RequestBody Map<String, Integer> pickupId){
-        return orderService.cancelOrder(id,pickupId.get("pickup_id"));
+        return orderService.cancelOrder(id,pickupId.get("pickupId"));
     }
 
     @PostMapping("/kakaopay/ready")
     public ResponseEntity<?> kakaoPayReady(@AuthenticationPrincipal int id, @RequestBody KakaoPayReqDTO kakaoPayReqDTO) {
-        return kakaoPayService.payReady(id, kakaoPayReqDTO);
+        return kakaoPayClient.payReady(id, kakaoPayReqDTO);
     }
 
     @PostMapping("/kakaopay/approve")
     public ResponseEntity<?> kakaoPayApprove(@AuthenticationPrincipal int id, @RequestBody Map<String, String> request) {
-        return kakaoPayService.payCompleted(id, request.get("token"));
+        return kakaoPayClient.payCompleted(id, request.get("token"));
     }
 
     /* 혜원님 추가 작성한 기능

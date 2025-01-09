@@ -13,5 +13,5 @@ public class HandledItemsResDTO {
     private LaundryCategory category;
     private int price;
 
-    private int laundry_id;
+    private int laundryId;
 }

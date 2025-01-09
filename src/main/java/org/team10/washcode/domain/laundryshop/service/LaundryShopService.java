@@ -40,7 +40,7 @@ public class LaundryShopService {
 
     // 검색된 세탁소 리스트 거리순 정렬
     public List<LaundryShop> getLaundryShops(String shop_name, double userLat, double userLng) {
-        List<LaundryShop> shops = laundryShopRepository.findByShop_NameContaining(shop_name);
+        List<LaundryShop> shops = laundryShopRepository.findByShopNameContaining(shop_name);
         return sortByDistance(shops, userLat, userLng);
     }
 
@@ -77,12 +77,12 @@ public class LaundryShopService {
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
         System.out.println("LaundryDetailResDTO: " + laundryShop.getId());
-        to.setShop_name(laundryShop.getShop_name());
+        to.setShopName(laundryShop.getShopName());
         to.setPhone(laundryShop.getPhone());
         to.setAddress(laundryShop.getAddress());
-        to.setNon_operating_days(laundryShop.getNon_operating_days());
-        to.setBusiness_number(laundryShop.getBusiness_number());
-        to.setUser_name(laundryShop.getUser_name());
+        to.setNonOperatingDays(laundryShop.getNonOperatingDays());
+        to.setBusinessNumber(laundryShop.getBusinessNumber());
+        to.setUserName(laundryShop.getUserName());
 
 
         List<HandledItems> handledItems = handledItemsRepository.findByLaundryshopId((long) laundryShop.getId());
@@ -102,12 +102,12 @@ public class LaundryShopService {
         LaundryDetailResDTO to = new LaundryDetailResDTO();
 
         System.out.println("LaundryDetailResDTO: " + laundryShop.getId());
-        to.setShop_name(laundryShop.getShop_name());
+        to.setShopName(laundryShop.getShopName());
         to.setPhone(laundryShop.getPhone());
         to.setAddress(laundryShop.getAddress());
-        to.setNon_operating_days(laundryShop.getNon_operating_days());
-        to.setBusiness_number(laundryShop.getBusiness_number());
-        to.setUser_name(laundryShop.getUser_name());
+        to.setNonOperatingDays(laundryShop.getNonOperatingDays());
+        to.setBusinessNumber(laundryShop.getBusinessNumber());
+        to.setUserName(laundryShop.getUserName());
 
 
         List<HandledItems> handledItems = handledItemsRepository.findByLaundryshopId((long) laundryShop.getId());
@@ -132,15 +132,15 @@ public class LaundryShopService {
                 .orElseGet(LaundryShop::new);
 
         shop.setUser(user);
-        shop.setShop_name(to.getShop_name());
-        shop.setBusiness_number(to.getBusiness_number());
-        shop.setUser_name(to.getUser_name());
+        shop.setShopName(to.getShopName());
+        shop.setBusinessNumber(to.getBusinessNumber());
+        shop.setUserName(to.getUserName());
         shop.setAddress(to.getAddress());
         shop.setPhone(to.getPhone());
-        shop.setNon_operating_days(to.getNon_operating_days());
+        shop.setNonOperatingDays(to.getNonOperatingDays());
         shop.setLatitude(to.getLatitude());
         shop.setLongitude(to.getLongitude());
-        shop.setCreated_at(new Timestamp(System.currentTimeMillis()));
+        shop.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         LaundryShop savedShop = laundryShopRepository.save(shop);
 
@@ -150,7 +150,7 @@ public class LaundryShopService {
 
     //가격표 정보 등록 및 수정
     public List<HandledItems> setHandledItems(List<HandledItemsResDTO> items) {
-        Long laundryId = (long) items.get(0).getLaundry_id();
+        Long laundryId = (long) items.get(0).getLaundryId();
         LaundryShop laundryShop = laundryShopRepository.findById(laundryId)
                 .orElseThrow(() -> new IllegalArgumentException("LaundryShop not found with ID: " + laundryId));
 
@@ -166,7 +166,7 @@ public class LaundryShopService {
 
         List<HandledItems> toBeDeletedItems = handledItemsList.stream()
                 .filter(existingItem -> !items.stream()
-                        .anyMatch(item -> item.getItem_name().equals(existingItem.getItem_name()) &&
+                        .anyMatch(item -> item.getItem_name().equals(existingItem.getItemName()) &&
                                 item.getCategory().equals(existingItem.getCategory())))
                 .collect(Collectors.toList());
 
@@ -179,7 +179,7 @@ public class LaundryShopService {
         for (HandledItemsResDTO item : items) {
             // 기존 항목이 있는지 찾아보기
             Optional<HandledItems> existingItemOptional = handledItemsList.stream()
-                    .filter(existingItem -> existingItem.getItem_name().equals(item.getItem_name()) &&
+                    .filter(existingItem -> existingItem.getItemName().equals(item.getItem_name()) &&
                             existingItem.getCategory().equals(item.getCategory()))
                     .findFirst();
 
@@ -189,14 +189,14 @@ public class LaundryShopService {
                 // 기존 항목이 있다면 업데이트
                 handledItem = existingItemOptional.get();
 
-                handledItem.setItem_name(item.getItem_name());
+                handledItem.setItemName(item.getItem_name());
                 handledItem.setCategory(item.getCategory());
                 handledItem.setPrice(item.getPrice());
             } else {
                 // 기존 항목이 없다면 새로 생성
                 handledItem = new HandledItems();
                 handledItem.setLaundryshop(laundryShop);
-                handledItem.setItem_name(item.getItem_name());
+                handledItem.setItemName(item.getItem_name());
                 handledItem.setCategory(item.getCategory());
                 handledItem.setPrice(item.getPrice());
 
