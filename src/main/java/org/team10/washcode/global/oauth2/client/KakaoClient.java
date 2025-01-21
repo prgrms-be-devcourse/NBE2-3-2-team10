@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoClient {
@@ -162,7 +164,7 @@ public class KakaoClient {
     }
 
     // 카카오를 통해 JTW 토큰을 발행하는 코드
-    public void login(User user, HttpServletResponse response, Model model){
+    public String login(User user, HttpServletResponse response){
         try {
             String accessToken = jwtProvider.generateAccessToken(user.getId(),user.getRole());
             String refreshToken = jwtProvider.generateRefreshToken(user.getId(),user.getRole());
@@ -177,9 +179,14 @@ public class KakaoClient {
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
             // 응답 바디에 Access Token 포함
-            model.addAttribute("Authorization", accessToken);
+            log.info("[Kakao Login] "+ accessToken);
+            return accessToken;
         } catch (Exception e) {
-            System.out.println("[Error] "+e.getMessage());
+            System.out.println("[Error] "+ e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setHeader("error", e.getMessage());
+
+            return e.getMessage();
         }
     }
 
@@ -201,7 +208,7 @@ public class KakaoClient {
         }
 
         // 3-2 가입이 되어 있으면 쿠키를 통해 토큰 발행 후, 로그인 진행
-        login(user.get(), response, model);
+        model.addAttribute("AccessToken", login(user.get(), response));
         return "glober/kakaoLoginWait";
     }
 }

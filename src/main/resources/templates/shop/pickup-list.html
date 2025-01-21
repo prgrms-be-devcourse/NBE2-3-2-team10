@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세탁 요청</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- 메인 컨테이너 -->
+<div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-4">
+    <!-- 상단 헤더 -->
+    <div class="flex items-center justify-between p-4 border-b">
+        <button class="text-gray-500" onclick="history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        <h1 class="text-lg font-bold">세탁 요청</h1>
+        <div></div>
+    </div>
+
+    <div id="pickupListContainer" class="mt-2 space-y-4 px-4 pb-20">
+    </div>
+</div>
+
+<!-- 하단 네비게이션 -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/shop/shop-main'">
+        <img id = "home" src = "/footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
+    </button>
+        <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop/pickup-list'" >
+            <img src = "/footer/Bag_2.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">주문내역</span>
+        </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/shop/mypage'">
+        <img id = "star" src = "/footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
+    </button>
+</footer>
+
+<script>
+    const BASE_URL = "http://localhost:8080";
+    const token = sessionStorage.getItem("accessToken");
+
+    window.onload = function() {
+        checkAccessToken();
+        fetchPickedUpList();
+    };
+
+    function checkAccessToken() {
+        axios.post(BASE_URL + "/api/user/check-login", {}, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }).then(function(response) {
+            if (response.data === false) {
+                alert("로그인이 필요합니다.");
+                location.href = "/";
+            }
+        }).catch(function(error) {
+            console.error("로그인 체크 에러:", error);
+            alert("로그인 정보를 확인할 수 없습니다.");
+            location.href = "/";
+        });
+    }
+
+    function fetchPickedUpList() {
+        axios.get(BASE_URL + "/api/pickup/pickedUpList/userId", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(function(response) {
+                const pickedUpList = response.data;
+                renderPickedUpList(pickedUpList);
+            })
+            .catch(function(error) {
+                console.error("세탁 요청 목록 불러오기 오류:", error);
+                document.getElementById("pickupListContainer").innerHTML =
+                    "<div class='bg-white p-4 rounded-lg shadow-sm'>" +
+                    "  <div class='flex justify-center items-center'>" +
+                    "    <div>" +
+                    "      <p class='text-sm font-semibold text-gray-700'>" +
+                    "        현재 세탁 요청을 불러오지 못했습니다." +
+                    "      </p>" +
+                    "    </div>" +
+                    "  </div>" +
+                    "</div>";
+            });
+    }
+
+    function renderPickedUpList(pickedUpList) {
+        const container = document.getElementById("pickupListContainer");
+
+        if (!pickedUpList || pickedUpList.length === 0) {
+            container.innerHTML =
+                "<div class='bg-white p-4 rounded-lg shadow-sm'>" +
+                "  <div class='flex justify-center items-center'>" +
+                "    <div>" +
+                "      <p class='text-sm font-semibold text-gray-700'>" +
+                "        현재 세탁 요청이 없습니다." +
+                "      </p>" +
+                "    </div>" +
+                "  </div>" +
+                "</div>";
+            return;
+        }
+
+        let html = "";
+        pickedUpList.forEach(function(pickup) {
+            const createdAt = new Date(pickup.createdAt).toLocaleString();
+
+            let itemsHtml = "";
+            if (pickup.orderItems && pickup.orderItems.length > 0) {
+                pickup.orderItems.forEach(function(item, index) {
+                    itemsHtml += item.itemName + " " + item.quantity + "개";
+                    if (index < pickup.orderItems.length - 1) {
+                        itemsHtml += ", ";
+                    }
+                });
+            }
+
+            const statusColorClass = getStatusColorClass(pickup.status);
+            const statusText = getStatusText(pickup.status);
+
+            let paymentCompletedSpan = "";
+            if (pickup.status === "IN_PROGRESS") {
+                paymentCompletedSpan =
+                    "<span class='text-green-700 text-sm font-bold block whitespace-nowrap'>" +
+                    "    결제완료" +
+                    "</span>";
+            }
+
+            html +=
+                "<div class='bg-white p-4 rounded-lg shadow-sm'>" +
+                "  <div class='flex justify-between items-center'>" +
+                "    <div>" +
+                "      <p class='text-sm font-bold'>주문일자 : " + createdAt + "</p>" +
+                "      <p class='text-sm'>주소 : " + pickup.address + "</p>" +
+                "      <p class='text-sm'>세탁물 : " + itemsHtml + "</p>" +
+                "    </div>" +
+                "    <div>" +
+                paymentCompletedSpan +
+                "      <span class='" + statusColorClass + " text-sm font-bold whitespace-nowrap'>" +
+                "        " + statusText +
+                "      </span>" +
+                "    </div>" +
+                "  </div>" +
+                "  <div class='flex justify-end'>" +
+                "    <button class='mt-2 px-4 py-2 text-sm text-red-500 border border-red-500 rounded-full' " +
+                "            onclick='location.href=\"/shop/pickup-detail?id=" + pickup.pickupId + "\"'>" +
+                "      상세보기" +
+                "    </button>" +
+                "  </div>" +
+                "</div>";
+        });
+
+        container.innerHTML = html;
+    }
+
+    function getStatusText(statusName) {
+        switch (statusName) {
+            case "PAYMENT_PENDING":
+                return "결제 대기";
+            case "IN_PROGRESS":
+                return "작업 중";
+            case "DELIVERING":
+                return "배달 중";
+            case "DELIVERED":
+                return "배달 완료";
+            case "PICKED_UP":
+                return "수거 완료";
+            default:
+                return "알 수 없는 상태";
+        }
+    }
+
+    function getStatusColorClass(statusName) {
+        switch (statusName) {
+            case "DELIVERING":
+                return "text-yellow-400";
+            case "DELIVERED":
+                return "text-green-400";
+            case "PICKED_UP":
+                return "text-blue-400";
+            case "IN_PROGRESS":
+                return "text-red-500";
+            case "PAYMENT_PENDING":
+                return "text-indigo-400";
+            default:
+                return "text-gray-400";
+        }
+    }
+</script>
+</body>
+</html>

@@ -21,8 +21,8 @@ public class OrderController {
     @Autowired
     private KakaoPayClient kakaoPayClient;
 
-    @GetMapping("/info/{laundry_id}")
-    public ResponseEntity<?> getInfo(@AuthenticationPrincipal int id, @PathVariable("laundry_id") int laundryId){
+    @GetMapping("/info/{laundryId}")
+    public ResponseEntity<?> getInfo(@AuthenticationPrincipal int id, @PathVariable("laundryId") int laundryId){
         return orderService.getInfo(id,laundryId);
     }
 
@@ -36,8 +36,8 @@ public class OrderController {
         return orderService.getOrders(id);
     }
 
-    @GetMapping("/{pickup_id}")
-    public ResponseEntity<?> getOrderDetail(@AuthenticationPrincipal int id, @PathVariable("pickup_id") int pickupId){
+    @GetMapping("/{pickupId}")
+    public ResponseEntity<?> getOrderDetail(@AuthenticationPrincipal int id, @PathVariable("pickupId") int pickupId){
         return orderService.getOrdersDetail(id,pickupId);
     }
 

@@ -190,7 +190,5 @@ public class KakaoPayClient {
             System.out.println("JSON 변환 중 오류 발생: " + e.getMessage());
             return ResponseEntity.badRequest().body("결제 완료 처리 중 오류 발생");
         }
-
-
     }
 }

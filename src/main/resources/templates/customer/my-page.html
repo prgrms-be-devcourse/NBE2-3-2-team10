@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+<div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
+  <div class="p-4">
+    <div class="text-sm text-blue-500 font-bold" id = 'role'></div>
+    <div class="text-xl font-bold mt-2" id = 'name'></div>
+    <div class="text-gray-600 mt-1">깨끗한 하루 되세요!</div>
+  </div>
+  <div class="flex justify-around mt-4">
+    <button class="text-center focus:outline-none flex flex-col justify-center items-center">
+      <img src = "/mypage/Union.svg" class = "h-[42px] w-[40px]"/>
+      <a href="/api/orders/payment/{id}" class="text-sm mt-1">워시팡 내역</a>
+    </button>
+    <button class="text-center focus:outline-none flex flex-col justify-center items-center" onclick="location.href='/customer/myInfo'">
+      <img src = "/mypage/Vector.svg" class = "h-[43px] w-[40px]"/>
+      <div class="text-sm mt-1">내정보</div>
+    </button>
+  </div>
+  <div class="mt-4 border-t">
+    <button class="flex justify-between items-center p-4 border-b w-full focus:outline-none">
+      <div>공지사항</div>
+      <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+    <button class="flex justify-between items-center p-4 border-b w-full focus:outline-none">
+      <div>고객센터</div>
+      <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+<div>
+  <button class="text-gray-400 text-center w-full p-4 focus:outline-none" onclick="logout()">
+    로그아웃
+  </button>
+</div>
+
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+  <button class="flex flex-col items-center text-blue-500" onclick="location.href='/customer/main'">
+    <img id = "home" src = "/footer/Home.svg" class = "h-6 w-6"/>
+    <span class="text-black text-[10pt] mt-1">홈</span>
+  </button>
+  <button class="flex flex-col items-center text-gray-500" onclick="location.href='/customer/orderHistory'" >
+    <img id = "bag" src = "/footer/Bag.svg" class = "h-6 w-6"/>
+    <span class="text-black text-[10pt] mt-1">주문내역</span>
+  </button>
+  <button class="flex flex-col items-center text-gray-500" onclick="location.href='/customer/mypage'">
+    <img id = "star" src = "/footer/Star.svg" class = "h-6 w-6"/>
+    <span class="text-black text-[10pt] mt-1">내 정보</span>
+  </button>
+</footer>
+
+  <script>
+    const url = "http://localhost:8080/api/user"
+    const token = sessionStorage.getItem("accessToken");
+
+    function checkAccessToken() {
+      axios.post(url + '/check-login', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      }).then(res => {
+        sessionStorage.setItem("accessToken", res.data.accessToken);
+        getUserRole();
+      }).catch(error => {
+        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        location.href = '/';
+      });
+    }
+
+    function getUserRole () {
+      axios.get(url + '/role', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      }).then(function(response) {
+        document.getElementById('role').innerHTML = response.data.role == 'USER' ? '일반회원' : '세탁소'
+        document.getElementById('name').innerHTML = response.data.name + " 님";
+      }).catch(function(error) {
+        console.error(error);
+      });
+    }
+
+    function logout() {
+      axios.post(url + '/logout', {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      }).then(() => {
+        alert("로그아웃 되었습니다.");
+        sessionStorage.removeItem("accessToken");
+        location.href = '/';
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+
+    function changeSvg() {
+      const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+      const path = window.location.pathname;
+      // alert(currentPath);
+
+      const homeArray = ["/customer/main", "/customer/laundryshop-by-map", "/customer/laundryshop-by-category", "/customer/shop-main", "/customer/pickup-check", "/customer/pickup-delivery" ];
+      const orderArray = ["/customer/orderHistory"];
+      const starArray = ["/customer/mypage", "/customer/myInfo", "/customer/myInfoModify", "/customer/shop-mypage"];
+
+      if (homeArray.includes(path)) {
+        document.getElementById('home').src = svgUrl + "/Home_2.svg";
+      } else {
+        document.getElementById('home').src = svgUrl + "/Home.svg";
+      }
+
+      if (orderArray.includes(path)) {
+        document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+      } else {
+        document.getElementById('bag').src = svgUrl + "/Bag.svg";
+      }
+
+      if (starArray.includes(path)) {
+        document.getElementById('star').src = svgUrl + "/Star_2.svg";
+      } else {
+        document.getElementById('star').src = svgUrl + "/Star.svg";
+      }
+    }
+
+    window.onload = () => {
+      changeSvg();
+      checkAccessToken();
+    };
+  </script>
+</div>
+</body>
+</html>

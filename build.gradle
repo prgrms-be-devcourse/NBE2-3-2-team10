@@ -46,10 +46,6 @@ dependencies {
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
-    // JSP
-    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    implementation 'javax.servlet:jstl:1.2'
-
     // Valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -63,6 +59,13 @@ dependencies {
     // Lettuce는 따로 의존성 추가 안해줘도 된다.
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     // implementation 'redis.clients:jedis'
+
+    // Mockito - Test를 위한 라이브러리
+    implementation 'org.mockito:mockito-junit-jupiter:3.9.0'
+
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 }
 
 tasks.named('test') {

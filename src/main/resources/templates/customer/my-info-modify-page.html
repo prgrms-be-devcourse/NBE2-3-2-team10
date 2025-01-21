@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <title>Information Update</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="max-w-md mx-auto bg-white shadow-md">
+    <header class="flex items-center p-4 border-b">
+        <button class="text-gray-500" onclick="window.history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <h1 class="flex-grow text-center font-bold">내 정보 수정</h1>
+    </header>
+    <main class="p-4">
+        <section class="mb-6">
+            <h2 class="font-bold mb-2">정보 수정</h2>
+            <div class="space-y-4">
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">아이디</label>
+                    <div class = "flex">
+                        <input
+                                type="email"
+                                id="email"
+                                class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                disabled >
+                    </div>
+                </div>
+
+                <!-- 비밀번호 입력란 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">비밀번호</label>
+                    <input
+                            type="password"
+                            id="password"
+                            placeholder="8~30자리 영어, 숫자, 특수문자 조합"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input
+                            type="password"
+                            id="password2"
+                            placeholder="비밀번호를 똑같이 입력해주세요"
+                            class="w-full px-3 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-0.5">이름</label>
+                    <input type="text" id="name" class="w-full h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                </div>
+
+                <!-- 전화번호 입력란 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-0.5">전화번호</label>
+                    <div class="flex">
+                        <input type="tel" id="phone" placeholder="휴대 전화 번호를 입력해주세요" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">인증 번호</button>
+                    </div>
+                    <div class="flex mt-2">
+                        <input type="tel" id="CertificationNum" placeholder="인증번호 5자리" class="w-[83%] h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="w-[17%] px-1 py-2 h-10 ml-1 text-sm text-[#807171] rounded-lg bg-[#E4E4E4] border border-gray-300 hover:text-[#6E6060]">확인</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="font-bold mb-0.5 ">배송지</h2>
+                <button class="text-blue-500" onclick="findAddress()">수정</button>
+            </div>
+            <div class="border border-gray-300 p-4 rounded shadow-sm rounded-lg">
+                <span id="address"></span>
+            </div>
+            <input
+                    type="text"
+                    id="detailAddress"
+                    placeholder="상세 주소를 입력해주세요"
+                    class="w-full mt-2 h-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style="display: none;"
+            >
+        </section>
+    </main>
+
+    <div class="flex justify-center">
+        <button
+                type="button"
+                id="submitBtn"
+                onclick="updateUserInfo()"
+                class="w-[50%] py-3 mb-4 text-white font-bold rounded-lg bg-[#4AC7D5] hover:bg-[#39b2c3]">
+            변경
+        </button>
+    </div>
+
+    <div class = "mb-[60px]"></div>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+        <button class="flex flex-col items-center text-blue-500" onclick="location.href='/customer/main'">
+            <img id = "home" src = "./footer/Home.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">홈</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500" onclick="location.href='/customer/orderHistory'" >
+            <img id = "bag" src = "./footer/Bag.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">주문내역</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500" onclick="location.href='/customer/mypage'">
+            <img id = "star" src = "./footer/Star.svg" class = "h-6 w-6"/>
+            <span class="text-black text-[10pt] mt-1">내 정보</span>
+        </button>
+    </footer>
+
+    <script>
+        const url = "http://localhost:8080"
+        const token = sessionStorage.getItem("accessToken");
+        const detailAddressInput = document.getElementById("detailAddress");
+
+        var phone = "";
+        var address = "";
+
+        window.onload = () => {
+            changeSvg();
+            checkAccessToken();
+            getUserInfo();
+        }
+
+        function checkAccessToken() {
+            axios.post(url + '/api/user/check-login', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(res => {
+                sessionStorage.setItem("accessToken", res.data.accessToken);
+            }).catch(error => {
+                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = '/';
+            });
+        }
+
+        function getUserInfo() {
+            axios.get(url + '/api/user', {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then(function(response) {
+                email = response.data.email;
+                name = response.data.name;
+                phone = response.data.phone;
+                address = response.data.address;
+
+                document.getElementById('email').value = email;
+                document.getElementById('name').value = name;
+                document.getElementById('address').textContent = address
+            }).catch(function(error) {
+                console.error(error);
+            });
+        }
+
+        function findAddress() {
+            const detailAddressInput = document.getElementById("detailAddress");
+
+            if (detailAddressInput.style.display === "none") {
+                detailAddressInput.style.display = "block";
+            }
+
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = '';
+                    var extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if (data.userSelectedType === 'R') {
+                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                            extraAddr += data.bname;
+                        }
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if (extraAddr !== '') {
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                    }
+
+                    document.getElementById("address").textContent = addr + extraAddr;
+                    address = addr + extraAddr;
+                    document.getElementById("address").focus();
+                }
+            }).open();
+        }
+
+        // 유저 정보를 변경하는 Axios 요청을 보내는 함수
+        function updateUserInfo() {
+            const regex = /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]{8,30}$/;
+
+            if (document.getElementById('password').value !== document.getElementById('password2').value) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            if (document.getElementById('password').value && !regex.test(document.getElementById('password').value)) {
+                alert("비밀번호는 8~30자 사이의 영어, 숫자, 특수문자 조합이어야 합니다.");
+                return true;
+            }
+
+            if (detailAddressInput.style.display === "block" && !detailAddressInput.value) {
+                alert("상세 주소를 입력해주세요.");
+                return;
+            }
+
+            const passwordField = document.getElementById('password').value;
+            const addressField = document.getElementById('address').value;
+            const phoneField = document.getElementById('phone').value;
+            const detailAddressField = document.getElementById('detailAddress').value;
+
+            const formData = {
+                password: passwordField,
+                address: (detailAddressInput.style.display === "none") ? addressField : (address + detailAddressField),
+                phone: phoneField ? phoneField : phone
+            };
+
+            // alert(formData.address + " " + formData.password + " " + formData.phone)
+
+            axios.put(url + '/api/user', formData, {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            }).then((res) => {
+                alert("정보가 변경되었습니다.");
+                location.href = '/customer/myInfoModify';
+            }).catch(() => {
+                console.error(error);
+            });
+        }
+
+        function changeSvg() {
+            const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+            const path = window.location.pathname;
+            // alert(currentPath);
+
+            const homeArray = ["/customer/main", "/customer/laundryshop-by-map", "/customer/laundryshop-by-category", "/customer/shop-main", "/customer/pickup-check", "/customer/pickup-delivery" ];
+            const orderArray = ["/customer/orderHistory"];
+            const starArray = ["/customer/mypage", "/customer/myInfo", "/customer/myInfoModify", "/customer/shop-mypage"];
+
+            if (homeArray.includes(path)) {
+                document.getElementById('home').src = svgUrl + "/Home_2.svg";
+            } else {
+                document.getElementById('home').src = svgUrl + "/Home.svg";
+            }
+
+            if (orderArray.includes(path)) {
+                document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+            } else {
+                document.getElementById('bag').src = svgUrl + "/Bag.svg";
+            }
+
+            if (starArray.includes(path)) {
+                document.getElementById('star').src = svgUrl + "/Star_2.svg";
+            } else {
+                document.getElementById('star').src = svgUrl + "/Star.svg";
+            }
+        }
+
+    </script>
+</div>
+</body>
+</html>

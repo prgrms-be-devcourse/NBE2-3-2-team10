@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용내역</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+</head>
+  
+<body class="bg-gray-100">
+<div class="max-w-md mx-auto bg-white shadow-md rounded-lg mt-0">
+    <div class="p-4 border-b">
+        <h1 class="text-xl font-bold">이용내역</h1>
+    </div>
+    <div class="p-4" id="order-list" >
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow p-4 flex justify-around overflow-x-auto mx-auto max-w-[448px] rounded-t-lg">
+    <button class="flex flex-col items-center text-blue-500" onclick="location.href='/customer/main'">
+        <img id = "home" src = "/footer/Home.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">홈</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/customer/orderHistory'" >
+        <img id = "bag" src = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer/Bag_2.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">주문내역</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-500" onclick="location.href='/customer/mypage'">
+        <img id = "star" src = "/footer/Star.svg" class = "h-6 w-6"/>
+        <span class="text-black text-[10pt] mt-1">내 정보</span>
+    </button>
+</footer>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+    const url = "http://localhost:8080/api";
+    const token = sessionStorage.getItem("accessToken");
+  
+    function changeSvg() {
+        const svgUrl = "https://havebin.s3.ap-northeast-2.amazonaws.com/washpang/footer"
+        const path = window.location.pathname;
+        // alert(currentPath);
+
+        const homeArray = ["/customer/main", "/customer/laundryshop-by-map", "/customer/laundryshop-by-category", "/customer/shop-main", "/customer/pickup-check", "/customer/pickup-delivery" ];
+        const orderArray = ["/customer/orderHistory"];
+        const starArray = ["/customer/mypage", "/customer/myInfo", "/customer/myInfoModify", "/customer/shop-mypage"];
+
+            if (homeArray.includes(path)) {
+                document.getElementById('home').src = svgUrl + "/Home_2.svg";
+            } else {
+                document.getElementById('home').src = svgUrl + "/Home.svg";
+            }
+
+            if (orderArray.includes(path)) {
+                document.getElementById('bag').src = svgUrl + "/Bag_2.svg";
+            } else {
+                document.getElementById('bag').src = svgUrl + "/Bag.svg";
+            }
+
+            if (starArray.includes(path)) {
+                document.getElementById('star').src = svgUrl + "/Star_2.svg";
+            } else {
+                document.getElementById('star').src = svgUrl + "/Star.svg";
+            }
+        }
+  
+    function checkAccessToken() {
+        axios.post(url + '/user/check-login', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            sessionStorage.setItem("accessToken", res.data.accessToken);
+            getOrderlist();
+        }).catch(error => {
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+            location.href = '/';
+        });
+    }
+  
+    function getOrderlist() {
+        axios.get(url + '/orders', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        }).then(res => {
+            let orderHtml ='';
+
+            $.each(res.data,function(i,row) {
+                    if(row.status === '주문 취소' || row.status === '픽업 취소'){
+                        orderHtml += '<div class="bg-neutral-50 p-4 rounded-lg shadow mb-4 cursor-pointer">' +
+                            '<div class="flex justify-between items-center">'+
+                            '<h2 class="font-bold">' + row.shopName + '</h2>'+
+                            '<span class="text-red-400">' + row.status + '</span>'+
+                            '</div>';
+                    }else {
+                        orderHtml += '<div class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer">' +
+                        '<div class="flex justify-between items-center">' +
+                        '<h2 class="font-bold">' + row.shopName + '</h2>' +
+                        '<span class="text-blue-500">' + row.status + '</span>' +
+                        '</div>';
+                    }
+                    orderHtml += '<p class="text-gray-500">주문 일자 : ' + row.createdAt + '</p>' +
+                    // <%-- 주문 상세보기 버튼 추가 --%>
+                    '<a href="/customer/orderHistory/'+ row.pickupId +'"'+
+                    'class="text-blue-500 mt-2 inline-block">상세보기'+
+                    '</a>'+
+                    '</div>';
+            });
+            $("#order-list").append(orderHtml);
+        });
+    }
+
+    window.onload = () => {
+        changeSvg();
+        checkAccessToken();
+    }
+</script>
+</body>
+</html>
