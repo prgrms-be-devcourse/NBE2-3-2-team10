@@ -46,7 +46,7 @@
 <!-- Header -->
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-4">
     <div class="flex items-center justify-between p-4">
-        <button class="text-gray-500" onclick="location.href='/customer/laundryshop-detail/[[${laundryId}]]'" >
+        <button class="text-gray-500" th:onclick="|location.href='/customer/laundryshop-detail/' + [[${laundryId}]]|" >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
