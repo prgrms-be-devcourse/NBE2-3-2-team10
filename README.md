@@ -69,7 +69,6 @@ Kotlin으로 리펙토링 -> [Refactoring Repository](https://github.com/prgrms-
 - JSP가 아닌 Thymeleaf를 채택한 이유
     - Thymeleaf는 Spring Boot에서 기본 제공되는 템플릿 엔진으로 설정이 간편했습니다
     - 또한 조건문, 텍스트 처리 등 다양한 기능을 지원하며 별도의 JSTL을 추가할 필요가 없어 코드가 간결하고 읽기 쉽게 유지할 수 있었습니다
-- 활용 방식 뭐라고 쓰지 흠......,,..,/,.//.,/.,.,//./.,/.,
 
 ### 브랜치 전략
 
