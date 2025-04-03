@@ -184,6 +184,15 @@ src
 ### 🐬 이종찬
 
 - **기능**
+  - 일반 회원가입 
+    1. Email 중복 체크, 카카오/일반 회원가입 구분 등
+  - 일반 로그인 인증/인가
+    1. JWT를 활용하여 Body로 AccessToken, Cookie로 RefreshToken을 제공하고 DB에 RefreshToken 정보 저장
+    2. AccessToken 만료 시 DB의 RefreshToken과 대조하여 확인 후 재발급
+  - 회원 기본 CRUD
+    1. 회원 정보 조회, 수정, 삭제 등
+  - DFD에 맞게 리팩토링 진행
+    1. 회원 세탁 신청 관련 기능을 RestAPI에 맞게 리팩토링
 
 <br>
 
